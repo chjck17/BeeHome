@@ -1,0 +1,4 @@
+export enum UserTokenType {
+  VERIFICATION = 'VERIFICATION',
+  RESET_PASSWORD = 'RESET_PASSWORD',
+}

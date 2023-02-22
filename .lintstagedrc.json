@@ -1,0 +1,4 @@
+{
+  "src/**/*.{ts,js}": ["prettier --write", "organize-imports-cli"],
+  "{src,apps,libs,test}/**/*.ts": ["eslint --fix"]
+}

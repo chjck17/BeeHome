@@ -1,0 +1,9 @@
+{
+  "rules": [
+    {
+      "message": "You have unfinished devs",
+      "nonBlocking": "true",
+      "regex": "(?:FIXME|TODO)"
+    }
+  ]
+}
