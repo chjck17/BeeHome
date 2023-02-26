@@ -24,6 +24,8 @@ export class RegisterCustomerReqDto {
   @IsValidDate()
   birthDate: Date;
 
+  @IsValidNumberString()
+  phoneNumber: string;
   // @IsValidText({ maxLength: 1000 })
   // firebaseIdToken: string;
 }
