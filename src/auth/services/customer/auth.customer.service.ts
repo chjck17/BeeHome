@@ -79,10 +79,12 @@ export class AuthCustomerService {
     const {
       // firebaseIdToken,
       // merchantId,
+      email,
       password,
       birthDate,
       firstName,
       lastName,
+      phoneNumber,
     } = dto;
 
     // const [firebaseUser, merchant] = await Promise.all([
@@ -93,31 +95,27 @@ export class AuthCustomerService {
     // if (!firebaseUser?.phone_number)
     //   throw new ExpectationFailedExc('Firebase user do not have phone number');
 
-    // let customer = await this.customerRepo.findFirst({
-    //   where: [
-    //     { firebaseId: firebaseUser.uid },
-    //     {
-    //       phoneNumber: firebaseUser.phone_number,
-    //       // merchantUserId: merchant.userId,
-    //     },
-    //   ],
-    // });
-    // if (customer) throw new ConflictExc('Phone number existed');
+    let customer = await this.customerRepo.findFirst({
+      where: [
+        {
+          phoneNumber: dto.phoneNumber,
+        },
+      ],
+    });
+    if (customer) throw new ConflictExc('Phone number existed');
 
     const user = this.userRepo.create({ type: UserType.CUSTOMER });
     await this.userRepo.save(user);
-    // customer = this.customerRepo.create({
-    //   email: firebaseUser.email,
-    //   phoneNumber: firebaseUser.phone_number,
-    //   firebaseId: firebaseUser.uid,
-    //   merchantUserId: merchant.userId,
-    //   userId: user.id,
-    //   birthDate,
-    //   firstName,
-    //   lastName,
-    //   password: this.encryptService.encryptText(password),
-    // });
-    // await this.customerRepo.insert(customer);
+    customer = this.customerRepo.create({
+      userId: user.id,
+      email,
+      phoneNumber,
+      birthDate,
+      firstName,
+      lastName,
+      password: this.encryptService.encryptText(password),
+    });
+    await this.customerRepo.insert(customer);
     // const payload: JwtAuthPayload = { userId: customer.userId };
     // const accessToken = this.authCommonService.generateAccessToken(payload);
     // const refreshToken = this.authCommonService.generateRefreshToken(payload);

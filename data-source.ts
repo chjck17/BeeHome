@@ -3,7 +3,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { NamingStrategy } from './src/common/config/typeorm.config';
 
 require('dotenv').config();
-const config: DataSourceOptions & PostgresConnectionOptions = {
+let config: DataSourceOptions & PostgresConnectionOptions = {
   type: 'postgres',
   host: process.env.POSTGRES_HOST,
   port: +process.env.POSTGRES_PORT,
@@ -12,7 +12,7 @@ const config: DataSourceOptions & PostgresConnectionOptions = {
   database: process.env.POSTGRES_DB,
   entities: ['dist/**/*.entity.js'],
   synchronize: false,
-  migrationsRun: true,
+  // migrationsRun: true,
   migrations: ['dist/migrations/*.js'],
   logger: 'simple-console',
   logging: false,
@@ -20,4 +20,28 @@ const config: DataSourceOptions & PostgresConnectionOptions = {
   namingStrategy: new NamingStrategy(),
 };
 
+switch (process.env.NODE_ENV) {
+  case 'test':
+    break;
+
+  case 'development':
+    config = {
+      ...config,
+      migrationsRun: true,
+    };
+    break;
+
+  case 'production':
+    break;
+
+  // default is local
+  default:
+    config = {
+      ...config,
+      migrationsRun: false,
+      logging: true,
+      synchronize: false,
+    };
+    break;
+}
 export const dataSource = new DataSource(config);
