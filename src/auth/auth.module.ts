@@ -46,7 +46,7 @@ import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService<GlobalConfig>) => ({
-        secret: configService.get('auth.accessToken.secret'),
+        secretOrKey: [configService.get('auth.accessToken.secret')],
         signOptions: {
           algorithm: configService.get('auth.accessToken.algorithm'),
         },
@@ -91,4 +91,6 @@ import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group
     UserToGroupPolicyRepository,
   ],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor(private configService: ConfigService<GlobalConfig>) {}
+}

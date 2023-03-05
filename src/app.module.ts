@@ -9,11 +9,12 @@ import {
 } from 'typeorm-transactional';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
+import globalConfig from './common/config/global.config';
 import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true, load: [globalConfig], cache: true }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({}),
       dataSourceFactory: async () => {

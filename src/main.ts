@@ -1,18 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { FastifyAdapter } from '@nestjs/platform-fastify/adapters';
 
 // import * as cookieParser from 'cookie-parser';
 declare const module: any;
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
   // app.use(cookieParser());
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  });
+  app.enableCors({ origin: '*', credentials: true });
   const config = new DocumentBuilder()
     .setTitle('BeeHome')
     .setDescription('BeeHome API')
@@ -26,10 +26,6 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
-  await app.listen(3000);
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
+  await app.listen(+process.env.PORT || 5000, '0.0.0.0');
 }
 bootstrap();

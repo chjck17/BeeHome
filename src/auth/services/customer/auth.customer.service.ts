@@ -50,11 +50,11 @@ export class AuthCustomerService {
   }
 
   async login(dto: LoginCustomerReqDto) {
-    const { password, phoneNumber, merchantId } = dto;
+    const { password, phoneNumber } = dto;
 
-    const merchant = await this.merchantRepo.findOneOrThrowNotFoundExc({
-      where: { id: merchantId },
-    });
+    // const merchant = await this.merchantRepo.findOneOrThrowNotFoundExc({
+    //   where: { id: merchantId },
+    // });
 
     const customer = await this.customerRepo.findOne({
       where: {
@@ -76,24 +76,8 @@ export class AuthCustomerService {
 
   @Transactional()
   async register(dto: RegisterCustomerReqDto) {
-    const {
-      // firebaseIdToken,
-      // merchantId,
-      email,
-      password,
-      birthDate,
-      firstName,
-      lastName,
-      phoneNumber,
-    } = dto;
-
-    // const [firebaseUser, merchant] = await Promise.all([
-    //   // firebase.auth().verifyIdToken(firebaseIdToken),
-    //   this.merchantRepo.findOneBy({ id: merchantId }),
-    // ]);
-
-    // if (!firebaseUser?.phone_number)
-    //   throw new ExpectationFailedExc('Firebase user do not have phone number');
+    const { email, password, birthDate, firstName, lastName, phoneNumber } =
+      dto;
 
     let customer = await this.customerRepo.findFirst({
       where: [
@@ -116,10 +100,10 @@ export class AuthCustomerService {
       password: this.encryptService.encryptText(password),
     });
     await this.customerRepo.insert(customer);
-    // const payload: JwtAuthPayload = { userId: customer.userId };
-    // const accessToken = this.authCommonService.generateAccessToken(payload);
-    // const refreshToken = this.authCommonService.generateRefreshToken(payload);
-    // return AuthTokenResDto.forCustomer({ accessToken, refreshToken });
+    const payload: JwtAuthPayload = { userId: customer.userId };
+    const accessToken = this.authCommonService.generateAccessToken(payload);
+    const refreshToken = this.authCommonService.generateRefreshToken(payload);
+    return AuthTokenResDto.forCustomer({ accessToken, refreshToken });
   }
 
   async refreshToken(dto: RefreshTokenReqDto) {

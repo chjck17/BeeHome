@@ -27,7 +27,6 @@ export class AuthCustomerController {
   login(@Body() body: LoginCustomerReqDto) {
     return this.authCustomerService.login(body);
   }
-
   @Post('refresh-token')
   refreshToken(@Body() body: RefreshTokenReqDto) {
     return this.authCustomerService.refreshToken(body);
