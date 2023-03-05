@@ -37,6 +37,6 @@ export class LoginCustomerReqDto {
   @IsValidText({ maxLength: 255 })
   password: string;
 
-  @IsValidNumber({ min: 1 })
-  merchantId: number;
+  // @IsValidNumber({ min: 1 })
+  // merchantId: number;
 }

@@ -21,7 +21,7 @@ export class JwtAuthenMerchantStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'sss',
+      secretOrKey: [configService.get('auth.accessToken.secret')],
 
       algorithms: [configService.get('auth.accessToken.algorithm')],
     });
