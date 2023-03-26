@@ -21,7 +21,7 @@ export class AuthTokenResDto {
     return result;
   }
 
-  static forMerchant(data?: PartialNonFunctionProperties<AuthTokenResDto>) {
+  static forLessor(data?: PartialNonFunctionProperties<AuthTokenResDto>) {
     const result = new AuthTokenResDto();
     if (!data) return result;
 

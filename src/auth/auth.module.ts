@@ -2,37 +2,37 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 import { Manager } from './entities/manager.entity';
-import { Merchant } from './entities/merchant.entity';
+import { Lessor } from './entities/lessor.entity';
 import { Admin } from './entities/admin.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UtilsModule } from 'src/utils/utils.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GlobalConfig } from 'src/common/config/global.config';
-import { AuthMerchantController } from './controllers/merchant/auth.merchant.controller';
+import { AuthLessorController } from './controllers/lessor/auth.lessor.controller';
 import { AuthAdminController } from './controllers/admin/auth.admin.controller';
 import { AuthCustomerController } from './controllers/customer/auth.customer.controller';
 import { AdminAdminController } from './controllers/admin/admin.admin.controller';
-import { MerchantAdminController } from './controllers/admin/merchant.admin.controller';
+import { LessorAdminController } from './controllers/admin/merchant.admin.controller';
 import { CustomerAdminController } from './controllers/admin/customer.admin.controller';
-import { ProfileMerchantController } from './controllers/merchant/profile.merchant.controller';
+import { ProfileLessorController } from './controllers/lessor/profile.merchant.controller';
 import { ProfileAdminController } from './controllers/admin/profile.admin.controller';
 import { ProfileCustomerController } from './controllers/customer/profile.customer.controller';
 import { AuthAdminService } from './services/admin/auth.admin.service';
-import { AuthMerchantService } from './services/merchant/auth.merchant.service';
+import { AuthLessorService } from './services/lessor/auth.lessor.service';
 import { AuthCustomerService } from './services/customer/auth.customer.service';
 import { AdminAdminService } from './services/admin/admin.admin.service';
-import { MerchantAdminService } from './services/admin/merchant.admin.service';
+import { LessorAdminService } from './services/admin/merchant.admin.service';
 import { CustomerAdminService } from './services/admin/customer.admin.service';
-import { ProfileMerchantService } from './services/merchant/profile.merchant.service';
+import { ProfileLessorService } from './services/lessor/profile.lessor.service';
 import { ProfileAdminService } from './services/admin/profile.admin.service';
 import { ProfileCustomerService } from './services/customer/profile.customer.service';
 import { AuthCommonService } from './services/common/auth.common.service';
-import { JwtAuthenMerchantStrategy } from './strategies/jwt-authen.merchant.strategy';
+import { JwtAuthenLessorStrategy } from './strategies/jwt-authen.lessor.strategy';
 import { JwtAuthenAdminStrategy } from './strategies/jwt-authen.admin.strategy';
 import { JwtAuthenCustomerStrategy } from './strategies/jwt-authen.customer.strategy';
 import { JwtAuthenUserStrategy } from './strategies/jwt-authen.user.strategy';
-import { MerchantRepository } from './repositories/merchant.repository';
+import { LessorRepository } from './repositories/lessor.repository';
 import { UserRepository } from './repositories/user.repository';
 import { CustomerRepository } from './repositories/customer.repository';
 import { AdminRepository } from './repositories/admin.repository';
@@ -53,36 +53,36 @@ import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group
       }),
     }),
     UtilsModule,
-    TypeOrmModule.forFeature([Admin, Merchant, Manager, Customer]),
+    TypeOrmModule.forFeature([Admin, Lessor, Manager, Customer]),
   ],
   controllers: [
-    AuthMerchantController,
+    AuthLessorController,
     AuthAdminController,
     AuthCustomerController,
     AdminAdminController,
-    MerchantAdminController,
+    LessorAdminController,
     CustomerAdminController,
-    ProfileMerchantController,
+    ProfileLessorController,
     ProfileAdminController,
     ProfileCustomerController,
   ],
   providers: [
     AuthAdminService,
-    AuthMerchantService,
+    AuthLessorService,
     AuthCustomerService,
     AdminAdminService,
-    MerchantAdminService,
+    LessorAdminService,
     CustomerAdminService,
-    ProfileMerchantService,
+    ProfileLessorService,
     ProfileAdminService,
     ProfileCustomerService,
     AuthCommonService,
     ConfigService,
-    JwtAuthenMerchantStrategy,
+    JwtAuthenLessorStrategy,
     JwtAuthenAdminStrategy,
     JwtAuthenCustomerStrategy,
     JwtAuthenUserStrategy,
-    MerchantRepository,
+    LessorRepository,
     UserRepository,
     CustomerRepository,
     AdminRepository,

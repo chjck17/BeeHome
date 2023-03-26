@@ -22,7 +22,7 @@ import { User } from '../../entities/user.entity';
 import { UserType } from '../../enums/user.enum';
 import { JwtAuthPayload } from '../../interfaces/jwt-payload.interface';
 import { CustomerRepository } from '../../repositories/customer.repository';
-import { MerchantRepository } from '../../repositories/merchant.repository';
+import { LessorRepository } from '../../repositories/lessor.repository';
 import { UserRepository } from '../../repositories/user.repository';
 import { AuthCommonService } from '../common/auth.common.service';
 
@@ -35,7 +35,7 @@ export class AuthCustomerService {
     private configService: ConfigService<GlobalConfig>,
     private encryptService: EncryptService,
     private authCommonService: AuthCommonService,
-    private merchantRepo: MerchantRepository,
+    private merchantRepo: LessorRepository,
   ) {}
 
   async getCurrent(user: User) {

@@ -1,7 +1,7 @@
 // import { FileResDto } from '../../../../file/dtos/res/file.res.dto';
 import { Customer } from '../../../entities/customer.entity';
 import { CustomerStatus } from '../../../enums/customer.enum';
-import { MerchantResDto } from './merchant.res.dto';
+import { LessorResDto } from './lessor.res.dto';
 import { UserResDto } from './user.res.dto';
 
 export class CustomerResDto {
@@ -14,7 +14,7 @@ export class CustomerResDto {
   birthDate: Date;
   status: CustomerStatus;
   user: UserResDto;
-  merchant: MerchantResDto;
+  merchant: LessorResDto;
   // avatar: FileResDto;
 
   static mapProperty(dto: CustomerResDto, data: Customer) {
@@ -38,14 +38,14 @@ export class CustomerResDto {
     return result;
   }
 
-  static forMerchant(data?: Customer) {
+  static forLessor(data?: Customer) {
     const result = new CustomerResDto();
     if (!data) return result;
 
     this.mapProperty(result, data);
     result.status = data.status;
-    // result.avatar = FileResDto.forMerchant(data.avatar);
-    result.user = UserResDto.forMerchant(data.user);
+    // result.avatar = FileResDto.forLessor(data.avatar);
+    result.user = UserResDto.forLessor(data.user);
 
     return result;
   }
@@ -58,7 +58,7 @@ export class CustomerResDto {
     result.status = data.status;
     // result.avatar = FileResDto.forCustomer(data.avatar);
     result.user = UserResDto.forCustomer(data.user);
-    // result.merchant = MerchantResDto.forAdmin(data.merchantUser?.merchant);
+    // result.merchant = LessorResDto.forAdmin(data.merchantUser?.merchant);
 
     return result;
   }

@@ -8,11 +8,11 @@ import {
 } from 'typeorm';
 import { UniqueWithSoftDelete } from '../../common/decorators/typeorm.decorator';
 
-import { MerchantRank, MerchantStatus } from '../enums/merchant.enum';
+import { LessorRank, LessorStatus } from '../enums/lessor.enum';
 import { User } from './user.entity';
 
 @Entity()
-export class Merchant extends BaseEntity {
+export class Lessor extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,11 +26,11 @@ export class Merchant extends BaseEntity {
   @Column({ select: false })
   password: string;
 
-  @Column({ type: 'enum', enum: MerchantStatus })
-  status: MerchantStatus;
+  @Column({ type: 'enum', enum: LessorStatus })
+  status: LessorStatus;
 
-  @Column({ type: 'enum', enum: MerchantRank, default: MerchantRank.BASIC })
-  rank: MerchantRank;
+  @Column({ type: 'enum', enum: LessorRank, default: LessorRank.BASIC })
+  rank: LessorRank;
 
   @Column({ nullable: true })
   address: string;
@@ -42,13 +42,13 @@ export class Merchant extends BaseEntity {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @OneToOne(() => User, (user) => user.merchant, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.lessor, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
   // End join user
 
   // // Join event
-  // @OneToMany(() => Event, (event) => event.merchant)
+  // @OneToMany(() => Event, (event) => event.Lessor)
   // events: Event[];
   // // End join event
 

@@ -11,7 +11,7 @@ import { UserType } from '../enums/user.enum';
 import { Admin } from './admin.entity';
 import { Customer } from './customer.entity';
 import { Manager } from './manager.entity';
-import { Merchant } from './merchant.entity';
+import { Lessor } from './lessor.entity';
 import { UserToken } from './user-token.entity';
 
 @Entity()
@@ -19,11 +19,11 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: UserType, default: UserType.MERCHANT })
+  @Column({ type: 'enum', enum: UserType, default: UserType.LESSOR })
   type: UserType;
 
-  @OneToOne(() => Merchant, (merchant) => merchant.user)
-  merchant: Merchant;
+  @OneToOne(() => Lessor, (lessor) => lessor.user)
+  lessor: Lessor;
 
   @OneToOne(() => Admin, (admin) => admin.user)
   admin: Admin;
@@ -53,7 +53,7 @@ export class User extends BaseEntity {
   // categories: Category[];
 
   // // Join customer
-  // @OneToMany(() => Customer, (customer) => customer.merchantUser)
+  // @OneToMany(() => Customer, (customer) => customer.lessorUser)
   // customersOfMerchant: Customer[];
   // // End join customer
 

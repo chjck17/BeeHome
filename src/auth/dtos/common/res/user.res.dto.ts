@@ -17,7 +17,7 @@ export class UserResDto {
     return result;
   }
 
-  static forMerchant(data?: User) {
+  static forLessor(data?: User) {
     const result = new UserResDto();
     if (!data) return result;
 

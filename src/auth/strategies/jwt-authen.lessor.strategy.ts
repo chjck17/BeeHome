@@ -4,15 +4,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { GlobalConfig } from 'src/common/config/global.config';
 import { StrategyName } from '../constants/index.constant';
-import { MerchantStatus } from '../enums/merchant.enum';
+import { LessorStatus } from '../enums/lessor.enum';
 import { UserType } from '../enums/user.enum';
 import { JwtAuthPayload } from '../interfaces/jwt-payload.interface';
 import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
-export class JwtAuthenMerchantStrategy extends PassportStrategy(
+export class JwtAuthenLessorStrategy extends PassportStrategy(
   Strategy,
-  StrategyName.MERCHANT,
+  StrategyName.LESSOR,
 ) {
   constructor(
     private readonly userRepo: UserRepository,
@@ -33,10 +33,10 @@ export class JwtAuthenMerchantStrategy extends PassportStrategy(
     const user = await this.userRepo.findOne({
       where: {
         id: userId,
-        type: UserType.MERCHANT,
-        merchant: { status: MerchantStatus.APPROVED },
+        type: UserType.LESSOR,
+        lessor: { status: LessorStatus.APPROVED },
       },
-      relations: { merchant: true },
+      relations: { lessor: true },
     });
 
     if (!user) throw new UnauthorizedException('Invalid credentials');

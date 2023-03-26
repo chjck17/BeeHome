@@ -4,7 +4,7 @@ dotenv.config();
 
 const globalConfig = {
   port: +process.env.PORT || 5000,
-  webMerchantDomain: process.env.WEB_MERCHANT_DOMAIN,
+  webLessorDomain: process.env.WEB_LESSOR_DOMAIN,
   serverDomain: process.env.SERVER_DOMAIN,
 
   auth: {
@@ -52,11 +52,11 @@ const globalConfig = {
         email: process.env.AWS_SES_SENDER_EMAIL,
       },
       templateName: {
-        merchant: {
+        lessor: {
           verifyEmailRequest:
-            process.env.AWS_SES_TEMPLATE_VERIFY_MERCHANT_REQUEST,
-          accountApproved: process.env.AWS_SES_TEMPLATE_MERCHANT_APPROVED,
-          accountRefused: process.env.AWS_SES_TEMPLATE_MERCHANT_REJECTED,
+            process.env.AWS_SES_TEMPLATE_VERIFY_LESSOR_REQUEST,
+          accountApproved: process.env.AWS_SES_TEMPLATE_LESSOR_APPROVED,
+          accountRefused: process.env.AWS_SES_TEMPLATE_LESSOR_REJECTED,
         },
       },
     },

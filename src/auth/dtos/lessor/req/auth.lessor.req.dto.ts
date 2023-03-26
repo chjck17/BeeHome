@@ -4,7 +4,7 @@ import {
   IsValidText,
 } from '../../../../common/decorators/custom-validator.decorator';
 
-export class MerchantLoginReqDto {
+export class LessorLoginReqDto {
   @IsEmail()
   email: string;
 
@@ -12,7 +12,7 @@ export class MerchantLoginReqDto {
   password: string;
 }
 
-export class MerchantRegisterReqDto {
+export class LessorRegisterReqDto {
   @IsEmail()
   email: string;
 
@@ -20,7 +20,7 @@ export class MerchantRegisterReqDto {
   password: string;
 }
 
-export class RegisterMerchantReqDto {
+export class RegisterLessorReqDto {
   @IsEmail()
   email: string;
 
@@ -28,7 +28,7 @@ export class RegisterMerchantReqDto {
   password: string;
 }
 
-export class UpdateProfileMerchantReqDto {
+export class UpdateProfileLessorReqDto {
   @IsValidText({ required: false })
   name?: string;
 

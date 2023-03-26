@@ -11,7 +11,7 @@ import { RequiredRule } from '../../common/interfaces/casl.interface';
 import { StrategyName } from '../constants/index.constant';
 
 @Injectable()
-export class JwtAuthenMerchantGuard extends AuthGuard(StrategyName.MERCHANT) {
+export class JwtAuthenLessorGuard extends AuthGuard(StrategyName.LESSOR) {
   constructor(private reflector: Reflector) {
     super();
   }

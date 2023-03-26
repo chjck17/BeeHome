@@ -1,11 +1,11 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Query
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
@@ -14,21 +14,21 @@ import { PaginationResponse } from '../../../common/decorators/pagination-respon
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import { Action, Resource } from '../../../common/enums/casl.enum';
 import {
-    ListMerchantAdminReqDto,
-    UpdateStatusMerchantAdminReqDto
-} from '../../dtos/admin/req/merchant.admin.req.dto';
-import { MerchantResDto } from '../../dtos/common/res/merchant.res.dto';
-import { MerchantAdminService } from '../../services/admin/merchant.admin.service';
+  ListLessorAdminReqDto,
+  UpdateStatusLessorAdminReqDto,
+} from '../../dtos/admin/req/lessor.admin.req.dto';
+import { LessorResDto } from '../../dtos/common/res/lessor.res.dto';
+import { LessorAdminService } from '../../services/admin/merchant.admin.service';
 
 @Controller(`${PrefixType.ADMIN}/merchant`)
-@ApiTags('Manage Merchant')
+@ApiTags('Manage Lessor')
 @Authorize({ action: Action.MANAGE, resource: Resource.MERCHANT })
-export class MerchantAdminController {
-  constructor(private merchantAdminService: MerchantAdminService) {}
+export class LessorAdminController {
+  constructor(private merchantAdminService: LessorAdminService) {}
 
   @Get()
-  @PaginationResponse(MerchantResDto)
-  getList(@Query() body: ListMerchantAdminReqDto) {
+  @PaginationResponse(LessorResDto)
+  getList(@Query() body: ListLessorAdminReqDto) {
     return this.merchantAdminService.getList(body);
   }
 
@@ -38,7 +38,7 @@ export class MerchantAdminController {
   }
 
   @Patch('status')
-  updateStatus(@Body() dto: UpdateStatusMerchantAdminReqDto) {
+  updateStatus(@Body() dto: UpdateStatusLessorAdminReqDto) {
     return this.merchantAdminService.updateStatus(dto);
   }
 

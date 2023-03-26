@@ -1,20 +1,19 @@
-// import { FileResDto } from '../../../../file/dtos/res/file.res.dto';
-import { Merchant } from '../../../entities/merchant.entity';
-import { MerchantRank, MerchantStatus } from '../../../enums/merchant.enum';
+import { Lessor } from '../../../entities/lessor.entity';
+import { LessorRank, LessorStatus } from '../../../enums/lessor.enum';
 import { UserResDto } from './user.res.dto';
 
-export class MerchantResDto {
+export class LessorResDto {
   id: number;
   name: string;
   email: string;
-  status: MerchantStatus;
-  rank: MerchantRank;
+  status: LessorStatus;
+  rank: LessorRank;
   address: string;
   phoneNumber: string;
   user?: UserResDto;
   // avatar?: FileResDto;
 
-  static mapProperty(dto: MerchantResDto, data: Merchant) {
+  static mapProperty(dto: LessorResDto, data: Lessor) {
     dto.id = data.id;
     dto.name = data.name;
     dto.email = data.email;
@@ -22,19 +21,19 @@ export class MerchantResDto {
     dto.phoneNumber = data.phoneNumber;
   }
 
-  static forMerchant(data?: Merchant) {
-    const result = new MerchantResDto();
+  static forLessor(data?: Lessor) {
+    const result = new LessorResDto();
     if (!data) return result;
 
     this.mapProperty(result, data);
-    // result.avatar = FileResDto.forMerchant(data.avatar);
-    result.user = UserResDto.forMerchant(data.user);
+    // result.avatar = FileResDto.forLessor(data.avatar);
+    result.user = UserResDto.forLessor(data.user);
 
     return result;
   }
 
-  static forAdmin(data?: Merchant) {
-    const result = new MerchantResDto();
+  static forAdmin(data?: Lessor) {
+    const result = new LessorResDto();
     if (!data) return result;
 
     this.mapProperty(result, data);

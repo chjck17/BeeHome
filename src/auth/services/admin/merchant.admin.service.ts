@@ -4,69 +4,69 @@ import { IsNull } from 'typeorm';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import { NotFoundExc } from '../../../common/exceptions/custom.exception';
 import {
-  ListMerchantAdminReqDto,
-  UpdateStatusMerchantAdminReqDto,
-} from '../../dtos/admin/req/merchant.admin.req.dto';
-import { MerchantResDto } from '../../dtos/common/res/merchant.res.dto';
-import { MerchantRepository } from '../../repositories/merchant.repository';
+  ListLessorAdminReqDto,
+  UpdateStatusLessorAdminReqDto,
+} from '../../dtos/admin/req/lessor.admin.req.dto';
+import { LessorResDto } from '../../dtos/common/res/lessor.res.dto';
+import { LessorRepository } from '../../repositories/lessor.repository';
 
 @Injectable()
-export class MerchantAdminService {
-  constructor(private merchantRepo: MerchantRepository) {}
+export class LessorAdminService {
+  constructor(private lessorRepo: LessorRepository) {}
 
-  async getList(dto: ListMerchantAdminReqDto) {
+  async getList(dto: ListLessorAdminReqDto) {
     const { rank, status, limit, page } = dto;
     let { searchText } = dto;
 
-    const queryBuilder = this.merchantRepo
-      .createQueryBuilder('merchant')
-      .leftJoinAndSelect('merchant.avatar', 'avatar');
+    const queryBuilder = this.lessorRepo
+      .createQueryBuilder('lessor')
+      .leftJoinAndSelect('lessor.avatar', 'avatar');
 
     if (searchText) {
       searchText = `%${searchText}%`;
-      queryBuilder.andWhere('merchant.email ILIKE :searchText', {
+      queryBuilder.andWhere('lessor.email ILIKE :searchText', {
         searchText,
       });
     }
-    if (status) queryBuilder.andWhere('merchant.status = :status', { status });
-    if (rank) queryBuilder.andWhere('merchant.rank = :rank', { rank });
+    if (status) queryBuilder.andWhere('lessor.status = :status', { status });
+    if (rank) queryBuilder.andWhere('lessor.rank = :rank', { rank });
 
     const { items, meta } = await paginate(queryBuilder, { limit, page });
 
-    const merchants = items.map((item) => MerchantResDto.forAdmin(item));
+    const lessors = items.map((item) => LessorResDto.forAdmin(item));
 
-    return new Pagination(merchants, meta);
+    return new Pagination(lessors, meta);
   }
 
   async getDetail(id: number) {
-    const merchant = await this.merchantRepo.findOneOrThrowNotFoundExc({
+    const lessor = await this.lessorRepo.findOneOrThrowNotFoundExc({
       where: { id },
       // relations: { avatar: true },
     });
-    return MerchantResDto.forAdmin(merchant);
+    return LessorResDto.forAdmin(lessor);
   }
 
-  async updateStatus(dto: UpdateStatusMerchantAdminReqDto) {
-    const { merchantId, status } = dto;
+  async updateStatus(dto: UpdateStatusLessorAdminReqDto) {
+    const { lessorId, status } = dto;
 
-    const { affected } = await this.merchantRepo.update(
-      { id: merchantId, deletedAt: IsNull() },
+    const { affected } = await this.lessorRepo.update(
+      { id: lessorId, deletedAt: IsNull() },
       { status },
     );
 
-    if (affected < 1) throw new NotFoundExc('Merchant not found');
+    if (affected < 1) throw new NotFoundExc('Lessor not found');
   }
 
   async deleteList(dto: DeleteMultipleByIdNumberReqDto) {
     const { ids } = dto;
-    return this.merchantRepo.softDelete(ids);
+    return this.lessorRepo.softDelete(ids);
   }
 
   async deleteSingle(id: number) {
-    const merchant = await this.merchantRepo.findOneByOrThrowNotFoundExc({
+    const lessor = await this.lessorRepo.findOneByOrThrowNotFoundExc({
       id,
     });
 
-    return this.merchantRepo.softRemove(merchant);
+    return this.lessorRepo.softRemove(lessor);
   }
 }

@@ -1,8 +1,8 @@
-export enum MerchantRank {
+export enum LessorRank {
   BASIC = 'BASIC',
 }
 
-export enum MerchantStatus {
+export enum LessorStatus {
   UNVERIFIED = 'UNVERIFIED',
   VERIFIED = 'VERIFIED',
   APPROVED = 'APPROVED',
