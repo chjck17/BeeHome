@@ -8,7 +8,7 @@ import {
 
 export class RegisterCustomerReqDto {
   // @IsValidNumber({ min: 1 })
-  // merchantId: number;
+  // lessorId: number;
   @IsEmail()
   email: string;
 
@@ -38,5 +38,5 @@ export class LoginCustomerReqDto {
   password: string;
 
   // @IsValidNumber({ min: 1 })
-  // merchantId: number;
+  // lessorId: number;
 }

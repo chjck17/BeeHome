@@ -37,7 +37,7 @@ import { AuthCommonService } from '../common/auth.common.service';
 export class AuthLessorService {
   constructor(
     private userRepo: UserRepository,
-    private merchantRepo: LessorRepository,
+    private lessorRepo: LessorRepository,
     private jwtService: JwtService,
     // private emailService: EmailService,
     private userTokenRepo: UserTokenRepository,
@@ -50,12 +50,12 @@ export class AuthLessorService {
   async register(dto: RegisterLessorReqDto) {
     const { email, password } = dto;
 
-    const existedLessor = await this.merchantRepo.findOneBy({ email });
+    const existedLessor = await this.lessorRepo.findOneBy({ email });
     if (existedLessor) throw new ConflictExc('Lessor existed');
 
     const user = await this.userRepo.save({ type: UserType.LESSOR });
 
-    const lessor = this.merchantRepo.create({
+    const lessor = this.lessorRepo.create({
       email,
       password: this.encryptService.encryptText(password),
       user,
@@ -63,7 +63,7 @@ export class AuthLessorService {
     });
 
     await Promise.all([
-      this.merchantRepo.save(lessor),
+      this.lessorRepo.save(lessor),
       // this.handleSendVerification(user.id, email),
     ]);
 
@@ -72,7 +72,7 @@ export class AuthLessorService {
 
   async login(dto: LessorLoginReqDto) {
     const { email, password } = dto;
-    const lessor = await this.merchantRepo
+    const lessor = await this.lessorRepo
       .createQueryBuilder('lessor')
       .addSelect('lessor.password')
       .innerJoinAndSelect('lessor.user', 'user')
@@ -95,7 +95,7 @@ export class AuthLessorService {
   }
 
   async getCurrent(user: User) {
-    const lessor = await this.merchantRepo.findOneOrThrowNotFoundExc({
+    const lessor = await this.lessorRepo.findOneOrThrowNotFoundExc({
       where: { userId: user.id },
       // relations: { avatar: true },
     });
@@ -164,7 +164,7 @@ export class AuthLessorService {
     const verifySuccessUrl = `${webLessorDomain}/${verifyLessorSuccessPath}`;
 
     await Promise.all([
-      this.merchantRepo.update(lessor.id, {
+      this.lessorRepo.update(lessor.id, {
         status: LessorStatus.VERIFIED,
       }),
       this.userTokenRepo.softDelete(userToken.id),

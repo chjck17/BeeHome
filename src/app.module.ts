@@ -8,9 +8,7 @@ import {
   initializeTransactionalContext,
 } from 'typeorm-transactional';
 import { AuthModule } from './auth/auth.module';
-import { CategoryModule } from './category/category.module';
 import globalConfig from './common/config/global.config';
-import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -22,8 +20,6 @@ import { ProductModule } from './product/product.module';
         return addTransactionalDataSource(dataSource);
       },
     }),
-    ProductModule,
-    CategoryModule,
     AuthModule,
   ],
 

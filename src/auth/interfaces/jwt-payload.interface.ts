@@ -2,7 +2,7 @@ export interface JwtAuthPayload {
   userId: number;
 }
 
-export interface VerificationMerchantPayload {
+export interface VerificationLessorPayload {
   token: string;
-  merchantId: number;
+  lessorId: number;
 }

@@ -18,37 +18,37 @@ import {
   UpdateStatusLessorAdminReqDto,
 } from '../../dtos/admin/req/lessor.admin.req.dto';
 import { LessorResDto } from '../../dtos/common/res/lessor.res.dto';
-import { LessorAdminService } from '../../services/admin/merchant.admin.service';
+import { LessorAdminService } from '../../services/admin/lessor.admin.service';
 
-@Controller(`${PrefixType.ADMIN}/merchant`)
+@Controller(`${PrefixType.ADMIN}/lessor`)
 @ApiTags('Manage Lessor')
-@Authorize({ action: Action.MANAGE, resource: Resource.MERCHANT })
+@Authorize({ action: Action.MANAGE, resource: Resource.LESSOR })
 export class LessorAdminController {
-  constructor(private merchantAdminService: LessorAdminService) {}
+  constructor(private lessorAdminService: LessorAdminService) {}
 
   @Get()
   @PaginationResponse(LessorResDto)
   getList(@Query() body: ListLessorAdminReqDto) {
-    return this.merchantAdminService.getList(body);
+    return this.lessorAdminService.getList(body);
   }
 
   @Get(':id')
   getDetail(@Param('id') id: number) {
-    return this.merchantAdminService.getDetail(id);
+    return this.lessorAdminService.getDetail(id);
   }
 
   @Patch('status')
   updateStatus(@Body() dto: UpdateStatusLessorAdminReqDto) {
-    return this.merchantAdminService.updateStatus(dto);
+    return this.lessorAdminService.updateStatus(dto);
   }
 
   @Delete()
   deleteList(@Body() body: DeleteMultipleByIdNumberReqDto) {
-    return this.merchantAdminService.deleteList(body);
+    return this.lessorAdminService.deleteList(body);
   }
 
   @Delete(':id')
   deleteSingle(@Param('id') id: number) {
-    return this.merchantAdminService.deleteSingle(id);
+    return this.lessorAdminService.deleteSingle(id);
   }
 }

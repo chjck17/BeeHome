@@ -2,14 +2,14 @@ import { Body, Controller, Get, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
 import {
-    AuthenticateLessor,
-    CurrentUser
+  AuthenticateLessor,
+  CurrentUser,
 } from '../../../common/decorators/auth.decorator';
 import { UpdateProfileLessorReqDto } from '../../dtos/lessor/req/auth.lessor.req.dto';
 import { User } from '../../entities/user.entity';
 import { ProfileLessorService } from '../../services/lessor/profile.lessor.service';
 
-@Controller(`${PrefixType.MERCHANT}/profile`)
+@Controller(`${PrefixType.LESSOR}/profile`)
 @AuthenticateLessor()
 @ApiTags('Profile Lessor')
 export class ProfileLessorController {

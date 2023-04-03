@@ -55,14 +55,14 @@ export class Customer extends BaseEntity {
   user: User;
   // End join user
 
-  // // Join merchant_user
-  // @Column({ name: 'merchant_user_id' })
-  // merchantUserId: number;
+  // // Join lessor_user
+  // @Column({ name: 'lessor_user_id' })
+  // lessorUserId: number;
 
   // @ManyToOne(() => User, (user) => user.customer)
-  // @JoinColumn({ name: 'merchant_user_id' })
-  // merchantUser: User;
-  // // End join merchant_user
+  // @JoinColumn({ name: 'lessor_user_id' })
+  // lessorUser: User;
+  // // End join lessor_user
 
   // @Column({ name: 'avatar_id', nullable: true })
   // avatarId: number;

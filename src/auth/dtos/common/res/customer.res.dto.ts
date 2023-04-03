@@ -14,7 +14,7 @@ export class CustomerResDto {
   birthDate: Date;
   status: CustomerStatus;
   user: UserResDto;
-  merchant: LessorResDto;
+  lessor: LessorResDto;
   // avatar: FileResDto;
 
   static mapProperty(dto: CustomerResDto, data: Customer) {
@@ -58,7 +58,7 @@ export class CustomerResDto {
     result.status = data.status;
     // result.avatar = FileResDto.forCustomer(data.avatar);
     result.user = UserResDto.forCustomer(data.user);
-    // result.merchant = LessorResDto.forAdmin(data.merchantUser?.merchant);
+    // result.lessor = LessorResDto.forAdmin(data.lessorUser?.lessor);
 
     return result;
   }

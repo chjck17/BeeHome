@@ -54,7 +54,7 @@ export class User extends BaseEntity {
 
   // // Join customer
   // @OneToMany(() => Customer, (customer) => customer.lessorUser)
-  // customersOfMerchant: Customer[];
+  // customersOfLessor: Customer[];
   // // End join customer
 
   // Join user_token
@@ -73,4 +73,13 @@ export class User extends BaseEntity {
 
   // @OneToOne(() => UserPoint, (up) => up.user)
   // userPoint: UserPoint;
+
+  // @OneToMany(() => Room, (room) => room.user)
+  // rooms: Room[];
+
+  // @OneToMany(() => BoardingHouse, (boardingHouse) => boardingHouse.user)
+  // boardingHouses: BoardingHouse[];
+
+  // @OneToMany(() => Category, (categories) => categories.user)
+  // categories: Category[];
 }

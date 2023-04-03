@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class createDbAuth1678605728915 implements MigrationInterface {
-    name = 'createDbAuth1678605728915'
+export class createDb1680506569122 implements MigrationInterface {
+    name = 'createDb1680506569122'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."policy_action_enum" AS ENUM('manage', 'read', 'write')`);
-        await queryRunner.query(`CREATE TYPE "public"."policy_resource_enum" AS ENUM('all', 'admin', 'merchant', 'customer', 'policy', 'gift', 'event', 'product')`);
+        await queryRunner.query(`CREATE TYPE "public"."policy_resource_enum" AS ENUM('all', 'admin', 'lessor', 'customer', 'policy', 'gift', 'event', 'product')`);
         await queryRunner.query(`CREATE TYPE "public"."policy_action_ability_enum" AS ENUM('can', 'cannot')`);
         await queryRunner.query(`CREATE TABLE "policy" ("created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '1', "id" SERIAL NOT NULL, "action" "public"."policy_action_enum" NOT NULL, "resource" "public"."policy_resource_enum" NOT NULL, "action_ability" "public"."policy_action_ability_enum" NOT NULL, "name" character varying NOT NULL, CONSTRAINT "UQ_5ad65e4ff971649343992959bd0" UNIQUE ("name"), CONSTRAINT "UQ_POLICIES" UNIQUE ("action", "resource", "action_ability"), CONSTRAINT "PK_9917b0c5e4286703cc656b1d39f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "group_to_policy" ("created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "policy_id" integer NOT NULL, "group_policy_key" character varying NOT NULL, CONSTRAINT "PK_8e7aaf5dcda23ae12e87a4062e7" PRIMARY KEY ("policy_id", "group_policy_key"))`);
@@ -28,9 +28,6 @@ export class createDbAuth1678605728915 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "user" ("created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '1', "id" SERIAL NOT NULL, "type" "public"."user_type_enum" NOT NULL DEFAULT 'LESSOR', CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."customer_status_enum" AS ENUM('ACTIVE')`);
         await queryRunner.query(`CREATE TABLE "customer" ("created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "version" integer NOT NULL DEFAULT '1', "id" SERIAL NOT NULL, "phone_number" character varying(50), "address" character varying(255), "email" character varying(255), "first_name" character varying(50), "last_name" character varying(50), "birth_date" TIMESTAMP WITH TIME ZONE, "status" "public"."customer_status_enum" NOT NULL DEFAULT 'ACTIVE', "password" character varying(255) NOT NULL, "user_id" integer NOT NULL, CONSTRAINT "REL_5d1f609371a285123294fddcf3" UNIQUE ("user_id"), CONSTRAINT "PK_a7a13f4cacb744524e44dfdad32" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "product_detail" ("id" SERIAL NOT NULL, "country" character varying NOT NULL, "color" character varying NOT NULL, CONSTRAINT "PK_12ea67a439667df5593ff68fc33" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "product" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "categories_id" integer, "detail_id" integer, CONSTRAINT "REL_12ea67a439667df5593ff68fc3" UNIQUE ("detail_id"), CONSTRAINT "PK_bebc9158e480b949565b4dc7a82" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "category" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "group_to_policy" ADD CONSTRAINT "FK_547333b0c9f647f9595e2d0d908" FOREIGN KEY ("policy_id") REFERENCES "policy"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "group_to_policy" ADD CONSTRAINT "FK_2c8db816744eea4486d1859a304" FOREIGN KEY ("group_policy_key") REFERENCES "group_policy"("key") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "user_to_group_policy" ADD CONSTRAINT "FK_da28d5ea6b706ac14605106e0d6" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
@@ -40,13 +37,9 @@ export class createDbAuth1678605728915 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "lessor" ADD CONSTRAINT "FK_e5cc02ea6e1f69d45e39586d21f" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "user_token" ADD CONSTRAINT "FK_79ac751931054ef450a2ee47778" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "customer" ADD CONSTRAINT "FK_5d1f609371a285123294fddcf3a" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "product" ADD CONSTRAINT "FK_7069dac60d88408eca56fdc9e0c" FOREIGN KEY ("categories_id") REFERENCES "category"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "product" ADD CONSTRAINT "FK_12ea67a439667df5593ff68fc33" FOREIGN KEY ("detail_id") REFERENCES "product_detail"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "product" DROP CONSTRAINT "FK_12ea67a439667df5593ff68fc33"`);
-        await queryRunner.query(`ALTER TABLE "product" DROP CONSTRAINT "FK_7069dac60d88408eca56fdc9e0c"`);
         await queryRunner.query(`ALTER TABLE "customer" DROP CONSTRAINT "FK_5d1f609371a285123294fddcf3a"`);
         await queryRunner.query(`ALTER TABLE "user_token" DROP CONSTRAINT "FK_79ac751931054ef450a2ee47778"`);
         await queryRunner.query(`ALTER TABLE "lessor" DROP CONSTRAINT "FK_e5cc02ea6e1f69d45e39586d21f"`);
@@ -56,9 +49,6 @@ export class createDbAuth1678605728915 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "user_to_group_policy" DROP CONSTRAINT "FK_da28d5ea6b706ac14605106e0d6"`);
         await queryRunner.query(`ALTER TABLE "group_to_policy" DROP CONSTRAINT "FK_2c8db816744eea4486d1859a304"`);
         await queryRunner.query(`ALTER TABLE "group_to_policy" DROP CONSTRAINT "FK_547333b0c9f647f9595e2d0d908"`);
-        await queryRunner.query(`DROP TABLE "category"`);
-        await queryRunner.query(`DROP TABLE "product"`);
-        await queryRunner.query(`DROP TABLE "product_detail"`);
         await queryRunner.query(`DROP TABLE "customer"`);
         await queryRunner.query(`DROP TYPE "public"."customer_status_enum"`);
         await queryRunner.query(`DROP TABLE "user"`);

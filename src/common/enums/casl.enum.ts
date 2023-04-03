@@ -7,7 +7,7 @@ export enum Action {
 export enum Resource {
   ALL = 'all',
   ADMIN = 'admin',
-  MERCHANT = 'merchant',
+  LESSOR = 'lessor',
   CUSTOMER = 'customer',
   POLICY = 'policy',
   GIFT = 'gift',

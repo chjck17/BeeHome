@@ -22,7 +22,7 @@ import {
 import { User } from '../../entities/user.entity';
 import { AuthLessorService } from '../../services/lessor/auth.lessor.service';
 
-@Controller(`${PrefixType.MERCHANT}/auth`)
+@Controller(`${PrefixType.LESSOR}/auth`)
 @ApiTags('Auth Lessor')
 export class AuthLessorController {
   constructor(private authLessorService: AuthLessorService) {}

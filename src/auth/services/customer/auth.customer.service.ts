@@ -35,7 +35,7 @@ export class AuthCustomerService {
     private configService: ConfigService<GlobalConfig>,
     private encryptService: EncryptService,
     private authCommonService: AuthCommonService,
-    private merchantRepo: LessorRepository,
+    private lessorRepo: LessorRepository,
   ) {}
 
   async getCurrent(user: User) {
@@ -52,14 +52,14 @@ export class AuthCustomerService {
   async login(dto: LoginCustomerReqDto) {
     const { password, phoneNumber } = dto;
 
-    // const merchant = await this.merchantRepo.findOneOrThrowNotFoundExc({
-    //   where: { id: merchantId },
+    // const lessor = await this.lessorRepo.findOneOrThrowNotFoundExc({
+    //   where: { id: lessorId },
     // });
 
     const customer = await this.customerRepo.findOne({
       where: {
         phoneNumber,
-        // , merchantUserId: merchant.userId
+        // , lessorUserId: lessor.userId
       },
     });
 

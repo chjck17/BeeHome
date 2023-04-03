@@ -6,7 +6,7 @@ import { PaginationReqDto } from '../../../../common/dtos/pagination.dto';
 
 export enum SearchBy {
   PHONE = 'PHONE',
-  MERCHANT_NAME = 'MERCHANT_NAME',
+  LESSOR_NAME = 'LESSOR_NAME',
   EMAIL = 'EMAIL',
 }
 

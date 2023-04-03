@@ -34,11 +34,11 @@ export class CustomerAdminService {
             searchText,
           });
           break;
-        case SearchBy.MERCHANT_NAME:
+        case SearchBy.LESSOR_NAME:
           queryBuilder
-            .innerJoin('customer.merchantUser', 'mu')
-            .innerJoin('mu.merchant', 'merchant')
-            .where('merchant.name ILIKE :searchText', { searchText });
+            .innerJoin('customer.lessorUser', 'mu')
+            .innerJoin('mu.lessor', 'lessor')
+            .where('lessor.name ILIKE :searchText', { searchText });
           break;
         case SearchBy.PHONE:
           queryBuilder.where('customer.phoneNumber ILIKE :searchText', {
@@ -60,7 +60,7 @@ export class CustomerAdminService {
       relations: {
         // avatar: true,
         user: true,
-        // merchantUser: { merchant: { avatar: true } },
+        // lessorUser: { lessor: { avatar: true } },
       },
     });
 
