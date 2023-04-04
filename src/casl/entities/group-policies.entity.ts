@@ -1,15 +1,26 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from '../../auth/entities/user.entity';
 import { BaseEntity } from '../../common/entities/base.entity';
-import { GroupPolicyStatus } from '../enums/group-policy-status.enum';
+import { GroupPolicyStatus, GroupPolicyType } from '../enums/group-policy.enum';
 import { GroupToPolicy } from './group-to-policy.entity';
 import { UserToGroupPolicy } from './user-to-group-policies.entity';
 
 @Entity({ name: 'group_policy' })
 export class GroupPolicy extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   key: string;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @Column()
@@ -17,6 +28,16 @@ export class GroupPolicy extends BaseEntity {
 
   @Column({ enum: GroupPolicyStatus, type: 'enum' })
   status: GroupPolicyStatus;
+
+  @Column({ enum: GroupPolicyType, type: 'enum' })
+  type: GroupPolicyType;
+
+  @Column({ name: 'owner_id' })
+  ownerId: number;
+
+  @ManyToOne(() => User, (user) => user.groupPolicies)
+  @JoinColumn({ name: 'owner_id' })
+  owner: User;
 
   @OneToMany(
     () => GroupToPolicy,

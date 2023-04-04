@@ -39,6 +39,7 @@ import { AdminRepository } from './repositories/admin.repository';
 import { UserTokenRepository } from './repositories/user-token.repository';
 import { GroupPolicyRepository } from 'src/casl/repositories/group-policies.repository';
 import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group-policies.repository';
+import { ManagerRepository } from './repositories/manager.repository';
 @Module({
   imports: [
     PassportModule,
@@ -86,6 +87,7 @@ import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group
     UserRepository,
     CustomerRepository,
     AdminRepository,
+    ManagerRepository,
     UserTokenRepository,
     GroupPolicyRepository,
     UserToGroupPolicyRepository,

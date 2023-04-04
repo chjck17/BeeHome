@@ -9,6 +9,7 @@ import {
 } from 'typeorm-transactional';
 import { AuthModule } from './auth/auth.module';
 import globalConfig from './common/config/global.config';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import globalConfig from './common/config/global.config';
       },
     }),
     AuthModule,
+    CaslModule,
   ],
 
   controllers: [],

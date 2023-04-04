@@ -27,6 +27,7 @@
     "migration:create": "cross-var npm run typeorm -- migration:create ./migrations/$npm_config_name"
   },
   "dependencies": {
+    "@bull-board/fastify": "5.0.0",
     "@casl/ability": "6.3.2",
     "@fastify/static": "6.5.0",
     "@hapi/joi": "^17.1.1",

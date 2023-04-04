@@ -1,5 +1,5 @@
 import { GroupPolicy } from '../../entities/group-policies.entity';
-import { GroupPolicyStatus } from '../../enums/group-policy-status.enum';
+import { GroupPolicyStatus } from '../../enums/group-policy.enum';
 
 export class GroupPolicyResDto {
   key: string;

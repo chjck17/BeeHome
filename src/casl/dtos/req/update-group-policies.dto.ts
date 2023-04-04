@@ -3,7 +3,7 @@ import {
     IsValidEnum,
     IsValidText
 } from '../../../common/decorators/custom-validator.decorator';
-import { GroupPolicyStatus } from '../../enums/group-policy-status.enum';
+import { GroupPolicyStatus } from '../../enums/group-policy.enum';
 
 export class UpdateGroupPoliciesDto {
   @IsValidText()

@@ -1,11 +1,11 @@
 import {
-    DataSource,
-    EntityTarget,
-    FindManyOptions,
-    FindOneOptions,
-    FindOptionsWhere,
-    ObjectLiteral,
-    Repository
+  DataSource,
+  EntityTarget,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  ObjectLiteral,
+  Repository,
 } from 'typeorm';
 import { NotFoundExc } from '../exceptions/custom.exception';
 
@@ -27,12 +27,13 @@ export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
     return result;
   }
 
-  async findOneBy(options: FindOptionsWhere<T>): Promise<T> {
+  async findOneBy(
+    options: FindOptionsWhere<T> | FindOptionsWhere<T>[],
+  ): Promise<T> {
     const [result] = await this.findBy(options);
 
     return result;
   }
-
   async findOneWithoutRelation(options: FindOneOptions<T>): Promise<T> {
     const [result] = await this.find({ ...options, take: 1 });
 

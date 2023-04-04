@@ -1,7 +1,9 @@
 export enum Action {
   MANAGE = 'manage',
+  CREATE = 'create',
   READ = 'read',
-  WRITE = 'write',
+  UPDATE = 'update',
+  DELETE = 'delete',
 }
 
 export enum Resource {
@@ -10,9 +12,7 @@ export enum Resource {
   LESSOR = 'lessor',
   CUSTOMER = 'customer',
   POLICY = 'policy',
-  GIFT = 'gift',
-  EVENT = 'event',
-  PRODUCT = 'product',
+  GROUP_POLICY = 'group_policy',
 }
 
 export enum ActionAbility {

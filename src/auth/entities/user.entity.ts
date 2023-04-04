@@ -13,6 +13,7 @@ import { Customer } from './customer.entity';
 import { Manager } from './manager.entity';
 import { Lessor } from './lessor.entity';
 import { UserToken } from './user-token.entity';
+import { GroupPolicy } from '../../casl/entities/group-policies.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -40,6 +41,13 @@ export class User extends BaseEntity {
   )
   userToGroupPolicies: UserToGroupPolicy[];
 
+  // join groupPolicy
+  @OneToMany(() => GroupPolicy, (groupPolicy) => groupPolicy.owner)
+  groupPolicies: GroupPolicy[];
+
+  @OneToMany(() => UserToken, (ut) => ut.user)
+  userTokens: UserToken[];
+  // end join groupPolicy
   // @OneToMany(() => File, (file) => file.uploader)
   // files: File[];
 
@@ -58,8 +66,7 @@ export class User extends BaseEntity {
   // // End join customer
 
   // Join user_token
-  @OneToMany(() => UserToken, (ut) => ut.user)
-  userTokens: UserToken[];
+
   // End join user_token
 
   // @OneToMany(() => Tag, (tag) => tag.user)

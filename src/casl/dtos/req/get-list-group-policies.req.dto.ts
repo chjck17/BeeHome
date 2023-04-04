@@ -3,7 +3,7 @@ import {
     IsValidText
 } from '../../../common/decorators/custom-validator.decorator';
 import { PaginationReqDto } from '../../../common/dtos/pagination.dto';
-import { GroupPolicyStatus } from '../../enums/group-policy-status.enum';
+import { GroupPolicyStatus } from '../../enums/group-policy.enum';
 
 export class GetListGroupPoliciesReqDto extends PaginationReqDto {
   @IsValidText({ required: false })

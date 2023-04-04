@@ -25,7 +25,7 @@ export class AuthAdminService {
 
   async login(dto: AdminLoginReqDto) {
     const { username, password } = dto;
-
+    // return this.encryptService.encryptText(password);
     const admin = await this.adminRepo
       .createQueryBuilder('admin')
       .addSelect('admin.password')
