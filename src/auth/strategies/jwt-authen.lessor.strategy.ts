@@ -8,6 +8,7 @@ import { LessorStatus } from '../enums/lessor.enum';
 import { UserType } from '../enums/user.enum';
 import { JwtAuthPayload } from '../interfaces/jwt-payload.interface';
 import { UserRepository } from '../repositories/user.repository';
+import { UnauthorizedExc } from '../../common/exceptions/custom.exception';
 
 @Injectable()
 export class JwtAuthenLessorStrategy extends PassportStrategy(
@@ -21,8 +22,7 @@ export class JwtAuthenLessorStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: [configService.get('auth.accessToken.secret')],
-
+      secretOrKey: configService.get('auth.accessToken.secret'),
       algorithms: [configService.get('auth.accessToken.algorithm')],
     });
   }
@@ -39,8 +39,8 @@ export class JwtAuthenLessorStrategy extends PassportStrategy(
       relations: { lessor: true },
     });
 
-    if (!user) throw new UnauthorizedException('Invalid credentials');
-
+    // if (!user) throw new UnauthorizedException('Duy');
+    if (!user) throw new UnauthorizedExc('Invalid credentials' as any);
     return user;
   }
 }

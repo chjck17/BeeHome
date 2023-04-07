@@ -1,48 +1,62 @@
 import { Transform, Type } from 'class-transformer';
 import {
-    ArrayMaxSize,
-    ArrayMinSize,
-    ArrayUnique,
-    IsArray,
-    IsDefined,
-    IsEnum,
-    IsNotEmpty,
-    IsNumber,
-    IsNumberString,
-    IsOptional,
-    IsString,
-    IsUUID,
-    Matches,
-    Max,
-    MaxDate,
-    MaxLength,
-    Min,
-    MinDate,
-    MinLength,
-    registerDecorator,
-    UUIDVersion,
-    ValidateNested,
-    ValidationArguments,
-    ValidationOptions,
-    ValidatorConstraint,
-    ValidatorConstraintInterface
+  ArrayMaxSize,
+  ArrayMinSize,
+  ArrayUnique,
+  IsArray,
+  IsDefined,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Matches,
+  Max,
+  MaxDate,
+  MaxLength,
+  Min,
+  MinDate,
+  MinLength,
+  registerDecorator,
+  UUIDVersion,
+  ValidateNested,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 import { isNullOrUndefined } from '../utils';
 
-type ValidationEnumOptions = {
-  enum: Record<string, any>;
+type ValidationEnumOptions<E, T> = {
+  enum: E;
   required?: boolean;
+  default?: T;
 };
+// export function IsValidEnum(opts: ValidationEnumOptions): PropertyDecorator {
+//   const { required = true } = opts;
+//   return function (target: any, propertyKey: string | symbol): void {
+//     IsEnum(opts.enum)(target, propertyKey);
+//     if (required) IsNotEmpty()(target, propertyKey);
+//     else IsOptional()(target, propertyKey);
+//   };
+// }
 
-export function IsValidEnum(opts: ValidationEnumOptions): PropertyDecorator {
+export function IsValidEnum<E extends object, T>(
+  opts: ValidationEnumOptions<E, T>,
+): PropertyDecorator {
   const { required = true } = opts;
   return function (target: any, propertyKey: string | symbol): void {
     IsEnum(opts.enum)(target, propertyKey);
+    if (opts.default)
+      Transform(({ value }) =>
+        isNullOrUndefined(value) ? opts.default : value,
+      )(target, propertyKey);
     if (required) IsNotEmpty()(target, propertyKey);
     else IsOptional()(target, propertyKey);
   };
 }
-
 /**
  * Validate Number is valid
  */
@@ -255,6 +269,20 @@ export function IsValidArrayString(
 /**
  * Validate array of object is valid
  */
+// export function IsValidArrayObject(
+//   { maxSize, minSize, required = true }: ValidationArrayOptions,
+//   object: { new (...args: any[]): any },
+// ): PropertyDecorator {
+//   return function (target: any, propertyKey: string | symbol): void {
+//     IsArray()(target, propertyKey);
+//     ValidateNested({ each: true })(target, propertyKey);
+//     if (typeof minSize === 'number') ArrayMinSize(minSize)(target, propertyKey);
+//     if (typeof maxSize === 'number') ArrayMaxSize(maxSize)(target, propertyKey);
+//     Type(() => object)(target, propertyKey);
+//     if (required) IsNotEmpty()(target, propertyKey);
+//     else IsOptional()(target, propertyKey);
+//   };
+// }
 export function IsValidArrayObject(
   { maxSize, minSize, required = true }: ValidationArrayOptions,
   object: { new (...args: any[]): any },
@@ -264,12 +292,14 @@ export function IsValidArrayObject(
     ValidateNested({ each: true })(target, propertyKey);
     if (typeof minSize === 'number') ArrayMinSize(minSize)(target, propertyKey);
     if (typeof maxSize === 'number') ArrayMaxSize(maxSize)(target, propertyKey);
+    Transform(({ value }) =>
+      Array.isArray(value) ? value : isNullOrUndefined(value) ? [] : [value],
+    )(target, propertyKey);
     Type(() => object)(target, propertyKey);
     if (required) IsNotEmpty()(target, propertyKey);
     else IsOptional()(target, propertyKey);
   };
 }
-
 /**
  * Match two field
  */

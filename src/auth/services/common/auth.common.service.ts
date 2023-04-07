@@ -13,7 +13,7 @@ export class AuthCommonService {
 
   generateAccessToken(payload: JwtAuthPayload) {
     return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('port'),
+      expiresIn: this.configService.get('auth.accessToken.expiresTime'),
       secret: this.configService.get('auth.accessToken.secret'),
     });
   }

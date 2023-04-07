@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class seedAdmin1667382908370 implements MigrationInterface {
+export class seedAdmin1680572857984 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`WITH ROWS AS
         (INSERT INTO "user" DEFAULT

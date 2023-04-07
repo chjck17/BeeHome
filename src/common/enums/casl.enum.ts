@@ -13,6 +13,7 @@ export enum Resource {
   CUSTOMER = 'customer',
   POLICY = 'policy',
   GROUP_POLICY = 'group_policy',
+  CATEGORY = 'CATEGORY',
 }
 
 export enum ActionAbility {

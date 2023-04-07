@@ -12,9 +12,7 @@ import { CaslAbilityFactory } from '../casl-ability.factory';
 import { UserWithPoliciesDto } from '../dtos/transform/userWithPolicies.dto';
 
 @Injectable()
-export class JwtAbilityLessorGuard extends AuthGuard(
-  StrategyName.JWT_CASL_LESSOR,
-) {
+export class JwtAbilityLessorGuard extends AuthGuard(StrategyName.LESSOR) {
   constructor(
     private reflector: Reflector,
     private abilityFactory: CaslAbilityFactory,

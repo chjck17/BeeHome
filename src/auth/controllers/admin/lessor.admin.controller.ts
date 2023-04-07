@@ -22,7 +22,7 @@ import { LessorAdminService } from '../../services/admin/lessor.admin.service';
 
 @Controller(`${PrefixType.ADMIN}/lessor`)
 @ApiTags('Manage Lessor')
-@Authorize({ action: Action.MANAGE, resource: Resource.LESSOR })
+// @Authorize({ action: Action.MANAGE, resource: Resource.LESSOR })
 export class LessorAdminController {
   constructor(private lessorAdminService: LessorAdminService) {}
 

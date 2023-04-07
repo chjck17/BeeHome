@@ -3,4 +3,5 @@ export interface ErrorResponse {
   timestamp?: string;
   path?: string;
   subInfo?: any;
+  debugInfo?: any;
 }

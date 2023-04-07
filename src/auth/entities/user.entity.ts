@@ -14,6 +14,9 @@ import { Manager } from './manager.entity';
 import { Lessor } from './lessor.entity';
 import { UserToken } from './user-token.entity';
 import { GroupPolicy } from '../../casl/entities/group-policies.entity';
+import { Category } from '../../category/entities/category.entity';
+import { Tag } from '../../tag/entities/tag.entity';
+import { RoomAttributeTerm } from '../../room/entities/room-attribute-term.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -57,9 +60,14 @@ export class User extends BaseEntity {
   // @OneToMany(() => ProductAttribute, (productAttr) => productAttr.user)
   // productAttributes: ProductAttribute[];
 
-  // @OneToMany(() => Category, (cate) => cate.user)
-  // categories: Category[];
+  @OneToMany(() => Category, (cate) => cate.user)
+  categories: Category[];
 
+  @OneToMany(() => Tag, (tag) => tag.user)
+  tags: Tag[];
+
+  @OneToMany(() => RoomAttributeTerm, (item) => item.user)
+  roomAttributeTerms: RoomAttributeTerm[];
   // // Join customer
   // @OneToMany(() => Customer, (customer) => customer.lessorUser)
   // customersOfLessor: Customer[];

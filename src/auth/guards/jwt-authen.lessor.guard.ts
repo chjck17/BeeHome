@@ -41,7 +41,7 @@ export class JwtAuthenLessorGuard extends AuthGuard(StrategyName.LESSOR) {
     status?: any,
   ): TUser {
     if (err || !user) {
-      throw new UnauthorizedException('Invalid Credentials');
+      throw new UnauthorizedException('Duy Invalid Credentials');
     }
     return user;
   }

@@ -56,13 +56,10 @@ export const AuthorizeLessor = (...requirements: RequiredRule[]) => {
 export const LessorId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<FastifyRequest>();
-    if (
-      !request.headers?.merchant_id ||
-      Number(request.headers.merchant_id) <= 0
-    )
+    if (!request.headers?.lessor_id || Number(request.headers.lessor_id) <= 0)
       throw new BadRequestExc('');
 
-    return request.headers.merchant_id;
+    return request.headers.lessor_id;
   },
 );
 

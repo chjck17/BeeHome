@@ -1,15 +1,15 @@
 import {
-    registerDecorator,
-    ValidationArguments,
-    ValidationOptions,
-    ValidatorConstraint,
-    ValidatorConstraintInterface
+  registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 /**
  * @param properties List object's property to check unique
  */
-export function IsArrayObjUniquePropertyValidator(
+export function IsArrayObjUniqueProperty(
   properties: string[],
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {

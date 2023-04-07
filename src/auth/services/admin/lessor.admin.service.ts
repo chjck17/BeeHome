@@ -9,10 +9,16 @@ import {
 } from '../../dtos/admin/req/lessor.admin.req.dto';
 import { LessorResDto } from '../../dtos/common/res/lessor.res.dto';
 import { LessorRepository } from '../../repositories/lessor.repository';
+import { UserRepository } from '../../repositories/user.repository';
+import { UserType } from '../../enums/user.enum';
+import { LessorStatus } from '../../enums/lessor.enum';
 
 @Injectable()
 export class LessorAdminService {
-  constructor(private lessorRepo: LessorRepository) {}
+  constructor(
+    private lessorRepo: LessorRepository,
+    private userRepo: UserRepository,
+  ) {}
 
   async getList(dto: ListLessorAdminReqDto) {
     const { rank, status, limit, page } = dto;
@@ -40,10 +46,20 @@ export class LessorAdminService {
 
   async getDetail(id: number) {
     const lessor = await this.lessorRepo.findOneOrThrowNotFoundExc({
-      where: { id },
+      where: { id: 1 },
       // relations: { avatar: true },
     });
-    return LessorResDto.forAdmin(lessor);
+
+    const user = await this.userRepo.findOne({
+      where: {
+        id: 2,
+        type: UserType.LESSOR,
+        lessor: { status: LessorStatus.APPROVED },
+      },
+      relations: { lessor: true },
+    });
+    // return LessorResDto.forAdmin(lessor);
+    return user;
   }
 
   async updateStatus(dto: UpdateStatusLessorAdminReqDto) {

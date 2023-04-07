@@ -50,3 +50,68 @@ export class ExpectationFailedExc extends HttpException {
     super(errMsg, 417);
   }
 }
+// import { NonFunctionProperties } from '../types/utils.type';
+
+// export class CustomException {
+//   status: number;
+//   params?: object;
+
+//   constructor({ status, params }: NonFunctionProperties<CustomException>) {
+//     this.status = status;
+//     this.params = params;
+//   }
+// }
+
+// export class ForbiddenExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 403, params });
+//   }
+// }
+
+// export class NotFoundExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 404, params });
+//   }
+// }
+
+// export class AddPointBaseExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 400, params });
+//   }
+// }
+
+// export class UnauthorizedExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 401, params });
+//   }
+// }
+
+// export class ConflictExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 409, params });
+//   }
+// }
+
+// export class BadRequestExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 400, params });
+//   }
+// }
+
+// export class InternalServerErrorExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 500, params });
+//   }
+// }
+
+// export class ExpectationFailedExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 417, params });
+//   }
+// }
+
+// export class ServiceUnavailableExc extends CustomException {
+//   constructor(params?: object) {
+//     super({ status: 503, params });
+//   }
+// }

@@ -5,5 +5,5 @@ export enum StrategyName {
   ADMIN = 'jwt-authen-admin',
   CUSTOMER = 'jwt-authen-customer',
   JWT_CASL_ADMIN = 'jwt-casl-admin',
-  JWT_CASL_LESSOR = 'jwt-casl-merchant',
+  JWT_CASL_LESSOR = 'jwt-casl-lessor',
 }

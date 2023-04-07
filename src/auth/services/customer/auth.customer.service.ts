@@ -79,19 +79,19 @@ export class AuthCustomerService {
     const { email, password, birthDate, firstName, lastName, phoneNumber } =
       dto;
 
-    let customer = await this.customerRepo.findFirst({
-      where: [
-        {
-          phoneNumber: dto.phoneNumber,
-        },
-      ],
-    });
-    if (customer) throw new ConflictExc('Phone number existed');
+    // let customer = await this.customerRepo.findFirst({
+    //   where: [
+    //     {
+    //       phoneNumber: dto.phoneNumber,
+    //     },
+    //   ],
+    // });
+    // if (customer) throw new ConflictExc('Phone number existed');
 
-    const user = this.userRepo.create({ type: UserType.CUSTOMER });
-    await this.userRepo.save(user);
-    customer = this.customerRepo.create({
-      userId: user.id,
+    // const user = this.userRepo.create({ type: UserType.CUSTOMER });
+    // await this.userRepo.save(user);
+    const customer = await this.customerRepo.save({
+      // userId: user.id,
       email,
       phoneNumber,
       birthDate,
@@ -99,11 +99,11 @@ export class AuthCustomerService {
       lastName,
       password: this.encryptService.encryptText(password),
     });
-    await this.customerRepo.insert(customer);
-    const payload: JwtAuthPayload = { userId: customer.userId };
-    const accessToken = this.authCommonService.generateAccessToken(payload);
-    const refreshToken = this.authCommonService.generateRefreshToken(payload);
-    return AuthTokenResDto.forCustomer({ accessToken, refreshToken });
+    // await this.customerRepo.insert(customer);
+    // const payload: JwtAuthPayload = { userId: customer.userId };
+    // const accessToken = this.authCommonService.generateAccessToken(payload);
+    // const refreshToken = this.authCommonService.generateRefreshToken(payload);
+    // return AuthTokenResDto.forCustomer({ accessToken, refreshToken });
   }
 
   async refreshToken(dto: RefreshTokenReqDto) {

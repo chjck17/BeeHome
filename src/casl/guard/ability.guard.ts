@@ -17,7 +17,8 @@ import { UserWithPoliciesDto } from '../dtos/transform/userWithPolicies.dto';
 @Injectable()
 export class JwtAbilityGuard extends AuthGuard('jwt-casl') {
   constructor(
-    private reflector: Reflector, // private abilityFactory: CaslAbilityFactory,
+    private reflector: Reflector,
+    private abilityFactory: CaslAbilityFactory,
   ) {
     super();
   }
@@ -41,29 +42,29 @@ export class JwtAbilityGuard extends AuthGuard('jwt-casl') {
     return super.canActivate(context);
   }
 
-  // handleRequest(
-  //   err: any,
-  //   user: UserWithPoliciesDto,
-  //   info: any,
-  //   context: ExecutionContext,
-  //   status?: any,
-  // ) {
-  //   if (info instanceof Error || !user || err) throw new ForbiddenExc();
+  handleRequest(
+    err: any,
+    user: UserWithPoliciesDto,
+    info: any,
+    context: ExecutionContext,
+    status?: any,
+  ) {
+    if (info instanceof Error || !user || err) throw new ForbiddenExc();
 
-  //   const rules = this.reflector.getAllAndOverride<RequiredRule[]>(
-  //     ABILITY_METADATA_KEY,
-  //     [context.getHandler(), context.getClass()],
-  //   );
+    const rules = this.reflector.getAllAndOverride<RequiredRule[]>(
+      ABILITY_METADATA_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
-  //   // const ability = this.abilityFactory.defineAbility(user);
+    const ability = this.abilityFactory.defineAbility(user);
 
-  //   // try {
-  //   //   rules.forEach((rule) => {
-  //   //     ForbiddenError.from(ability).throwUnlessCan(rule.action, rule.resource);
-  //   //   });
-  //   //   return user as any;
-  //   // } catch (error) {
-  //   //   throw new ForbiddenException(error.message);
-  //   // }
-  // }
+    try {
+      rules.forEach((rule) => {
+        ForbiddenError.from(ability).throwUnlessCan(rule.action, rule.resource);
+      });
+      return user as any;
+    } catch (error) {
+      throw new ForbiddenException(error.message);
+    }
+  }
 }
