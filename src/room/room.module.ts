@@ -14,6 +14,9 @@ import { RoomAttributeTerm } from './entities/room-attribute-term.entity';
 import { RoomAttributeTermDetail } from './entities/room-attribute-term-detail.entity';
 import { RoomToAttribute } from './entities/room-to-attribute.entity';
 import { RoomToCategory } from './entities/room-to-category.entity';
+import { RoomLessorService } from './services/lessor/room.lessor.service';
+import { RoomAttributeLessorService } from './services/lessor/room-attribute.lessor.service';
+import { RoomAttributeLessorController } from './controllers/lessor/room-attribute.lessor.controller';
 
 @Module({
   imports: [
@@ -27,9 +30,11 @@ import { RoomToCategory } from './entities/room-to-category.entity';
       RoomToCategory,
     ]),
   ],
-  controllers: [],
+  controllers: [RoomAttributeLessorController],
   providers: [
     RoomRepository,
+    RoomLessorService,
+    RoomAttributeLessorService,
     RoomAttributeRepository,
     RoomAttributeDetailRepository,
     RoomAttributeTermDetailRepository,

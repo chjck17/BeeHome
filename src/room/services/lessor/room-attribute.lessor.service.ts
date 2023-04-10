@@ -2,36 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Transactional } from 'typeorm-transactional';
 import { User } from '../../../auth/entities/user.entity';
-import {
-  BadRequestExc,
-  NotFoundExc,
-} from '../../../common/exceptions/custom.exception';
-// import { RoomAttributeTermResDto } from '../../dtos/common/res/roomAttributeTerm.res.dto';
-import { LessorRepository } from '../../../auth/repositories/lessor.repository';
+import { NotFoundExc } from '../../../common/exceptions/custom.exception';
 import { RoomAttributeTermRepository } from '../../repositories/room-attribute-term.repository';
 import { RoomAttributeTermDetailRepository } from '../../repositories/room-attribute-term-detail.repository';
 import { RoomAttributeRepository } from '../../repositories/room-attribute.repository';
 import { RoomAttributeDetailRepository } from '../../repositories/room-attribute-detail.repository';
 import {
   CreateRoomAttributeTermReqDto,
-  DeleteRoomAttributeTermsReqDto,
-  GetListRoomAttributeTermReqDto,
   UpdateRoomAttributeTermDetailReqDto,
   UpdateRoomAttributeTermReqDto,
-} from '../../dtos/lessor/req/room-attribute.lessor.req.dto';
+} from '../../dtos/lessor/req/room-attribute-term.lessor.req.dto';
 import {
   CreateRoomAttributeReqDto,
+  GetListRoomAttributeReqDto,
   UpdateRoomAttributeDetailReqDto,
   UpdateRoomAttributeReqDto,
-} from '../../dtos/lessor/req/room-attribute-term.lessor.req.dto';
+} from '../../dtos/lessor/req/room-attribute.lessor.req.dto';
 import { RoomAttributeTerm } from '../../entities/room-attribute-term.entity';
 import { RoomAttribute } from '../../entities/room-attribute.entity';
 import { RoomAttributeDetail } from '../../entities/room-attribute-detail.entity';
 import { In } from 'typeorm';
 import { RoomAttributeTermDetail } from '../../entities/room-attribute-term-detail.entity';
+import { DeleteListReqDto } from '../../../boarding-house/dtos/boarding-house.req.dto';
 
 @Injectable()
-export class RoomAttributeTermLessorService {
+export class RoomAttributeLessorService {
   constructor(
     private roomAttributeTermRepo: RoomAttributeTermRepository,
     private roomAttributeTermDetailRepo: RoomAttributeTermDetailRepository,
@@ -40,49 +35,47 @@ export class RoomAttributeTermLessorService {
   ) {}
 
   @Transactional()
-  async create(user: User, dto: CreateRoomAttributeTermReqDto) {
-    const { roomAttributes, roomAttributeTermDetails } = dto;
+  async create(user: User, dto: CreateRoomAttributeReqDto) {
+    const { roomAttributeTerms, roomAttributeDetails } = dto;
 
     //create RoomAttributeTerm
-    const roomAttributeTerm = this.roomAttributeTermRepo.create({
+    const roomAttribute = this.roomAttributeRepo.create({
       userId: user.id,
     });
 
-    const createdRoomAttributeTerm = await this.roomAttributeTermRepo.save(
-      roomAttributeTerm,
+    const createdRoomAttribute = await this.roomAttributeRepo.save(
+      roomAttribute,
     );
 
     await Promise.all([
-      roomAttributeTermDetails.map(async (item) => {
-        const roomAttributeTermDetail = this.roomAttributeTermDetailRepo.create(
-          {
-            roomAttributeTermId: createdRoomAttributeTerm.id,
-            lang: item.lang,
-            slug: item.slug,
-            value: item.value,
-          },
-        );
-        await this.roomAttributeTermDetailRepo.save(roomAttributeTermDetail);
+      roomAttributeDetails.map(async (item) => {
+        const roomAttributeDetail = this.roomAttributeDetailRepo.create({
+          roomAttributeId: createdRoomAttribute.id,
+          lang: item.lang,
+          name: item.name,
+        });
+        await this.roomAttributeTermRepo.save(roomAttributeDetail);
       }),
     ]);
-    await this.saveRoomAttribute(createdRoomAttributeTerm.id, roomAttributes);
+    await this.saveRoomAttribute(createdRoomAttribute.id, roomAttributeTerms);
   }
 
   private async saveRoomAttribute(
-    roomAttributeTermId: number,
-    roomAttributes: CreateRoomAttributeReqDto[],
+    roomAttributeId: number,
+    roomAttributeTerms: CreateRoomAttributeTermReqDto[],
   ) {
     await Promise.all([
-      roomAttributes.map(async (ct) => {
-        const roomAttributeTerm = await this.roomAttributeRepo.save({
-          roomAttributeTermId: roomAttributeTermId,
+      roomAttributeTerms.map(async (ct) => {
+        const roomAttributeTerm = await this.roomAttributeTermRepo.save({
+          roomAttributeId: roomAttributeId,
         });
-        ct.roomAttributeDetails.map(
+        ct.roomAttributeTermDetails.map(
           async (item) =>
             await this.roomAttributeDetailRepo.save({
               roomAttributeTermId: roomAttributeTerm.id,
               lang: item.lang,
-              name: item.name,
+              value: item.value,
+              slug: item.slug,
             }),
         );
       }),
@@ -90,35 +83,41 @@ export class RoomAttributeTermLessorService {
   }
 
   async getOne(user: User, id: number) {
-    const roomAttributeTerm =
-      await this.roomAttributeTermRepo.findOneOrThrowNotFoundExc({
+    const roomAttribute =
+      await this.roomAttributeRepo.findOneOrThrowNotFoundExc({
         where: { id: id, userId: user.id },
         relations: {
-          roomAttributes: { roomAttributeDetails: true },
-          roomAttributeTermDetails: true,
+          roomAttributeTerms: { roomAttributeTermDetails: true },
+          roomAttributeDetails: true,
         },
       });
 
-    return roomAttributeTerm;
+    return roomAttribute;
   }
 
-  async getListRoomAttributeTerm(
-    user: User,
-    dto: GetListRoomAttributeTermReqDto,
-  ) {
-    const { limit, page } = dto;
+  async getListRoomAttribute(user: User, dto: GetListRoomAttributeReqDto) {
+    const { limit, page, lang } = dto;
 
-    const queryBuilder = this.roomAttributeTermRepo
-      .createQueryBuilder('roomAttributeTerm')
-      .leftJoinAndSelect(
-        'roomAttributeTerm.roomAttributeTermDetails',
-        'roomAttributeTermDetails',
-      )
-      .leftJoinAndSelect('roomAttributeTerm.roomAttributes', 'roomAttribute')
+    const queryBuilder = this.roomAttributeRepo
+      .createQueryBuilder('roomAttribute')
       .leftJoinAndSelect(
         'roomAttribute.roomAttributeDetails',
-        'roomAttributeDetail',
+        'roomAttributeDetails',
       )
+      .leftJoinAndSelect(
+        'roomAttribute.roomAttributeTerms',
+        'roomAttributeTerm',
+      )
+      .leftJoinAndSelect(
+        'roomAttributeTerm.roomAttributeTermDetails',
+        'roomAttributeTermDetail',
+      )
+      .andWhere('roomAttributeDetails.lang = :lang', {
+        lang: lang,
+      })
+      .andWhere('roomAttributeTermDetail.lang = :lang', {
+        lang: lang,
+      })
       .andWhere('roomAttributeTerm.userId = :id', {
         id: user.id,
       });
@@ -131,44 +130,41 @@ export class RoomAttributeTermLessorService {
   }
 
   @Transactional()
-  async update(
-    user: User,
-    updateRoomAttributeTermDto: UpdateRoomAttributeTermReqDto,
-  ) {
-    const { id } = updateRoomAttributeTermDto;
+  async update(user: User, dto: UpdateRoomAttributeReqDto) {
+    const { id } = dto;
 
-    const existedRoomAttributeTerm =
-      await this.roomAttributeTermRepo.findOneOrThrowNotFoundExc({
+    const existedRoomAttribute =
+      await this.roomAttributeRepo.findOneOrThrowNotFoundExc({
         where: { id, userId: user.id },
         relations: {
-          roomAttributes: { roomAttributeDetails: true },
-          roomAttributeTermDetails: true,
+          roomAttributeTerms: { roomAttributeTermDetails: true },
+          roomAttributeDetails: true,
         },
       });
-    await this.saveItem(
+    await this.saveItemTerms(
       id,
-      existedRoomAttributeTerm.roomAttributes,
-      updateRoomAttributeTermDto.roomAttributes,
+      existedRoomAttribute.roomAttributeTerms,
+      dto.roomAttributeTerms,
     );
 
-    await this.saveItemTermDetails(
+    await this.saveItemDetails(
       id,
-      existedRoomAttributeTerm.roomAttributeTermDetails,
-      updateRoomAttributeTermDto.roomAttributeTermDetails,
+      existedRoomAttribute.roomAttributeDetails,
+      dto.roomAttributeDetails,
     );
   }
 
-  private async saveItem(
+  private async saveItemTerms(
     itemId: number,
-    itemDetails: RoomAttribute[],
-    itemDetailsDto: UpdateRoomAttributeReqDto[],
+    itemDetails: RoomAttributeTerm[],
+    itemDetailsDto: UpdateRoomAttributeTermReqDto[],
   ) {
     const itemDetailIdsToRemove: number[] = [];
-    const itemDetailsToInsert: RoomAttribute[] = [];
+    const itemDetailsToInsert: RoomAttributeTerm[] = [];
     const itemDetailsToUpdate: {
       id: number;
-      roomAttributeTerm: RoomAttribute;
-      roomAttributeTermDto: UpdateRoomAttributeReqDto;
+      roomAttributeTerm: RoomAttributeTerm;
+      roomAttributeTermDto: UpdateRoomAttributeTermReqDto;
     }[] = [];
     for (const itemDetail of itemDetails) {
       const dto = itemDetailsDto.find((dto) => dto.id === itemDetail.id);
@@ -187,9 +183,9 @@ export class RoomAttributeTermLessorService {
     for (const dto of itemDetailsDto) {
       if (!dto.id) {
         itemDetailsToInsert.push(
-          this.roomAttributeRepo.create({
-            roomAttributeTermId: itemId,
-            roomAttributeDetails: dto.roomAttributeDetails,
+          this.roomAttributeTermRepo.create({
+            roomAttributeId: itemId,
+            roomAttributeTermDetails: dto.roomAttributeTermDetails,
           }),
         );
       }
@@ -198,11 +194,10 @@ export class RoomAttributeTermLessorService {
     await Promise.all([
       itemDetailsToUpdate.length &&
         itemDetailsToUpdate.map(async (item) =>
-          // this.roomAttributeTermRepo.update(item.id, item),
-          this.saveItemDetails(
+          this.saveItemTermDetails(
             item.id,
-            item.roomAttributeTerm.roomAttributeDetails,
-            item.roomAttributeTermDto.roomAttributeDetails,
+            item.roomAttributeTerm.roomAttributeTermDetails,
+            item.roomAttributeTermDto.roomAttributeTermDetails,
           ),
         ),
       itemDetailIdsToRemove.length &&
@@ -210,69 +205,19 @@ export class RoomAttributeTermLessorService {
     ]);
 
     if (itemDetailsToInsert.length) {
-      // await this.roomAttributeTermRepo.insert(itemDetailsToInsert);
-
       await Promise.all(
         itemDetailsToInsert.map(async (itemDto) => {
-          const roomAttributeTerm = await this.roomAttributeRepo.save({
-            roomAttributeTermId: itemId,
+          const roomAttributeTerm = await this.roomAttributeTermRepo.save({
+            roomAttributeId: itemId,
           });
-          const roomAttributeTermDetail = this.saveItemDetails(
+          const roomAttributeTermDetail = this.saveItemTermDetails(
             roomAttributeTerm.id,
             [],
-            itemDto.roomAttributeDetails,
+            itemDto.roomAttributeTermDetails,
           );
           return roomAttributeTermDetail;
         }),
       );
-    }
-  }
-
-  private async saveItemDetails(
-    itemId: number,
-    itemDetails: RoomAttributeDetail[],
-    itemDetailsDto: UpdateRoomAttributeDetailReqDto[],
-  ) {
-    const itemDetailIdsToRemove: number[] = [];
-    const itemDetailsToInsert: RoomAttributeDetail[] = [];
-    const itemDetailsToUpdate: Partial<RoomAttributeDetail>[] = [];
-
-    for (const itemDetail of itemDetails) {
-      const dto = itemDetailsDto.find((dto) => dto.id === itemDetail.id);
-
-      if (dto) {
-        itemDetailsToUpdate.push({
-          id: dto.id,
-          lang: dto.lang,
-          name: dto.name,
-        });
-      } else {
-        itemDetailIdsToRemove.push(itemDetail.id);
-      }
-    }
-
-    for (const dto of itemDetailsDto) {
-      if (!dto.id) {
-        itemDetailsToInsert.push(
-          this.roomAttributeDetailRepo.create({
-            roomAttributeId: itemId,
-            lang: dto.lang,
-            name: dto.name,
-          }),
-        );
-      }
-    }
-
-    await Promise.all([
-      itemDetailsToUpdate.map(async (item) =>
-        this.roomAttributeDetailRepo.update(item.id, item),
-      ),
-      itemDetailIdsToRemove.length &&
-        this.roomAttributeDetailRepo.softDelete(itemDetailIdsToRemove),
-    ]);
-
-    if (itemDetailsToInsert.length) {
-      await this.roomAttributeDetailRepo.insert(itemDetailsToInsert);
     }
   }
 
@@ -326,11 +271,59 @@ export class RoomAttributeTermLessorService {
     }
   }
 
-  async deleteRoomAttributeTerm(user: User, id: number) {
+  private async saveItemDetails(
+    itemId: number,
+    itemDetails: RoomAttributeDetail[],
+    itemDetailsDto: UpdateRoomAttributeDetailReqDto[],
+  ) {
+    const itemDetailIdsToRemove: number[] = [];
+    const itemDetailsToInsert: RoomAttributeDetail[] = [];
+    const itemDetailsToUpdate: Partial<RoomAttributeDetail>[] = [];
+
+    for (const itemDetail of itemDetails) {
+      const dto = itemDetailsDto.find((dto) => dto.id === itemDetail.id);
+
+      if (dto) {
+        itemDetailsToUpdate.push({
+          id: dto.id,
+          lang: dto.lang,
+          name: dto.name,
+        });
+      } else {
+        itemDetailIdsToRemove.push(itemDetail.id);
+      }
+    }
+
+    for (const dto of itemDetailsDto) {
+      if (!dto.id) {
+        itemDetailsToInsert.push(
+          this.roomAttributeDetailRepo.create({
+            roomAttributeId: itemId,
+            lang: dto.lang,
+            name: dto.name,
+          }),
+        );
+      }
+    }
+
+    await Promise.all([
+      itemDetailsToUpdate.map(async (item) =>
+        this.roomAttributeDetailRepo.update(item.id, item),
+      ),
+      itemDetailIdsToRemove.length &&
+        this.roomAttributeDetailRepo.softDelete(itemDetailIdsToRemove),
+    ]);
+
+    if (itemDetailsToInsert.length) {
+      await this.roomAttributeDetailRepo.insert(itemDetailsToInsert);
+    }
+  }
+
+  async deleteRoomAttribute(user: User, id: number) {
     const { affected } = await this.roomAttributeTermRepo
       .createQueryBuilder()
       .softDelete()
-      .from(RoomAttributeTerm)
+      .from(RoomAttribute)
       .where({ id })
       .andWhere({ userId: user.id })
       .execute();
@@ -338,16 +331,13 @@ export class RoomAttributeTermLessorService {
     if (!affected) throw new NotFoundExc('common.exc.notFound');
   }
 
-  async deleteRoomAttributeTerms(
-    user: User,
-    deleteRoomAttributeTermsLessorReqDto: DeleteRoomAttributeTermsReqDto,
-  ) {
-    const { ids } = deleteRoomAttributeTermsLessorReqDto;
+  async deleteRoomAttributes(user: User, dto: DeleteListReqDto) {
+    const { ids } = dto;
 
     const { affected } = await this.roomAttributeTermRepo
       .createQueryBuilder()
       .softDelete()
-      .from(RoomAttributeTerm)
+      .from(RoomAttribute)
       .whereInIds(ids)
       .andWhere({ userId: user.id })
       .execute();
@@ -356,25 +346,25 @@ export class RoomAttributeTermLessorService {
   }
 
   private async delete(id: number) {
-    const { affected } = await this.roomAttributeRepo.softDelete(id);
+    const { affected } = await this.roomAttributeTermRepo.softDelete(id);
 
     if (!affected) throw new NotFoundExc('common.exc.notFound');
   }
 
-  private async deleteMulti(ids: number[], roomAttributeTermId: number) {
-    await this.roomAttributeDetailRepo
+  private async deleteMulti(ids: number[], roomAttributeId: number) {
+    await this.roomAttributeTermRepo
       .createQueryBuilder()
       .softDelete()
-      .from(RoomAttributeDetail)
+      .from(RoomAttributeTermDetail)
       .andWhere({ roomAttributeTermId: In(ids) })
       .execute();
 
-    const { affected } = await this.roomAttributeRepo
+    const { affected } = await this.roomAttributeTermRepo
       .createQueryBuilder()
       .softDelete()
-      .from(RoomAttribute)
+      .from(RoomAttributeTerm)
       .whereInIds(ids)
-      .andWhere({ roomAttributeTermId })
+      .andWhere({ roomAttributeId })
       .execute();
 
     if (!affected) throw new NotFoundExc('common.exc.notFound');

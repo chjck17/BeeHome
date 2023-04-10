@@ -4,17 +4,31 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Floor } from '../../floor/entities/floor.entity';
 import { BoardingHouseToTag } from './boarding-house-to-tag.entity';
+import { Status } from '../../common/enums/status.enum';
+import { BoardingHouseType } from '../enums/type.enum';
+import { BoardingHouseAddress } from './boarding-house-address.entity';
+import { BoardingHouseRule } from './boarding-house-rule.entity';
+import { BoardingHouseRentDeposit } from './boarding-house-rent-deposit.entity';
 
 @Entity()
 export class BoardingHouse {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ enum: Status, type: 'enum' })
+  status: Status;
+
+  @Column({ enum: BoardingHouseType, type: 'enum' })
+  type: BoardingHouseType;
+
+  @Column()
+  name: string;
   // Join user
   @Column({ name: 'user_id' })
   userId: number;
@@ -29,4 +43,13 @@ export class BoardingHouse {
 
   @OneToMany(() => BoardingHouseToTag, (item) => item.boardingHouse)
   boardingHouseToTags: BoardingHouseToTag[];
+
+  @OneToOne(() => BoardingHouseAddress, (item) => item.boardingHouse)
+  boardingHouseAddress: BoardingHouseAddress[];
+
+  @OneToMany(() => BoardingHouseRule, (item) => item.boardingHouse)
+  boardingHouseRules: BoardingHouseRule[];
+
+  @OneToMany(() => BoardingHouseRentDeposit, (item) => item.boardingHouse)
+  boardingHouseRentDeposits: BoardingHouseRentDeposit[];
 }

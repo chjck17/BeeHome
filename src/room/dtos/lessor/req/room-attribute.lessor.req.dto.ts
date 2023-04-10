@@ -1,5 +1,4 @@
 import {
-  IsValidArrayNumber,
   IsValidArrayObject,
   IsValidEnum,
   IsValidNumber,
@@ -9,60 +8,63 @@ import { PaginationReqDto } from '../../../../common/dtos/pagination.dto';
 import { Language } from '../../../../common/enums/lang.enum';
 import { IsArrayObjUniqueProperty } from '../../../../common/validators/array-unique-property.validator';
 import {
-  CreateRoomAttributeReqDto,
-  UpdateRoomAttributeReqDto,
+  CreateRoomAttributeTermReqDto,
+  UpdateRoomAttributeTermReqDto,
 } from './room-attribute-term.lessor.req.dto';
-
-export class RoomAttributeTermDetailReqDto {
-  @IsValidEnum({ enum: Language })
+export class RoomAttributeDetailReqDto {
+  @IsValidEnum({ enum: Language, required: true })
   lang: Language;
 
-  @IsValidText({ trim: true })
-  value: string;
-
-  @IsValidText({ trim: true })
-  slug: string;
+  @IsValidText({ trim: true, required: true })
+  name: string;
 }
-export class UpdateRoomAttributeTermDetailReqDto {
-  @IsValidNumber()
-  id: number;
 
-  @IsValidEnum({ enum: Language })
+export class UpdateRoomAttributeDetailReqDto {
+  @IsValidNumber({ required: false })
+  id?: number;
+
+  @IsValidEnum({ enum: Language, required: true })
   lang: Language;
 
-  @IsValidText({ trim: true })
-  value: string;
-
-  @IsValidText({ trim: true })
-  slug: string;
+  @IsValidText({ trim: true, required: true })
+  name: string;
 }
-export class CreateRoomAttributeTermReqDto {
-  @IsValidArrayObject({ minSize: 1, maxSize: 2 }, RoomAttributeTermDetailReqDto)
+export class SaveRoomAttributeReqDto {
+  @IsValidArrayObject(
+    { minSize: 1, maxSize: 2, required: true },
+    RoomAttributeDetailReqDto,
+  )
   @IsArrayObjUniqueProperty(['lang'])
-  roomAttributeTermDetails: RoomAttributeTermDetailReqDto[];
-
-  @IsValidArrayObject({ minSize: 1, required: true }, CreateRoomAttributeReqDto)
-  roomAttributes: CreateRoomAttributeReqDto[];
-}
-
-export class UpdateRoomAttributeTermReqDto {
-  @IsValidNumber()
-  id: number;
-
-  @IsValidArrayObject({ minSize: 1, maxSize: 2 }, RoomAttributeTermDetailReqDto)
-  @IsArrayObjUniqueProperty(['lang'])
-  roomAttributeTermDetails: UpdateRoomAttributeTermDetailReqDto[];
+  roomAttributeDetails: RoomAttributeDetailReqDto[];
 
   @IsValidArrayObject(
     { minSize: 1, required: true },
     CreateRoomAttributeTermReqDto,
   )
-  roomAttributes: UpdateRoomAttributeReqDto[];
+  roomAttributeTerms: CreateRoomAttributeTermReqDto[];
 }
 
-export class DeleteRoomAttributeTermsReqDto {
-  @IsValidArrayNumber({ minSize: 1, required: true })
-  ids: number[];
+export class CreateRoomAttributeReqDto extends SaveRoomAttributeReqDto {}
+
+export class UpdateRoomAttributeReqDto {
+  @IsValidNumber({ required: false })
+  id?: number;
+
+  @IsValidArrayObject(
+    { minSize: 1, maxSize: 2, required: true },
+    UpdateRoomAttributeDetailReqDto,
+  )
+  @IsArrayObjUniqueProperty(['lang'])
+  roomAttributeDetails: UpdateRoomAttributeDetailReqDto[];
+
+  @IsValidArrayObject(
+    { minSize: 1, required: true },
+    UpdateRoomAttributeTermReqDto,
+  )
+  roomAttributeTerms: UpdateRoomAttributeTermReqDto[];
 }
 
-export class GetListRoomAttributeTermReqDto extends PaginationReqDto {}
+export class GetListRoomAttributeReqDto extends PaginationReqDto {
+  @IsValidEnum({ enum: Language, required: true })
+  lang: Language;
+}

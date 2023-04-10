@@ -11,6 +11,7 @@ import { RoomStatus } from '../enums/room.enum';
 import { Floor } from '../../floor/entities/floor.entity';
 import { RoomToCategory } from './room-to-category.entity';
 import { RoomToAttribute } from './room-to-attribute.entity';
+import { RoomImage } from './room-image.entity';
 
 @Entity()
 export class Room extends BaseEntity {
@@ -41,4 +42,7 @@ export class Room extends BaseEntity {
   //--------------------------------------------------------------
   @OneToMany(() => RoomToAttribute, (item) => item.room)
   roomToAttributes: RoomToAttribute[];
+  //--------------------------------------------------------------
+  @OneToMany(() => RoomImage, (item) => item.room)
+  roomImages: RoomImage[];
 }

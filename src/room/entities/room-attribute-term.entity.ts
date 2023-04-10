@@ -18,19 +18,17 @@ import { User } from '../../auth/entities/user.entity';
 export class RoomAttributeTerm extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+  //-----------------------------------------------------------------------------
 
   @Column()
-  userId: number;
+  roomAttributeId: number;
 
-  @ManyToOne(() => User, (item) => item.roomAttributeTerms)
+  @ManyToOne(() => RoomAttribute, (item) => item.roomAttributeTerms)
   @JoinColumn()
-  user: User;
-
+  roomAttribute: RoomAttribute;
+  //-----------------------------------------------------------------------------
   @OneToMany(() => RoomToAttribute, (item) => item.roomAttributeTerm)
   roomToAttributes: RoomToAttribute[];
-
-  @OneToMany(() => RoomAttribute, (item) => item.roomAttributeTerm)
-  roomAttributes: RoomAttribute[];
 
   @OneToMany(() => RoomAttributeTermDetail, (item) => item.roomAttributeTerm)
   roomAttributeTermDetails: RoomAttributeTermDetail[];

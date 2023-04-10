@@ -37,7 +37,7 @@ export class CreateCategoryTypeReqDto extends SaveCategoryTypeReqDto {}
 
 export class UpdateCategoryTypeReqDto {
   @IsValidArrayObject(
-    { minSize: 1, maxSize: 2, required: true },
+    { minSize: 2, maxSize: 2, required: true },
     UpdateCategoryTypeDetailReqDto,
   )
   @IsArrayObjUniqueProperty(['lang'])

@@ -32,7 +32,7 @@ export class UpdateCategoryDetailReqDto {
   name: string;
 }
 export class CreateCategoryReqDto {
-  @IsValidArrayObject({ minSize: 1, maxSize: 2 }, CategoryDetailReqDto)
+  @IsValidArrayObject({ minSize: 2, maxSize: 2 }, CategoryDetailReqDto)
   @IsArrayObjUniqueProperty(['lang'])
   categoryDetails: CategoryDetailReqDto[];
 
@@ -44,7 +44,7 @@ export class UpdateCategoryReqDto {
   @IsValidNumber()
   id: number;
 
-  @IsValidArrayObject({ minSize: 1, maxSize: 2 }, CategoryDetailReqDto)
+  @IsValidArrayObject({ minSize: 2, maxSize: 2 }, CategoryDetailReqDto)
   @IsArrayObjUniqueProperty(['lang'])
   categoryDetails: UpdateCategoryDetailReqDto[];
 
@@ -57,4 +57,7 @@ export class DeleteCategoriesReqDto {
   ids: number[];
 }
 
-export class GetListCategoryReqDto extends PaginationReqDto {}
+export class GetListCategoryReqDto extends PaginationReqDto {
+  @IsValidEnum({ enum: Language, required: false })
+  lang?: Language;
+}

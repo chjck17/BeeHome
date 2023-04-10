@@ -33,6 +33,7 @@ import { GetListCategoryReqDto } from '../../dtos/lessor/req/category.lessor.req
 import { CategoryTypeDetail } from '../../entities/category-type-detail.entity';
 import { CategoryType } from '../../entities/category-type.entity';
 import { In } from 'typeorm';
+import { Language } from '../../../common/enums/lang.enum';
 
 @Injectable()
 export class CategoryLessorService {
@@ -101,7 +102,7 @@ export class CategoryLessorService {
   }
 
   async getListCategory(user: User, dto: GetListCategoryReqDto) {
-    const { limit, page } = dto;
+    const { limit, page, lang } = dto;
 
     const queryBuilder = this.categoryRepo
       .createQueryBuilder('category')
@@ -111,6 +112,12 @@ export class CategoryLessorService {
         'categoryType.categoryTypeDetails',
         'categoryTypeDetail',
       )
+      .andWhere('categoryDetails.lang = :lang', {
+        lang: lang ? lang : Language.VN,
+      })
+      .andWhere('categoryTypeDetail.lang = :lang', {
+        lang: lang ? lang : Language.VN,
+      })
       .andWhere('category.userId = :id', {
         id: user.id,
       });

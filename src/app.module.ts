@@ -17,6 +17,9 @@ import dayjs from 'dayjs';
 import { TagModule } from './tag/tag.module';
 import { FloorModule } from './floor/floor.module';
 import { RoomModule } from './room/room.module';
+import { LocalFilesModule } from './local-file/local-file.module';
+import { UploadFileModule } from './upload-file/upload-file.module';
+import { ProvinceModule } from './province/province.module';
 
 @Module({
   imports: [
@@ -38,6 +41,9 @@ import { RoomModule } from './room/room.module';
     TagModule,
     FloorModule,
     RoomModule,
+    LocalFilesModule,
+    UploadFileModule,
+    ProvinceModule,
   ],
 
   controllers: [],
@@ -49,12 +55,4 @@ import { RoomModule } from './room/room.module';
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })
-export class AppModule implements OnModuleInit {
-  constructor() {}
-  async onModuleInit() {
-    await dataSource.query('CREATE extension IF NOT EXISTS pgcrypto');
-    // dayjs.extend(utc);
-    // dayjs.extend(timezone);
-    // dayjs.tz.setDefault(TIME_ZONE);
-  }
-}
+export class AppModule {}
