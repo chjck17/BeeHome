@@ -23,12 +23,6 @@ export class RoomAttributeDetail extends BaseEntity {
   name: string;
 
   @Column()
-  slug: string;
-
-  @Column()
-  desc: string;
-
-  @Column()
   roomAttributeId: number;
 
   @ManyToOne(() => RoomAttribute, (item) => item.roomAttributeDetails)

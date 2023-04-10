@@ -102,7 +102,7 @@ export class CategoryLessorService {
   }
 
   async getListCategory(user: User, dto: GetListCategoryReqDto) {
-    const { limit, page, lang } = dto;
+    const { limit, page } = dto;
 
     const queryBuilder = this.categoryRepo
       .createQueryBuilder('category')
@@ -112,12 +112,6 @@ export class CategoryLessorService {
         'categoryType.categoryTypeDetails',
         'categoryTypeDetail',
       )
-      .andWhere('categoryDetails.lang = :lang', {
-        lang: lang ? lang : Language.VN,
-      })
-      .andWhere('categoryTypeDetail.lang = :lang', {
-        lang: lang ? lang : Language.VN,
-      })
       .andWhere('category.userId = :id', {
         id: user.id,
       });

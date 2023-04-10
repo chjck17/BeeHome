@@ -18,7 +18,7 @@ export class RoomAttributeTermDetail extends BaseEntity {
   lang: Language;
 
   @Column()
-  value: string;
+  name: string;
 
   @Column()
   slug: string;

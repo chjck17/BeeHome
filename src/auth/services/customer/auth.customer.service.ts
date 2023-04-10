@@ -50,16 +50,11 @@ export class AuthCustomerService {
   }
 
   async login(dto: LoginCustomerReqDto) {
-    const { password, phoneNumber } = dto;
-
-    // const lessor = await this.lessorRepo.findOneOrThrowNotFoundExc({
-    //   where: { id: lessorId },
-    // });
+    const { password, email } = dto;
 
     const customer = await this.customerRepo.findOne({
       where: {
-        phoneNumber,
-        // , lessorUserId: lessor.userId
+        email,
       },
     });
 
@@ -79,19 +74,16 @@ export class AuthCustomerService {
     const { email, password, birthDate, firstName, lastName, phoneNumber } =
       dto;
 
-    // let customer = await this.customerRepo.findFirst({
-    //   where: [
-    //     {
-    //       phoneNumber: dto.phoneNumber,
-    //     },
-    //   ],
-    // });
-    // if (customer) throw new ConflictExc('Phone number existed');
+    const customerExited = await this.customerRepo.findFirst({
+      where: [{ email: email }],
+    });
+    if (customerExited) throw new ConflictExc('account had exited');
 
-    // const user = this.userRepo.create({ type: UserType.CUSTOMER });
-    // await this.userRepo.save(user);
+    const user = this.userRepo.create({ type: UserType.CUSTOMER });
+    await this.userRepo.insert(user);
+
     const customer = await this.customerRepo.save({
-      // userId: user.id,
+      userId: user.id,
       email,
       phoneNumber,
       birthDate,
@@ -100,10 +92,10 @@ export class AuthCustomerService {
       password: this.encryptService.encryptText(password),
     });
     // await this.customerRepo.insert(customer);
-    // const payload: JwtAuthPayload = { userId: customer.userId };
-    // const accessToken = this.authCommonService.generateAccessToken(payload);
-    // const refreshToken = this.authCommonService.generateRefreshToken(payload);
-    // return AuthTokenResDto.forCustomer({ accessToken, refreshToken });
+    const payload: JwtAuthPayload = { userId: customer.userId };
+    const accessToken = this.authCommonService.generateAccessToken(payload);
+    const refreshToken = this.authCommonService.generateRefreshToken(payload);
+    return AuthTokenResDto.forCustomer({ accessToken, refreshToken });
   }
 
   async refreshToken(dto: RefreshTokenReqDto) {

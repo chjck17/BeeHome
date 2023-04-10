@@ -31,8 +31,8 @@ export class RegisterCustomerReqDto {
 }
 
 export class LoginCustomerReqDto {
-  @IsValidNumberString()
-  phoneNumber: string;
+  @IsEmail()
+  email: string;
 
   @IsValidText({ maxLength: 255 })
   password: string;

@@ -58,6 +58,6 @@ export class DeleteCategoriesReqDto {
 }
 
 export class GetListCategoryReqDto extends PaginationReqDto {
-  @IsValidEnum({ enum: Language, required: false })
-  lang?: Language;
+  // @IsValidEnum({ enum: Language, required: false })
+  // lang?: Language;
 }

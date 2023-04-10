@@ -14,7 +14,7 @@ export class RoomAttributeTermDetailReqDto {
   lang: Language;
 
   @IsValidText({ trim: true })
-  value: string;
+  name: string;
 
   @IsValidText({ trim: true })
   slug: string;
@@ -27,7 +27,7 @@ export class UpdateRoomAttributeTermDetailReqDto {
   lang: Language;
 
   @IsValidText({ trim: true })
-  value: string;
+  name: string;
 
   @IsValidText({ trim: true })
   slug: string;

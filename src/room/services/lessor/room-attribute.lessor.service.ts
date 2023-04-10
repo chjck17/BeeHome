@@ -24,6 +24,7 @@ import { RoomAttributeDetail } from '../../entities/room-attribute-detail.entity
 import { In } from 'typeorm';
 import { RoomAttributeTermDetail } from '../../entities/room-attribute-term-detail.entity';
 import { DeleteListReqDto } from '../../../boarding-house/dtos/boarding-house.req.dto';
+import { Language } from '../../../common/enums/lang.enum';
 
 @Injectable()
 export class RoomAttributeLessorService {
@@ -54,13 +55,16 @@ export class RoomAttributeLessorService {
           lang: item.lang,
           name: item.name,
         });
-        await this.roomAttributeTermRepo.save(roomAttributeDetail);
+        await this.roomAttributeDetailRepo.save(roomAttributeDetail);
       }),
     ]);
-    await this.saveRoomAttribute(createdRoomAttribute.id, roomAttributeTerms);
+    await this.saveRoomAttributeTerms(
+      createdRoomAttribute.id,
+      roomAttributeTerms,
+    );
   }
 
-  private async saveRoomAttribute(
+  private async saveRoomAttributeTerms(
     roomAttributeId: number,
     roomAttributeTerms: CreateRoomAttributeTermReqDto[],
   ) {
@@ -71,10 +75,10 @@ export class RoomAttributeLessorService {
         });
         ct.roomAttributeTermDetails.map(
           async (item) =>
-            await this.roomAttributeDetailRepo.save({
+            await this.roomAttributeTermDetailRepo.save({
               roomAttributeTermId: roomAttributeTerm.id,
               lang: item.lang,
-              value: item.value,
+              name: item.name,
               slug: item.slug,
             }),
         );
@@ -102,7 +106,7 @@ export class RoomAttributeLessorService {
       .createQueryBuilder('roomAttribute')
       .leftJoinAndSelect(
         'roomAttribute.roomAttributeDetails',
-        'roomAttributeDetails',
+        'roomAttributeDetail',
       )
       .leftJoinAndSelect(
         'roomAttribute.roomAttributeTerms',
@@ -112,13 +116,13 @@ export class RoomAttributeLessorService {
         'roomAttributeTerm.roomAttributeTermDetails',
         'roomAttributeTermDetail',
       )
-      .andWhere('roomAttributeDetails.lang = :lang', {
-        lang: lang,
+      .andWhere('roomAttributeDetail.lang = :lang', {
+        lang: lang ? lang : Language.VN,
       })
       .andWhere('roomAttributeTermDetail.lang = :lang', {
-        lang: lang,
+        lang: lang ? lang : Language.VN,
       })
-      .andWhere('roomAttributeTerm.userId = :id', {
+      .andWhere('roomAttribute.userId = :id', {
         id: user.id,
       });
     const { items, meta } = await paginate(queryBuilder, {
@@ -238,7 +242,7 @@ export class RoomAttributeLessorService {
           id: dto.id,
           lang: dto.lang,
           slug: dto.slug,
-          value: dto.value,
+          name: dto.name,
         });
       } else {
         itemDetailIdsToRemove.push(itemDetail.id);
@@ -252,7 +256,7 @@ export class RoomAttributeLessorService {
             roomAttributeTermId: itemId,
             lang: dto.lang,
             slug: dto.slug,
-            value: dto.value,
+            name: dto.name,
           }),
         );
       }
