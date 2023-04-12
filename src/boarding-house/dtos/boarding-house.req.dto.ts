@@ -2,6 +2,7 @@ import {
   IsValidArrayNumber,
   IsValidArrayObject,
   IsValidEnum,
+  IsValidNumber,
   IsValidObject,
   IsValidText,
 } from '../../common/decorators/custom-validator.decorator';
@@ -27,6 +28,9 @@ export class CreateBoardingHouseReqDto {
 
   @IsValidEnum({ enum: Status, required: true })
   status: Status;
+
+  @IsValidNumber()
+  floor: number;
 
   @IsValidEnum({ enum: BoardingHouseType, required: true })
   type: BoardingHouseType;

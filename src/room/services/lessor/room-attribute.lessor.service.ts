@@ -48,7 +48,7 @@ export class RoomAttributeLessorService {
       roomAttribute,
     );
 
-    await Promise.all([
+    await Promise.all(
       roomAttributeDetails.map(async (item) => {
         const roomAttributeDetail = this.roomAttributeDetailRepo.create({
           roomAttributeId: createdRoomAttribute.id,
@@ -57,7 +57,7 @@ export class RoomAttributeLessorService {
         });
         await this.roomAttributeDetailRepo.save(roomAttributeDetail);
       }),
-    ]);
+    );
     await this.saveRoomAttributeTerms(
       createdRoomAttribute.id,
       roomAttributeTerms,
@@ -68,22 +68,24 @@ export class RoomAttributeLessorService {
     roomAttributeId: number,
     roomAttributeTerms: CreateRoomAttributeTermReqDto[],
   ) {
-    await Promise.all([
+    await Promise.all(
       roomAttributeTerms.map(async (ct) => {
         const roomAttributeTerm = await this.roomAttributeTermRepo.save({
           roomAttributeId: roomAttributeId,
         });
-        ct.roomAttributeTermDetails.map(
-          async (item) =>
-            await this.roomAttributeTermDetailRepo.save({
-              roomAttributeTermId: roomAttributeTerm.id,
-              lang: item.lang,
-              name: item.name,
-              slug: item.slug,
-            }),
+        await Promise.all(
+          ct.roomAttributeTermDetails.map(
+            async (item) =>
+              await this.roomAttributeTermDetailRepo.save({
+                roomAttributeTermId: roomAttributeTerm.id,
+                lang: item.lang,
+                name: item.name,
+                slug: item.slug,
+              }),
+          ),
         );
       }),
-    ]);
+    );
   }
 
   async getOne(user: User, id: number) {
@@ -100,7 +102,7 @@ export class RoomAttributeLessorService {
   }
 
   async getListRoomAttribute(user: User, dto: GetListRoomAttributeReqDto) {
-    const { limit, page, lang } = dto;
+    const { limit, page } = dto;
 
     const queryBuilder = this.roomAttributeRepo
       .createQueryBuilder('roomAttribute')
@@ -116,12 +118,6 @@ export class RoomAttributeLessorService {
         'roomAttributeTerm.roomAttributeTermDetails',
         'roomAttributeTermDetail',
       )
-      .andWhere('roomAttributeDetail.lang = :lang', {
-        lang: lang ? lang : Language.VN,
-      })
-      .andWhere('roomAttributeTermDetail.lang = :lang', {
-        lang: lang ? lang : Language.VN,
-      })
       .andWhere('roomAttribute.userId = :id', {
         id: user.id,
       });

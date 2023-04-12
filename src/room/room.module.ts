@@ -17,6 +17,11 @@ import { RoomToCategory } from './entities/room-to-category.entity';
 import { RoomLessorService } from './services/lessor/room.lessor.service';
 import { RoomAttributeLessorService } from './services/lessor/room-attribute.lessor.service';
 import { RoomAttributeLessorController } from './controllers/lessor/room-attribute.lessor.controller';
+import { RoomImageRepository } from './repositories/room-image.repository';
+import { RoomLessorController } from './controllers/lessor/room.lessor.controller';
+import { UploadFileService } from '../upload-file/upload-file.service';
+import LocalFilesService from '../local-file/local-file.service';
+import { LocalFileRepository } from '../local-file/local-file.repository';
 
 @Module({
   imports: [
@@ -30,7 +35,7 @@ import { RoomAttributeLessorController } from './controllers/lessor/room-attribu
       RoomToCategory,
     ]),
   ],
-  controllers: [RoomAttributeLessorController],
+  controllers: [RoomAttributeLessorController, RoomLessorController],
   providers: [
     RoomRepository,
     RoomLessorService,
@@ -39,8 +44,12 @@ import { RoomAttributeLessorController } from './controllers/lessor/room-attribu
     RoomAttributeDetailRepository,
     RoomAttributeTermDetailRepository,
     RoomAttributeTermRepository,
+    RoomImageRepository,
+    UploadFileService,
+    LocalFileRepository,
     RoomToAttributeRepository,
     RoomToCategoryRepository,
+    LocalFilesService,
   ],
 })
 export class RoomModule {}

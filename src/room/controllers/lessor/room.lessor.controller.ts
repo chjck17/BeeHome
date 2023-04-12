@@ -7,6 +7,10 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { User } from '../../../auth/entities/user.entity';
 import { PrefixType } from '../../../common/constants/global.constant';
@@ -21,13 +25,23 @@ import {
   UpdateRoomReqDto,
 } from '../../dtos/lessor/req/room.req.dto';
 import { DeleteListReqDto } from '../../../boarding-house/dtos/boarding-house.req.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FastifyFileInterceptor } from '../../../upload-file/interceptor/fastify-file-interceptor';
+import { diskStorage } from 'multer';
+import { editFileName, imageFileFilter } from '../../../utils/file-upload-util';
+import { fileMapper, filesMapper } from '../../../utils/file-mapper';
+import { Request } from 'express';
+import { UploadFileService } from '../../../upload-file/upload-file.service';
+import { FastifyFilesInterceptor } from '../../../upload-file/interceptor/fastify-files-interceptor';
 
 @Controller(`${PrefixType.LESSOR}/room`)
 @AuthenticateLessor()
 @ApiTags('Room Lessor')
 export class RoomLessorController {
-  constructor(private readonly roomLessorService: RoomLessorService) {}
+  constructor(
+    private readonly roomLessorService: RoomLessorService,
+    private uploadFileService: UploadFileService,
+  ) {}
 
   @Get()
   findAll(@CurrentUser() user: User, @Query() query: GetListRoomsReqDto) {
@@ -39,12 +53,34 @@ export class RoomLessorController {
     return this.roomLessorService.findOne(user, Number(id));
   }
 
+  @ApiConsumes('multipart/form-data')
   @Post()
-  createRoom(
-    @CurrentUser() user: User,
+  @UseInterceptors(
+    FastifyFilesInterceptor('photo_url', 10, {
+      storage: diskStorage({
+        destination: './upload/single',
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async createRoom(
+    @Req() req: Request,
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() createRoomDto: CreateRoomReqDto,
   ) {
-    return this.roomLessorService.createRoom(user, createRoomDto);
+    const photos = filesMapper({ files, req });
+    const imgs = await Promise.all(
+      photos.map(async (item) => {
+        const img = await this.uploadFileService.addAvatar(2, {
+          path: item.image_url,
+          filename: item.filename,
+          mimetype: item.mimetype,
+        });
+        return img;
+      }),
+    );
+    return this.roomLessorService.createRoom(createRoomDto, imgs);
   }
 
   @Patch(':id')
@@ -53,11 +89,7 @@ export class RoomLessorController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateRoomReqDto,
   ) {
-    return this.roomLessorService.updateRoom(
-      user,
-      Number(id),
-      updateProductDto,
-    );
+    return this.roomLessorService.updateRoom(updateProductDto);
   }
 
   @Delete(':id')

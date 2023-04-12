@@ -20,6 +20,7 @@ import { RoomModule } from './room/room.module';
 import { LocalFilesModule } from './local-file/local-file.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
 import { ProvinceModule } from './province/province.module';
+import { BoardingHouseModule } from './boarding-house/boarding-house.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ProvinceModule } from './province/province.module';
     LocalFilesModule,
     UploadFileModule,
     ProvinceModule,
+    BoardingHouseModule,
   ],
 
   controllers: [],

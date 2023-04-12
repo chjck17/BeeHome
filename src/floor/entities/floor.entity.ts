@@ -16,7 +16,7 @@ export class Floor extends BaseEntity {
   id: number;
 
   @Column()
-  name: string;
+  floorNumber: number;
 
   //--------------------------------------------------------------------------
   @Column()

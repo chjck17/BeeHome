@@ -12,6 +12,7 @@ export class UploadFileService {
   constructor(private localFilesService: LocalFilesService) {}
 
   async addAvatar(userId: number, fileData: LocalFileDto) {
-    await this.localFilesService.saveLocalFileData(fileData);
+    const file = await this.localFilesService.saveLocalFileData(fileData);
+    return file;
   }
 }

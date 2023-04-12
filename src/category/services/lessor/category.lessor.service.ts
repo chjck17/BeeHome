@@ -72,21 +72,23 @@ export class CategoryLessorService {
     categoryId: number,
     categoryTypes: CreateCategoryTypeReqDto[],
   ) {
-    await Promise.all([
+    await Promise.all(
       categoryTypes.map(async (ct) => {
         const categoryType = await this.categoryTypeRepo.save({
           categoryId: categoryId,
         });
-        ct.categoryTypeDetails.map(
-          async (item) =>
-            await this.categoryTypeDetailRepo.save({
-              categoryTypeId: categoryType.id,
-              lang: item.lang,
-              name: item.name,
-            }),
+        await Promise.all(
+          ct?.categoryTypeDetails?.map(
+            async (item) =>
+              await this.categoryTypeDetailRepo.save({
+                categoryTypeId: categoryType.id,
+                lang: item.lang,
+                name: item.name,
+              }),
+          ),
         );
       }),
-    ]);
+    );
   }
 
   async getOne(user: User, id: number) {

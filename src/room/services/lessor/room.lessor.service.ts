@@ -14,13 +14,53 @@ import {
 } from '../../dtos/lessor/req/room.req.dto';
 import { RoomRepository } from '../../repositories/room.repository';
 import { DeleteListReqDto } from '../../../boarding-house/dtos/boarding-house.req.dto';
+import { RoomImageRepository } from '../../repositories/room-image.repository';
+import { LocalFile } from '../../../local-file/local-file.entity';
 
 @Injectable()
 export class RoomLessorService {
-  constructor(private roomRepo: RoomRepository) {}
+  constructor(
+    private roomRepo: RoomRepository,
+    private roomImageRepo: RoomImageRepository,
+  ) {}
+  async createRoom(dto: CreateRoomReqDto, imgIds: LocalFile[]) {
+    const { name, price, acreage, status, floorId } = dto;
+    const room = this.roomRepo.create({
+      floorId: floorId,
+      name: name,
+      price: price,
+      acreage: acreage,
+      status: status,
+    });
+    await this.roomRepo.save(room);
 
-  async createRoom(user: User, dto: CreateRoomReqDto) {
-    const room = this.roomRepo.create({});
+    await Promise.all(
+      imgIds.map(async (item) => {
+        const roomImage = this.roomImageRepo.create({
+          roomId: room.id,
+          localFileId: item.id,
+        });
+        await this.roomImageRepo.save(roomImage);
+      }),
+    );
+
+    return room;
+  }
+  async updateRoom(dto: UpdateRoomReqDto) {
+    const { floorId, roomId, name, status, acreage, price } = dto;
+    const existRoom = await this.roomRepo.findOneBy({
+      id: roomId,
+    });
+    if (!existRoom) {
+      throw new ConflictExc('common');
+    }
+    const room = this.roomRepo.create({
+      ...existRoom,
+      status: status,
+      name: name,
+      acreage: acreage,
+      price: price,
+    });
     await this.roomRepo.save(room);
     return room;
   }
@@ -44,20 +84,6 @@ export class RoomLessorService {
     });
 
     return new Pagination(items, meta);
-  }
-
-  async updateRoom(user: User, id: number, dto: UpdateRoomReqDto) {
-    const existRoom = await this.roomRepo.findOneBy({
-      id: id,
-    });
-    if (!existRoom) {
-      throw new ConflictExc('common');
-    }
-    const room = this.roomRepo.create({
-      ...existRoom,
-    });
-    await this.roomRepo.save(room);
-    return room;
   }
 
   async deleteRoom(user: User, id: number) {

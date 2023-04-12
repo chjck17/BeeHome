@@ -23,7 +23,7 @@ export const filesMapper = ({ files, req }: FilesMapper) => {
   return files.map((file) => {
     const image_url = `${req.protocol}://${req.headers.host}/${file.path}`;
     return {
-      originalname: file.originalname,
+      mimetype: file.mimetype,
       filename: file.filename,
       image_url,
     };

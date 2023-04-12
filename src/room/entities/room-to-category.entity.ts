@@ -1,4 +1,3 @@
-import { Category } from 'src/category/entities/category.entity';
 import {
   Column,
   Entity,
@@ -8,6 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { Room } from './room.entity';
+import { CategoryType } from '../../category/entities/category-type.entity';
 
 @Entity()
 export class RoomToCategory extends BaseEntity {
@@ -22,9 +22,9 @@ export class RoomToCategory extends BaseEntity {
   room: Room;
   //----------------------------------------------------------
   @Column()
-  categoryId: number;
+  categoryTypeId: number;
 
-  @ManyToOne(() => Category, (item) => item.roomToCategories)
+  @ManyToOne(() => CategoryType, (item) => item.roomToCategories)
   @JoinColumn()
-  category: Category;
+  categoryType: CategoryType;
 }

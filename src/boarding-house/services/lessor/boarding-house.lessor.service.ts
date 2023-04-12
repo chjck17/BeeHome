@@ -18,6 +18,7 @@ import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
 import { BoardingHouseAddressRepository } from '../../repositories/boarding-house-address.repository';
 import { BoardingHouseRuleRepository } from '../../repositories/boarding-house-rule.repository';
 import { BoardingHouseRentDepositRepository } from '../../repositories/boarding-house-rent-deposits.repository';
+import { FloorRepository } from '../../../floor/repositories/floor.repository';
 
 @Injectable()
 export class BoardingHouseLessorService {
@@ -26,6 +27,7 @@ export class BoardingHouseLessorService {
     private boardingHouseAddressRepo: BoardingHouseAddressRepository,
     private boardingHouseRuleRepo: BoardingHouseRuleRepository,
     private boardingHouseRentDepositRepo: BoardingHouseRentDepositRepository,
+    private floorRepo: FloorRepository,
   ) {}
 
   async createBoardingHouse(user: User, dto: CreateBoardingHouseReqDto) {
@@ -36,6 +38,7 @@ export class BoardingHouseLessorService {
       houseRentDeposits,
       boardingHouseRules,
       address,
+      floor,
     } = dto;
     const boardingHouse = this.boardingHouseRepo.create({
       userId: user.id,
@@ -76,6 +79,14 @@ export class BoardingHouseLessorService {
         await this.boardingHouseRuleRepo.save(boardingHouseRole);
       }),
     ]);
+
+    for (let i = 0; i < floor; i++) {
+      const floor = this.floorRepo.create({
+        boardingHouseId: boardingHouse.id,
+        floorNumber: i,
+      });
+      await this.floorRepo.save(floor);
+    }
     return boardingHouse;
   }
   async findOne(user: User, id: number) {

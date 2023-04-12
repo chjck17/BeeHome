@@ -45,7 +45,7 @@ export class BoardingHouse {
   boardingHouseToTags: BoardingHouseToTag[];
 
   @OneToOne(() => BoardingHouseAddress, (item) => item.boardingHouse)
-  boardingHouseAddress: BoardingHouseAddress[];
+  boardingHouseAddress: BoardingHouseAddress;
 
   @OneToMany(() => BoardingHouseRule, (item) => item.boardingHouse)
   boardingHouseRules: BoardingHouseRule[];

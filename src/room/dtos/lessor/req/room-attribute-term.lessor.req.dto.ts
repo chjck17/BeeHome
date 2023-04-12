@@ -39,8 +39,8 @@ export class CreateRoomAttributeTermReqDto {
 }
 
 export class UpdateRoomAttributeTermReqDto {
-  @IsValidNumber()
-  id: number;
+  @IsValidNumber({ required: false })
+  id?: number;
 
   @IsValidArrayObject({ minSize: 1, maxSize: 2 }, RoomAttributeTermDetailReqDto)
   @IsArrayObjUniqueProperty(['lang'])

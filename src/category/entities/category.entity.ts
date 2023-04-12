@@ -24,8 +24,6 @@ export class Category extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
   // End join user
-  @OneToMany(() => RoomToCategory, (item) => item.room)
-  roomToCategories: RoomToCategory[];
 
   @OneToMany(() => CategoryType, (item) => item.category)
   categoryTypes: CategoryType[];
