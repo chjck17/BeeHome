@@ -171,7 +171,7 @@ export class BoardingHouseLessorService {
       houseRentDeposits.map(async (item) => {
         const boardingHouseRentDeposit =
           this.boardingHouseRentDepositRepo.create({
-            boardingHouseId: boardingHouse.id,
+            boardingHouseId: existBoardingHouse.id,
             lang: item.lang,
             content: item.content,
           });
@@ -182,7 +182,7 @@ export class BoardingHouseLessorService {
     await Promise.all([
       boardingHouseRules.map(async (item) => {
         const boardingHouseRole = this.boardingHouseRuleRepo.create({
-          boardingHouseId: boardingHouse.id,
+          boardingHouseId: existBoardingHouse.id,
           lang: item.lang,
           content: item.content,
         });
@@ -193,14 +193,14 @@ export class BoardingHouseLessorService {
     await Promise.all([
       tagIds.map(async (item) => {
         const tag = this.boardingHouseToTagRepo.create({
-          boardingHouseId: boardingHouse.id,
+          boardingHouseId: existBoardingHouse.id,
           tagId: item,
         });
         await this.boardingHouseToTagRepo.save(tag);
       }),
     ]);
 
-    return boardingHouse;
+    return existBoardingHouse;
   }
 
   async deleteBoardingHouse(user: User, id: number) {
