@@ -46,6 +46,7 @@ import { BoardingHouseModule } from './boarding-house/boarding-house.module';
     UploadFileModule,
     ProvinceModule,
     BoardingHouseModule,
+    TagModule,
   ],
 
   controllers: [],

@@ -26,8 +26,8 @@ export class CreateBoardingHouseReqDto {
   @IsValidText({ trim: true, required: true })
   name: string;
 
-  @IsValidEnum({ enum: Status, required: true })
-  status: Status;
+  @IsValidArrayNumber({ minSize: 1, required: true })
+  tagIds: number[];
 
   @IsValidNumber()
   floor: number;
@@ -64,11 +64,14 @@ export class UpdateBoardingHouseReqDto {
   @IsValidEnum({ enum: BoardingHouseType, required: false })
   type?: BoardingHouseType;
 
+  @IsValidArrayNumber({ minSize: 1, required: true })
+  tagIds: number[];
+
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: true },
     UpdateBoardingHouseRenDepositReqDto,
   )
-  houseRenDeposits: UpdateBoardingHouseRenDepositReqDto[];
+  houseRentDeposits: UpdateBoardingHouseRenDepositReqDto[];
 
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: true },

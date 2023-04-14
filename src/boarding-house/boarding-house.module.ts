@@ -13,6 +13,8 @@ import { BoardingHouseRule } from './entities/boarding-house-rule.entity';
 import { BoardingHouseRentDeposit } from './entities/boarding-house-rent-deposit.entity';
 import { BoardingHouseCustomerService } from './services/customer/boarding-house.customer.service';
 import { BoardingHouseCustomerController } from './controllers/customer/boarding-house.customer.controller';
+import { BoardingHouseToTagRuleRepository } from './repositories/boarding-house-to-tag.repository';
+import { BoardingHouseToTag } from './entities/boarding-house-to-tag.entity';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { BoardingHouseCustomerController } from './controllers/customer/boarding
       BoardingHouseAddress,
       BoardingHouseRule,
       BoardingHouseRentDeposit,
+      BoardingHouseToTag,
     ]),
   ],
   controllers: [BoardingHouseLessorController, BoardingHouseCustomerController],
@@ -32,6 +35,7 @@ import { BoardingHouseCustomerController } from './controllers/customer/boarding
     FloorRepository,
     BoardingHouseCustomerService,
     BoardingHouseAddressRepository,
+    BoardingHouseToTagRuleRepository,
   ],
 })
 export class BoardingHouseModule {}
