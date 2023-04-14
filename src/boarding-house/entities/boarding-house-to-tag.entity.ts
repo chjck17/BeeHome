@@ -10,6 +10,7 @@ import { User } from '../../auth/entities/user.entity';
 import { Floor } from '../../floor/entities/floor.entity';
 import { Tag } from '../../tag/entities/tag.entity';
 import { BoardingHouse } from './boarding-house.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity()
 export class BoardingHouseToTag {

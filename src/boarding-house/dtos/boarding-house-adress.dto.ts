@@ -1,6 +1,12 @@
-import { IsValidText } from '../../common/decorators/custom-validator.decorator';
+import {
+  IsValidNumber,
+  IsValidText,
+} from '../../common/decorators/custom-validator.decorator';
 
 export class UpdateAddressReqDto {
+  @IsValidNumber()
+  id: number;
+
   @IsValidText({ trim: true, required: false })
   address?: string;
 

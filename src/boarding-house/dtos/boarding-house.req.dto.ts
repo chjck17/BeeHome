@@ -55,6 +55,9 @@ export class CreateBoardingHouseReqDto {
 export class GetListBoardingHousesReqDto extends PaginationReqDto {}
 
 export class UpdateBoardingHouseReqDto {
+  @IsValidNumber()
+  id: number;
+
   @IsValidText({ trim: true, required: false })
   name?: string;
 

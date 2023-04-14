@@ -1,6 +1,7 @@
 import {
   IsValidArrayNumber,
   IsValidEnum,
+  IsValidNumber,
   IsValidText,
 } from '../../common/decorators/custom-validator.decorator';
 import { PaginationReqDto } from '../../common/dtos/pagination.dto';
@@ -16,6 +17,9 @@ export class CreateBoardingHouseRenDepositReqDto {
   lang: Language;
 }
 export class UpdateBoardingHouseRenDepositReqDto {
+  @IsValidNumber()
+  id: number;
+
   @IsValidText({ trim: true, required: false })
   content?: string;
 

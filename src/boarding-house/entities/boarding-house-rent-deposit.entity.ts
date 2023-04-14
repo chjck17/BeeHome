@@ -13,9 +13,10 @@ import { Status } from '../../common/enums/status.enum';
 import { BoardingHouseType } from '../enums/type.enum';
 import { Language } from '../../common/enums/lang.enum';
 import { BoardingHouse } from './boarding-house.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity()
-export class BoardingHouseRentDeposit {
+export class BoardingHouseRentDeposit extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

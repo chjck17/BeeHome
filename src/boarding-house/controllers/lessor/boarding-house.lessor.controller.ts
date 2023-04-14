@@ -55,15 +55,13 @@ export class BoardingHouseLessorController {
     );
   }
 
-  @Patch(':id')
+  @Patch()
   update(
     @CurrentUser() user: User,
-    @Param('id') id: string,
     @Body() updateProductDto: UpdateBoardingHouseReqDto,
   ) {
     return this.boardingHouseLessorService.updateBoardingHouse(
       user,
-      Number(id),
       updateProductDto,
     );
   }

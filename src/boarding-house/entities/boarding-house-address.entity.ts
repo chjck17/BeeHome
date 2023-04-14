@@ -13,9 +13,10 @@ import { BoardingHouseToTag } from './boarding-house-to-tag.entity';
 import { Status } from '../../common/enums/status.enum';
 import { BoardingHouseType } from '../enums/type.enum';
 import { BoardingHouse } from './boarding-house.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity()
-export class BoardingHouseAddress {
+export class BoardingHouseAddress extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

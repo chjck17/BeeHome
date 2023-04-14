@@ -8,9 +8,10 @@ import {
 } from 'typeorm';
 import { Language } from '../../common/enums/lang.enum';
 import { BoardingHouse } from './boarding-house.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity()
-export class BoardingHouseRule {
+export class BoardingHouseRule extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
