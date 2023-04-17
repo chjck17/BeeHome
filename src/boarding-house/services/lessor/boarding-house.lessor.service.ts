@@ -46,64 +46,65 @@ export class BoardingHouseLessorService {
       floor,
       tagIds,
     } = dto;
-    const boardingHouse = this.boardingHouseRepo.create({
-      userId: user.id,
-      name: name,
-      type: type,
-      status: Status.ACTIVE,
-    });
-    await this.boardingHouseRepo.save(boardingHouse);
+    // const boardingHouse = this.boardingHouseRepo.create({
+    //   userId: user.id,
+    //   name: name,
+    //   type: type,
+    //   status: Status.ACTIVE,
+    // });
+    // await this.boardingHouseRepo.save(boardingHouse);
 
-    const boardingHouseAddress = this.boardingHouseAddressRepo.create({
-      boardingHouseId: boardingHouse.id,
-      address: address.address,
-      district: address.district,
-      province: address.province,
-      ward: address.ward,
-    });
-    await this.boardingHouseAddressRepo.save(boardingHouseAddress);
+    // const boardingHouseAddress = this.boardingHouseAddressRepo.create({
+    //   boardingHouseId: boardingHouse.id,
+    //   address: address.address,
+    //   district: address.district,
+    //   province: address.province,
+    //   ward: address.ward,
+    // });
+    // await this.boardingHouseAddressRepo.save(boardingHouseAddress);
 
-    await Promise.all([
-      houseRentDeposits.map(async (item) => {
-        const boardingHouseRentDeposit =
-          this.boardingHouseRentDepositRepo.create({
-            boardingHouseId: boardingHouse.id,
-            lang: item.lang,
-            content: item.content,
-          });
-        await this.boardingHouseRentDepositRepo.save(boardingHouseRentDeposit);
-      }),
-    ]);
+    // await Promise.all([
+    //   houseRentDeposits.map(async (item) => {
+    //     const boardingHouseRentDeposit =
+    //       this.boardingHouseRentDepositRepo.create({
+    //         boardingHouseId: boardingHouse.id,
+    //         lang: item.lang,
+    //         content: item.content,
+    //       });
+    //     await this.boardingHouseRentDepositRepo.save(boardingHouseRentDeposit);
+    //   }),
+    // ]);
 
-    await Promise.all([
-      boardingHouseRules.map(async (item) => {
-        const boardingHouseRole = this.boardingHouseRuleRepo.create({
-          boardingHouseId: boardingHouse.id,
-          lang: item.lang,
-          content: item.content,
-        });
-        await this.boardingHouseRuleRepo.save(boardingHouseRole);
-      }),
-    ]);
+    // await Promise.all([
+    //   boardingHouseRules.map(async (item) => {
+    //     const boardingHouseRole = this.boardingHouseRuleRepo.create({
+    //       boardingHouseId: boardingHouse.id,
+    //       lang: item.lang,
+    //       content: item.content,
+    //     });
+    //     await this.boardingHouseRuleRepo.save(boardingHouseRole);
+    //   }),
+    // ]);
 
-    for (let i = 1; i <= floor; i++) {
-      const floor = this.floorRepo.create({
-        boardingHouseId: boardingHouse.id,
-        floorNumber: i,
-      });
-      await this.floorRepo.save(floor);
-    }
+    // for (let i = 1; i <= floor; i++) {
+    //   const floor = this.floorRepo.create({
+    //     boardingHouseId: boardingHouse.id,
+    //     floorNumber: i,
+    //   });
+    //   await this.floorRepo.save(floor);
+    // }
 
-    await Promise.all([
-      tagIds.map(async (item) => {
-        const tag = this.boardingHouseToTagRepo.create({
-          boardingHouseId: boardingHouse.id,
-          tagId: item,
-        });
-        await this.boardingHouseToTagRepo.save(tag);
-      }),
-    ]);
-    return boardingHouse;
+    // await Promise.all([
+    //   tagIds.map(async (item) => {
+    //     const tag = this.boardingHouseToTagRepo.create({
+    //       boardingHouseId: boardingHouse.id,
+    //       tagId: Number(item),
+    //     });
+    //     await this.boardingHouseToTagRepo.save(tag);
+    //   }),
+    // ]);
+    // return boardingHouse;
+    return dto;
   }
   async findOne(user: User, id: number) {
     const boardingHouse =
@@ -252,14 +253,14 @@ export class BoardingHouseLessorService {
   private async saveItem(
     itemId: number,
     items: BoardingHouseToTag[],
-    itemsDto: number[],
+    itemsDto: string[],
   ) {
     const itemIdsToRemove: number[] = [];
     const itemToInsert: BoardingHouseToTag[] = [];
     const itemToUpdate: Partial<BoardingHouseToTag>[] = [];
 
     for (const itemInDb of items) {
-      const dto = itemsDto.find((id) => id === itemInDb.id);
+      const dto = itemsDto.find((id) => Number(id) === itemInDb.id);
       if (!dto) {
         itemIdsToRemove.push(itemInDb.id);
       }
@@ -270,7 +271,7 @@ export class BoardingHouseLessorService {
         itemToInsert.push(
           this.boardingHouseToTagRepo.create({
             boardingHouseId: itemId,
-            tagId: id,
+            tagId: Number(id),
           }),
         );
       }

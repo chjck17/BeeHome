@@ -16,40 +16,78 @@ import { RoomRepository } from '../../repositories/room.repository';
 import { DeleteListReqDto } from '../../../boarding-house/dtos/boarding-house.req.dto';
 import { RoomImageRepository } from '../../repositories/room-image.repository';
 import { LocalFile } from '../../../local-file/local-file.entity';
+import { RoomStatus } from '../../enums/room.enum';
+import { RoomToCategoryRepository } from '../../repositories/room-to-category.repository';
+import { RoomToAttributeRepository } from '../../repositories/room-to-attribute.repository';
+import { RoomToCategory } from '../../entities/room-to-category.entity';
+import { RoomToAttribute } from '../../entities/room-to-attribute.entity';
 
 @Injectable()
 export class RoomLessorService {
   constructor(
     private roomRepo: RoomRepository,
     private roomImageRepo: RoomImageRepository,
+    private roomToCategoryRepo: RoomToCategoryRepository,
+    private roomToAttributeRepo: RoomToAttributeRepository,
   ) {}
   async createRoom(dto: CreateRoomReqDto, imgIds: LocalFile[]) {
-    const { name, price, acreage, status, floorId } = dto;
-    const room = this.roomRepo.create({
-      floorId: floorId,
-      name: name,
-      price: price,
-      acreage: acreage,
-      status: status,
-    });
-    await this.roomRepo.save(room);
+    const { name, price, acreage, floorId, categoryIds, attributeIds } = dto;
+    // const room = this.roomRepo.create({
+    //   floorId: floorId,
+    //   name: name,
+    //   price: price,
+    //   acreage: acreage,
+    //   status: RoomStatus.ACTIVE,
+    // });
+    // await this.roomRepo.save(room);
 
-    await Promise.all(
-      imgIds.map(async (item) => {
-        const roomImage = this.roomImageRepo.create({
-          roomId: room.id,
-          localFileId: item.id,
-        });
-        await this.roomImageRepo.save(roomImage);
-      }),
-    );
-
-    return room;
+    // await Promise.all(
+    //   imgIds.map(async (item) => {
+    //     const roomImage = this.roomImageRepo.create({
+    //       roomId: room.id,
+    //       localFileId: item.id,
+    //     });
+    //     await this.roomImageRepo.save(roomImage);
+    //   }),
+    // );
+    // await Promise.all(
+    //   categoryIds.map(async (id) => {
+    //     const roomCategory = this.roomToCategoryRepo.create({
+    //       roomId: room.id,
+    //       categoryTypeId: id,
+    //     });
+    //     await this.roomToCategoryRepo.save(roomCategory);
+    //   }),
+    // );
+    // await Promise.all(
+    //   attributeIds.map(async (id) => {
+    //     const roomAttribute = this.roomToAttributeRepo.create({
+    //       roomId: room.id,
+    //       roomAttributeTermId: id,
+    //     });
+    //     await this.roomToAttributeRepo.save(roomAttribute);
+    //   }),
+    // );
+    // return room;
+    return dto;
   }
   async updateRoom(dto: UpdateRoomReqDto) {
-    const { floorId, roomId, name, status, acreage, price } = dto;
-    const existRoom = await this.roomRepo.findOneBy({
-      id: roomId,
+    const {
+      floorId,
+      roomId,
+      name,
+      status,
+      acreage,
+      price,
+      categoryIds,
+      attributeIds,
+    } = dto;
+    const existRoom = await this.roomRepo.findOne({
+      where: { id: roomId },
+      relations: {
+        roomToCategories: { categoryType: true },
+        roomToAttributes: { roomAttributeTerm: true },
+      },
     });
     if (!existRoom) {
       throw new ConflictExc('common');
@@ -62,6 +100,16 @@ export class RoomLessorService {
       price: price,
     });
     await this.roomRepo.save(room);
+    await this.saveItemCategory(
+      room.id,
+      existRoom.roomToCategories,
+      categoryIds,
+    );
+    await this.saveItemAttribute(
+      room.id,
+      existRoom.roomToAttributes,
+      attributeIds,
+    );
     return room;
   }
   async findOne(user: User, id: number) {
@@ -108,5 +156,76 @@ export class RoomLessorService {
     if (result.affected !== ids.length) throw new BadRequestExc('common');
 
     return result;
+  }
+
+  private async saveItemCategory(
+    itemId: number,
+    items: RoomToCategory[],
+    itemsDto: number[],
+  ) {
+    const itemIdsToRemove: number[] = [];
+    const itemToInsert: RoomToCategory[] = [];
+
+    for (const itemInDb of items) {
+      const dto = itemsDto.find((id) => id === itemInDb.id);
+      if (!dto) {
+        itemIdsToRemove.push(itemInDb.id);
+      }
+    }
+
+    for (const id of itemsDto) {
+      if (!id) {
+        itemToInsert.push(
+          this.roomToCategoryRepo.create({
+            roomId: itemId,
+            categoryTypeId: id,
+          }),
+        );
+      }
+    }
+
+    await Promise.all([
+      itemIdsToRemove.length && this.roomToCategoryRepo.delete(itemIdsToRemove),
+    ]);
+
+    if (itemToInsert.length) {
+      await this.roomToCategoryRepo.insert(itemToInsert);
+    }
+    // return { itemDetailIdsToRemove, itemDetailsToInsert, itemDetailsToUpdate };
+  }
+  private async saveItemAttribute(
+    itemId: number,
+    items: RoomToAttribute[],
+    itemsDto: number[],
+  ) {
+    const itemIdsToRemove: number[] = [];
+    const itemToInsert: RoomToAttribute[] = [];
+
+    for (const itemInDb of items) {
+      const dto = itemsDto.find((id) => id === itemInDb.id);
+      if (!dto) {
+        itemIdsToRemove.push(itemInDb.id);
+      }
+    }
+
+    for (const id of itemsDto) {
+      if (!id) {
+        itemToInsert.push(
+          this.roomToAttributeRepo.create({
+            roomId: itemId,
+            roomAttributeTermId: id,
+          }),
+        );
+      }
+    }
+
+    await Promise.all([
+      itemIdsToRemove.length &&
+        this.roomToAttributeRepo.delete(itemIdsToRemove),
+    ]);
+
+    if (itemToInsert.length) {
+      await this.roomToAttributeRepo.insert(itemToInsert);
+    }
   }
 }

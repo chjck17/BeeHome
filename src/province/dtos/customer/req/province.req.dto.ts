@@ -1,12 +1,17 @@
 import {
-    IsValidEnum,
-    IsValidNumber,
-    IsValidText
+  IsValidEnum,
+  IsValidNumber,
+  IsValidText,
 } from '../../../../common/decorators/custom-validator.decorator';
 import { PaginationReqDto } from '../../../../common/dtos/pagination.dto';
 import { ProvinceType } from '../../../enums/province.enum';
 
-export class GetListProvinceReqDto extends PaginationReqDto {
+export class GetListProvinceReqDto {
+  @IsValidNumber({ required: false, min: 1 })
+  page?: number = 1;
+
+  @IsValidNumber({ required: false, min: 1, max: 100 })
+  limit?: number = 70;
   @IsValidEnum({ enum: ProvinceType, required: true })
   type: ProvinceType;
   @IsValidNumber({ required: false, min: 1 })

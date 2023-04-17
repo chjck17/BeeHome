@@ -54,6 +54,10 @@ export class BoardingHouseCustomerService {
             where: { id: item.id },
             relations: {
               floors: { rooms: { roomImages: { localFile: true } } },
+              boardingHouseRentDeposits: true,
+              boardingHouseToTags: { tag: true },
+              boardingHouseRules: true,
+              boardingHouseAddress: true,
             },
           });
         return BoardingHouseResDto.forCustomer(boardingHouse);

@@ -1,6 +1,7 @@
 import {
   IsValidArrayNumber,
   IsValidArrayObject,
+  IsValidArrayString,
   IsValidEnum,
   IsValidNumber,
   IsValidObject,
@@ -26,8 +27,8 @@ export class CreateBoardingHouseReqDto {
   @IsValidText({ trim: true, required: true })
   name: string;
 
-  @IsValidArrayNumber({ minSize: 1, required: true })
-  tagIds: number[];
+  @IsValidArrayString({ minSize: 1, required: true })
+  tagIds: string[];
 
   @IsValidNumber()
   floor: number;
@@ -67,8 +68,8 @@ export class UpdateBoardingHouseReqDto {
   @IsValidEnum({ enum: BoardingHouseType, required: false })
   type?: BoardingHouseType;
 
-  @IsValidArrayNumber({ minSize: 1, required: true })
-  tagIds: number[];
+  @IsValidArrayString({ minSize: 1, required: true })
+  tagIds: string[];
 
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: true },

@@ -7,7 +7,7 @@ export class BoardingHouseResDto {
   type: string;
   title: string;
   location: string;
-  saleTag: string;
+  saleTag: string[];
   //   garages: string;
   itemDetails: string[];
   posterAvatar: string;
@@ -36,7 +36,9 @@ export class BoardingHouseResDto {
     dto.location = dataBoardingHouse?.boardingHouseAddress?.address
       ? dataBoardingHouse?.boardingHouseAddress?.address
       : null;
-    dto.saleTag = null;
+    dto.saleTag = dataBoardingHouse?.boardingHouseToTags?.map((item) => {
+      return item.tag.name;
+    });
     dto.itemDetails = [];
     dto.posterAvatar = null;
     dto.posterName = null;

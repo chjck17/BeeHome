@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsValidArrayNumber,
+  IsValidArrayString,
   IsValidEnum,
   IsValidNumber,
   IsValidNumberString,
@@ -26,8 +27,11 @@ export class CreateRoomReqDto {
   @IsValidNumberString()
   acreage: string;
 
-  @IsValidEnum({ enum: RoomStatus, required: true })
-  status: RoomStatus;
+  @IsValidArrayString({ minSize: 1, required: true })
+  categoryIds: string[];
+
+  @IsValidArrayString({ minSize: 1, required: true })
+  attributeIds: string[];
 }
 export class GetListRoomsReqDto extends PaginationReqDto {}
 
@@ -46,6 +50,12 @@ export class UpdateRoomReqDto {
 
   @IsValidNumberString({ required: false })
   acreage?: string;
+
+  @IsValidArrayNumber({ required: false })
+  categoryIds: number[];
+
+  @IsValidArrayNumber({ required: false })
+  attributeIds: number[];
 
   @IsValidEnum({ enum: Status, required: false })
   status?: RoomStatus;

@@ -15,6 +15,7 @@ export class ProvinceCustomerService {
     let { searchText } = dto;
     const queryBuilder = this.provinceRepo
       .createQueryBuilder('p')
+      .orderBy({ 'p.name': 'ASC' })
       .andWhere('p.type = :type', { type: type });
     if (parentId)
       queryBuilder.andWhere('p.parentId = :parentId', { parentId: parentId });
