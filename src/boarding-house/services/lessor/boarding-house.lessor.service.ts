@@ -110,6 +110,19 @@ export class BoardingHouseLessorService {
     const boardingHouse =
       await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
         where: { id, userId: user.id },
+        relations: {
+          floors: {
+            rooms: {
+              roomToCategories: true,
+              roomToAttributes: true,
+              roomImages: true,
+            },
+          },
+          boardingHouseRentDeposits: true,
+          boardingHouseToTags: { tag: true },
+          boardingHouseRules: true,
+          boardingHouseAddress: true,
+        },
       });
     return boardingHouse;
   }
