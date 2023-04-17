@@ -66,6 +66,26 @@ export class CategoryLessorService {
       }),
     ]);
     await this.saveCategoryType(createdCategory.id, categoryTypes);
+    //---------------------------------------------------------------------------
+    const { limit, page } = dto;
+
+    const queryBuilder = this.categoryRepo
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.categoryDetails', 'categoryDetails')
+      .leftJoinAndSelect('category.categoryTypes', 'categoryType')
+      .leftJoinAndSelect(
+        'categoryType.categoryTypeDetails',
+        'categoryTypeDetail',
+      )
+      .andWhere('category.userId = :id', {
+        id: user.id,
+      });
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+      cacheQueries: true,
+    });
+    return new Pagination(items, meta);
   }
 
   private async saveCategoryType(

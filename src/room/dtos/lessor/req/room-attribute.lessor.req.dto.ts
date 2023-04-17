@@ -29,7 +29,7 @@ export class UpdateRoomAttributeDetailReqDto {
   @IsValidText({ trim: true, required: true })
   name: string;
 }
-export class SaveRoomAttributeReqDto {
+export class SaveRoomAttributeReqDto extends PaginationReqDto {
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: true },
     RoomAttributeDetailReqDto,

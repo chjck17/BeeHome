@@ -31,7 +31,7 @@ export class UpdateCategoryDetailReqDto {
   @IsValidText({ trim: true })
   name: string;
 }
-export class CreateCategoryReqDto {
+export class CreateCategoryReqDto extends PaginationReqDto {
   @IsValidArrayObject({ minSize: 2, maxSize: 2 }, CategoryDetailReqDto)
   @IsArrayObjUniqueProperty(['lang'])
   categoryDetails: CategoryDetailReqDto[];

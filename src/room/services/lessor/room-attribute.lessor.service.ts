@@ -62,6 +62,33 @@ export class RoomAttributeLessorService {
       createdRoomAttribute.id,
       roomAttributeTerms,
     );
+
+    //-------------------------------------------------------------------
+    const { limit, page } = dto;
+
+    const queryBuilder = this.roomAttributeRepo
+      .createQueryBuilder('roomAttribute')
+      .leftJoinAndSelect(
+        'roomAttribute.roomAttributeDetails',
+        'roomAttributeDetail',
+      )
+      .leftJoinAndSelect(
+        'roomAttribute.roomAttributeTerms',
+        'roomAttributeTerm',
+      )
+      .leftJoinAndSelect(
+        'roomAttributeTerm.roomAttributeTermDetails',
+        'roomAttributeTermDetail',
+      )
+      .andWhere('roomAttribute.userId = :id', {
+        id: user.id,
+      });
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+      cacheQueries: true,
+    });
+    return new Pagination(items, meta);
   }
 
   private async saveRoomAttributeTerms(
