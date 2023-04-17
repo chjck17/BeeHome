@@ -59,11 +59,22 @@ export class UploadFileController {
       fileFilter: imageFileFilter,
     }),
   )
-  multiple(
+  async multiple(
     @Req() req: Request,
     @UploadedFiles() files: Express.Multer.File[],
     @Body() body: MultipleFileDto,
   ) {
-    return { ...body, photo_url: filesMapper({ files, req }) };
+    const photos = filesMapper({ files, req });
+    const imgs = await Promise.all(
+      photos.map(async (item) => {
+        const img = await this.uploadFileService.addAvatar(2, {
+          path: item.image_url,
+          filename: item.filename,
+          mimetype: item.mimetype,
+        });
+        return img.id;
+      }),
+    );
+    return imgs;
   }
 }

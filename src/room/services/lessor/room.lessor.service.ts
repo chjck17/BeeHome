@@ -30,46 +30,47 @@ export class RoomLessorService {
     private roomToCategoryRepo: RoomToCategoryRepository,
     private roomToAttributeRepo: RoomToAttributeRepository,
   ) {}
-  async createRoom(dto: CreateRoomReqDto, imgIds: LocalFile[]) {
-    const { name, price, acreage, floorId, categoryIds, attributeIds } = dto;
-    // const room = this.roomRepo.create({
-    //   floorId: floorId,
-    //   name: name,
-    //   price: price,
-    //   acreage: acreage,
-    //   status: RoomStatus.ACTIVE,
-    // });
-    // await this.roomRepo.save(room);
+  async createRoom(dto: CreateRoomReqDto) {
+    const { name, price, acreage, floorId, categoryIds, attributeIds, imgIds } =
+      dto;
+    const room = this.roomRepo.create({
+      floorId: floorId,
+      name: name,
+      price: price,
+      acreage: acreage,
+      status: RoomStatus.ACTIVE,
+    });
+    await this.roomRepo.save(room);
 
-    // await Promise.all(
-    //   imgIds.map(async (item) => {
-    //     const roomImage = this.roomImageRepo.create({
-    //       roomId: room.id,
-    //       localFileId: item.id,
-    //     });
-    //     await this.roomImageRepo.save(roomImage);
-    //   }),
-    // );
-    // await Promise.all(
-    //   categoryIds.map(async (id) => {
-    //     const roomCategory = this.roomToCategoryRepo.create({
-    //       roomId: room.id,
-    //       categoryTypeId: id,
-    //     });
-    //     await this.roomToCategoryRepo.save(roomCategory);
-    //   }),
-    // );
-    // await Promise.all(
-    //   attributeIds.map(async (id) => {
-    //     const roomAttribute = this.roomToAttributeRepo.create({
-    //       roomId: room.id,
-    //       roomAttributeTermId: id,
-    //     });
-    //     await this.roomToAttributeRepo.save(roomAttribute);
-    //   }),
-    // );
-    // return room;
-    return dto;
+    await Promise.all(
+      imgIds.map(async (id) => {
+        const roomImage = this.roomImageRepo.create({
+          roomId: room.id,
+          localFileId: id,
+        });
+        await this.roomImageRepo.save(roomImage);
+      }),
+    );
+    await Promise.all(
+      categoryIds.map(async (id) => {
+        const roomCategory = this.roomToCategoryRepo.create({
+          roomId: room.id,
+          categoryTypeId: Number(id),
+        });
+        await this.roomToCategoryRepo.save(roomCategory);
+      }),
+    );
+    await Promise.all(
+      attributeIds.map(async (id) => {
+        const roomAttribute = this.roomToAttributeRepo.create({
+          roomId: room.id,
+          roomAttributeTermId: Number(id),
+        });
+        await this.roomToAttributeRepo.save(roomAttribute);
+      }),
+    );
+    return room;
+    // return dto;
   }
   async updateRoom(dto: UpdateRoomReqDto) {
     const {

@@ -12,9 +12,6 @@ import { Status } from '../../../../common/enums/status.enum';
 import { RoomStatus } from '../../../enums/room.enum';
 
 export class CreateRoomReqDto {
-  @ApiProperty({ type: Array, format: 'binary' })
-  photo_url: string[];
-
   @IsValidNumber()
   floorId: number;
 
@@ -26,6 +23,9 @@ export class CreateRoomReqDto {
 
   @IsValidNumberString()
   acreage: string;
+
+  @IsValidArrayNumber({ minSize: 1, required: true })
+  imgIds: number[];
 
   @IsValidArrayString({ minSize: 1, required: true })
   categoryIds: string[];

@@ -53,7 +53,6 @@ export class RoomLessorController {
     return this.roomLessorService.findOne(user, Number(id));
   }
 
-  @ApiConsumes('multipart/form-data')
   @Post()
   @UseInterceptors(
     FastifyFilesInterceptor('photo_url', 10, {
@@ -64,23 +63,8 @@ export class RoomLessorController {
       fileFilter: imageFileFilter,
     }),
   )
-  async createRoom(
-    @Req() req: Request,
-    @UploadedFiles() files: Express.Multer.File[],
-    @Body() createRoomDto: CreateRoomReqDto,
-  ) {
-    const photos = filesMapper({ files, req });
-    const imgs = await Promise.all(
-      photos.map(async (item) => {
-        const img = await this.uploadFileService.addAvatar(2, {
-          path: item.image_url,
-          filename: item.filename,
-          mimetype: item.mimetype,
-        });
-        return img;
-      }),
-    );
-    return this.roomLessorService.createRoom(createRoomDto, imgs);
+  async createRoom(@Body() createRoomDto: CreateRoomReqDto) {
+    return this.roomLessorService.createRoom(createRoomDto);
   }
 
   @Patch(':id')
