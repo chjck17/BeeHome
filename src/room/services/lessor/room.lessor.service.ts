@@ -73,16 +73,8 @@ export class RoomLessorService {
     // return dto;
   }
   async updateRoom(dto: UpdateRoomReqDto) {
-    const {
-      floorId,
-      roomId,
-      name,
-      status,
-      acreage,
-      price,
-      categoryIds,
-      attributeIds,
-    } = dto;
+    const { roomId, name, status, acreage, price, categoryIds, attributeIds } =
+      dto;
     const existRoom = await this.roomRepo.findOne({
       where: { id: roomId },
       relations: {
@@ -101,21 +93,27 @@ export class RoomLessorService {
       price: price,
     });
     await this.roomRepo.save(room);
-    await this.saveItemCategory(
+    const test1 = await this.saveItemCategory(
       room.id,
       existRoom.roomToCategories,
       categoryIds,
     );
-    await this.saveItemAttribute(
+    const test2 = await this.saveItemAttribute(
       room.id,
       existRoom.roomToAttributes,
       attributeIds,
     );
-    return room;
+    // return room;
+    return { test1, test2 };
   }
   async findOne(user: User, id: number) {
     const room = await this.roomRepo.findOneOrThrowNotFoundExc({
       where: { id },
+      relations: {
+        roomImages: true,
+        roomToAttributes: true,
+        roomToCategories: true,
+      },
     });
     return room;
   }
@@ -124,7 +122,10 @@ export class RoomLessorService {
     const { limit, page } = dto;
     const queryBuilder = this.roomRepo
       .createQueryBuilder('room')
-      .andWhere('room.userId = :userId', {
+      .leftJoinAndSelect('room.floor', 'floor')
+      .leftJoinAndSelect('floor.boardingHouse', 'boardingHouse')
+      .leftJoinAndSelect('boardingHouse.user', 'user')
+      .andWhere('user.id = :userId', {
         userId: user.id,
       });
     const { items, meta } = await paginate(queryBuilder, {
@@ -162,24 +163,26 @@ export class RoomLessorService {
   private async saveItemCategory(
     itemId: number,
     items: RoomToCategory[],
-    itemsDto: number[],
+    itemsDto: string[],
   ) {
     const itemIdsToRemove: number[] = [];
     const itemToInsert: RoomToCategory[] = [];
 
     for (const itemInDb of items) {
-      const dto = itemsDto.find((id) => id === itemInDb.id);
+      const dto = itemsDto.find((id) => Number(id) === itemInDb.id);
       if (!dto) {
         itemIdsToRemove.push(itemInDb.id);
       }
     }
 
     for (const id of itemsDto) {
-      if (!id) {
+      const dto = items.find((item) => Number(id) === item.id);
+
+      if (!dto) {
         itemToInsert.push(
           this.roomToCategoryRepo.create({
             roomId: itemId,
-            categoryTypeId: id,
+            categoryTypeId: Number(id),
           }),
         );
       }
@@ -192,29 +195,30 @@ export class RoomLessorService {
     if (itemToInsert.length) {
       await this.roomToCategoryRepo.insert(itemToInsert);
     }
-    // return { itemDetailIdsToRemove, itemDetailsToInsert, itemDetailsToUpdate };
+    return { itemIdsToRemove, itemToInsert };
   }
   private async saveItemAttribute(
     itemId: number,
     items: RoomToAttribute[],
-    itemsDto: number[],
+    itemsDto: string[],
   ) {
     const itemIdsToRemove: number[] = [];
     const itemToInsert: RoomToAttribute[] = [];
 
     for (const itemInDb of items) {
-      const dto = itemsDto.find((id) => id === itemInDb.id);
+      const dto = itemsDto.find((id) => Number(id) === itemInDb.id);
       if (!dto) {
         itemIdsToRemove.push(itemInDb.id);
       }
     }
 
     for (const id of itemsDto) {
-      if (!id) {
+      const dto = items.find((item) => Number(id) === item.id);
+      if (!dto) {
         itemToInsert.push(
           this.roomToAttributeRepo.create({
             roomId: itemId,
-            roomAttributeTermId: id,
+            roomAttributeTermId: Number(id),
           }),
         );
       }
@@ -228,5 +232,6 @@ export class RoomLessorService {
     if (itemToInsert.length) {
       await this.roomToAttributeRepo.insert(itemToInsert);
     }
+    return { itemIdsToRemove, itemToInsert };
   }
 }

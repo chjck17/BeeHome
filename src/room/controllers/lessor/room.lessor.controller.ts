@@ -67,10 +67,9 @@ export class RoomLessorController {
     return this.roomLessorService.createRoom(createRoomDto);
   }
 
-  @Patch(':id')
+  @Patch()
   update(
     @CurrentUser() user: User,
-    @Param('id') id: string,
     @Body() updateProductDto: UpdateRoomReqDto,
   ) {
     return this.roomLessorService.updateRoom(updateProductDto);

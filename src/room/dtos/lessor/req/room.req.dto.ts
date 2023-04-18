@@ -37,9 +37,6 @@ export class GetListRoomsReqDto extends PaginationReqDto {}
 
 export class UpdateRoomReqDto {
   @IsValidNumber({ required: true })
-  floorId: number;
-
-  @IsValidNumber({ required: true })
   roomId: number;
 
   @IsValidText({ trim: true, required: false })
@@ -51,13 +48,13 @@ export class UpdateRoomReqDto {
   @IsValidNumberString({ required: false })
   acreage?: string;
 
-  @IsValidArrayNumber({ required: false })
-  categoryIds: number[];
+  @IsValidArrayString({ required: false })
+  categoryIds: string[];
 
-  @IsValidArrayNumber({ required: false })
-  attributeIds: number[];
+  @IsValidArrayString({ required: false })
+  attributeIds: string[];
 
-  @IsValidEnum({ enum: Status, required: false })
+  @IsValidEnum({ enum: RoomStatus, required: false })
   status?: RoomStatus;
 }
 export class DeleteListReqDto {

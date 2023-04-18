@@ -280,7 +280,8 @@ export class BoardingHouseLessorService {
     }
 
     for (const id of itemsDto) {
-      if (!id) {
+      const dto = items.find((item) => Number(id) === item.id);
+      if (!dto) {
         itemToInsert.push(
           this.boardingHouseToTagRepo.create({
             boardingHouseId: itemId,
