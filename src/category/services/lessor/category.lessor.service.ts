@@ -16,6 +16,7 @@ import {
   CategoryDetailReqDto,
   CreateCategoryReqDto,
   DeleteCategoriesReqDto,
+  GetListCategoryTypeReqDto,
   UpdateCategoryDetailReqDto,
   UpdateCategoryReqDto,
 } from '../../dtos/lessor/req/category.lessor.req.dto';
@@ -134,6 +135,30 @@ export class CategoryLessorService {
         'categoryType.categoryTypeDetails',
         'categoryTypeDetail',
       )
+      .andWhere('category.userId = :id', {
+        id: user.id,
+      });
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+      cacheQueries: true,
+    });
+    return new Pagination(items, meta);
+  }
+
+  async getListCategoryType(user: User, dto: GetListCategoryTypeReqDto) {
+    const { limit, page, lang } = dto;
+
+    const queryBuilder = this.categoryTypeRepo
+      .createQueryBuilder('categoryType')
+      .leftJoinAndSelect('categoryType.category', 'category')
+      .leftJoinAndSelect(
+        'categoryType.categoryTypeDetails',
+        'categoryTypeDetail',
+      )
+      .andWhere('categoryTypeDetail.lang = :lang', {
+        lang: lang ? lang : 'VN',
+      })
       .andWhere('category.userId = :id', {
         id: user.id,
       });

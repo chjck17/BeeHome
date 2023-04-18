@@ -15,6 +15,7 @@ import {
 import {
   CreateRoomAttributeReqDto,
   GetListRoomAttributeReqDto,
+  GetListRoomAttributeTermReqDto,
   UpdateRoomAttributeDetailReqDto,
   UpdateRoomAttributeReqDto,
 } from '../../dtos/lessor/req/room-attribute.lessor.req.dto';
@@ -145,6 +146,32 @@ export class RoomAttributeLessorService {
         'roomAttributeTerm.roomAttributeTermDetails',
         'roomAttributeTermDetail',
       )
+      .andWhere('roomAttribute.userId = :id', {
+        id: user.id,
+      });
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+      cacheQueries: true,
+    });
+    return new Pagination(items, meta);
+  }
+  async getListRoomAttributeTerm(
+    user: User,
+    dto: GetListRoomAttributeTermReqDto,
+  ) {
+    const { limit, page, lang } = dto;
+
+    const queryBuilder = this.roomAttributeTermRepo
+      .createQueryBuilder('roomAttributeTerm')
+      .leftJoinAndSelect('roomAttributeTerm.roomAttribute', 'roomAttribute')
+      .leftJoinAndSelect(
+        'roomAttributeTerm.roomAttributeTermDetails',
+        'roomAttributeTermDetail',
+      )
+      .andWhere('roomAttributeTermDetail.lang = :lang', {
+        lang: lang ? lang : 'VN',
+      })
       .andWhere('roomAttribute.userId = :id', {
         id: user.id,
       });

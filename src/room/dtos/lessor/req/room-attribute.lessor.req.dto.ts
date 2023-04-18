@@ -68,3 +68,7 @@ export class GetListRoomAttributeReqDto extends PaginationReqDto {
   // @IsValidEnum({ enum: Language, required: true })
   // lang: Language;
 }
+export class GetListRoomAttributeTermReqDto extends PaginationReqDto {
+  @IsValidEnum({ enum: Language, required: false })
+  lang?: Language;
+}

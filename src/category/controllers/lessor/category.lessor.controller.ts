@@ -22,6 +22,7 @@ import {
   CreateCategoryReqDto,
   DeleteCategoriesReqDto,
   GetListCategoryReqDto,
+  GetListCategoryTypeReqDto,
   UpdateCategoryReqDto,
 } from '../../dtos/lessor/req/category.lessor.req.dto';
 
@@ -34,6 +35,14 @@ export class CategoryLessorController {
   @Get()
   get(@CurrentUser() user: User, @Query() query: GetListCategoryReqDto) {
     return this.categoryLessorService.getListCategory(user, query);
+  }
+
+  @Get('type')
+  getType(
+    @CurrentUser() user: User,
+    @Query() query: GetListCategoryTypeReqDto,
+  ) {
+    return this.categoryLessorService.getListCategoryType(user, query);
   }
 
   @Get(':id')

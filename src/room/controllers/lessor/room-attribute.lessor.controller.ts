@@ -22,6 +22,7 @@ import { RoomAttributeLessorService } from '../../services/lessor/room-attribute
 import {
   CreateRoomAttributeReqDto,
   GetListRoomAttributeReqDto,
+  GetListRoomAttributeTermReqDto,
   UpdateRoomAttributeReqDto,
 } from '../../dtos/lessor/req/room-attribute.lessor.req.dto';
 import { DeleteListReqDto } from '../../dtos/lessor/req/room.req.dto';
@@ -37,6 +38,16 @@ export class RoomAttributeLessorController {
   @Get()
   get(@CurrentUser() user: User, @Query() query: GetListRoomAttributeReqDto) {
     return this.roomAttributeLessorService.getListRoomAttribute(user, query);
+  }
+  @Get('term')
+  getTerm(
+    @CurrentUser() user: User,
+    @Query() query: GetListRoomAttributeTermReqDto,
+  ) {
+    return this.roomAttributeLessorService.getListRoomAttributeTerm(
+      user,
+      query,
+    );
   }
 
   @Get(':id')

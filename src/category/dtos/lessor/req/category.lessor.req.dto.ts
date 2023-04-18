@@ -61,3 +61,7 @@ export class GetListCategoryReqDto extends PaginationReqDto {
   // @IsValidEnum({ enum: Language, required: false })
   // lang?: Language;
 }
+export class GetListCategoryTypeReqDto extends PaginationReqDto {
+  @IsValidEnum({ enum: Language, required: false })
+  lang?: Language;
+}
