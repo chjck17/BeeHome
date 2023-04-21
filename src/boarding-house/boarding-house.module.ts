@@ -17,6 +17,8 @@ import { BoardingHouseToTagRuleRepository } from './repositories/boarding-house-
 import { BoardingHouseToTag } from './entities/boarding-house-to-tag.entity';
 import { BoardingHouseDescriptionRepository } from './repositories/boarding-house-description.repository';
 import { BoardingHouseDescription } from './entities/boarding-house-description.entity';
+import { BoardingHouseCommonService } from './services/common/boardingHouse.common.service';
+import { RoomRepository } from '../room/repositories/room.repository';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { BoardingHouseDescription } from './entities/boarding-house-description.
   controllers: [BoardingHouseLessorController, BoardingHouseCustomerController],
   providers: [
     BoardingHouseRepository,
+    RoomRepository,
     BoardingHouseLessorService,
     BoardingHouseRuleRepository,
     BoardingHouseDescriptionRepository,
@@ -40,6 +43,7 @@ import { BoardingHouseDescription } from './entities/boarding-house-description.
     BoardingHouseCustomerService,
     BoardingHouseAddressRepository,
     BoardingHouseToTagRuleRepository,
+    BoardingHouseCommonService,
   ],
 })
 export class BoardingHouseModule {}

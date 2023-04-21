@@ -73,7 +73,25 @@ export class CreateBoardingHouseReqDto {
   })
   address: CreateAddressReqDto;
 }
-export class GetListBoardingHousesReqDto extends PaginationReqDto {}
+export class GetListBoardingHousesReqDto extends PaginationReqDto {
+  @IsValidText({ trim: true, required: false })
+  searchText?: string;
+
+  @IsValidNumberString({ required: false })
+  startPrice?: string;
+
+  @IsValidNumberString({ required: false })
+  endPrice?: string;
+
+  @IsValidText({ trim: true, required: false })
+  province?: string;
+
+  @IsValidText({ trim: true, required: false })
+  ward?: string;
+
+  @IsValidText({ trim: true, required: false })
+  district?: string;
+}
 
 export class UpdateBoardingHouseReqDto {
   @IsValidNumber()

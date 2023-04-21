@@ -130,6 +130,7 @@ export class RoomLessorService {
       .andWhere('user.id = :userId', {
         userId: user.id,
       });
+
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
