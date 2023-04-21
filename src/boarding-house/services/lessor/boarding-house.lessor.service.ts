@@ -150,31 +150,48 @@ export class BoardingHouseLessorService {
     return boardingHouse;
   }
 
-  async getListBoardingHouse(user: User, dto: GetListBoardingHousesReqDto) {
+  async getListBoardingHouseByFiler(
+    user: User,
+    dto: GetListBoardingHousesReqDto,
+  ) {
     const { limit, page, startPrice, endPrice, province, ward, district } = dto;
     let { searchText } = dto;
     const queryBuilder = this.boardingHouseRepo
       .createQueryBuilder('boardingHouse')
+      .leftJoinAndSelect(
+        'boardingHouse.boardingHouseAddress',
+        'boardingHouseAddress',
+      )
       .leftJoinAndSelect('boardingHouse.floors', 'floor')
       .leftJoinAndSelect('floor.rooms', 'room')
-      // .addSelect('MIN(CAST(room.price AS INTEGER))', 'minPrice')
-      // .groupBy('room.id')
-      // .addSelect('MIN(room.price)', 'minPrice')
-      // .groupBy(
-      //   'floor.id,boardingHouse.id, boardingHouse.created_at,floor.created_at,floor.updated_at,floor.deleted_at,floor.version',
-      // )
-      // .addSelect('MIN(room.price)', 'minPrice')
-      // .groupBy('boardingHouse.id,floor.created_at')
       .andWhere('boardingHouse.userId = :userId', {
         userId: user.id,
       });
-    // .getRawOne();
 
-    // if (searchText) {
-    //   searchText = `%${searchText}%`;
-    //   queryBuilder.where('game.name ILIKE :searchText', { searchText });
-    // }
+    if (searchText) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouse.name ILIKE :searchText', {
+        searchText,
+      });
+    }
 
+    if (province) {
+      queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
+        province,
+      });
+    }
+
+    if (ward) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
+    }
+
+    if (district) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
+        district,
+      });
+    }
     // if (startPrice)
     //   queryBuilder.where('game.startDate > :startDate', { startPrice });
     // if (endPrice) queryBuilder.where('game.endDate < :endDate', { endPrice });
@@ -183,33 +200,76 @@ export class BoardingHouseLessorService {
       page,
     });
 
-    // const tests = Promise.all(
-    //   items.map((item) => {
-    //     const test = this.boardingHouseCommonService.getProductPriceRange(item);
-    //     return test;
-    //   }),
-    // );
-    // const boardingHouses = await Promise.all(
-    //   items.map(async (item) => {
-    //     const boardingHouse =
-    //       await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
-    //         where: { id: item.id },
-    //         relations: {
-    //           floors: { rooms: { roomImages: { localFile: true } } },
-    //           boardingHouseRentDeposits: true,
-    //           boardingHouseToTags: { tag: true },
-    //           boardingHouseRules: true,
-    //           boardingHouseAddress: true,
-    //         },
-    //       });
-    //     // return BoardingHouseResDto.forCustomer(boardingHouse);
-    //     return boardingHouse;
-    //   }),
-    // );
-    // return new Pagination(boardingHouses, meta);
-    return items;
+    const tests = Promise.all(
+      items.map((item) => {
+        const test = this.boardingHouseCommonService.getProductPriceRange(item);
+        return test;
+      }),
+    );
+    const boardingHouses = await Promise.all(
+      items.map(async (item) => {
+        const boardingHouse =
+          await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
+            where: { id: item.id },
+            relations: {
+              floors: { rooms: { roomImages: { localFile: true } } },
+              boardingHouseRentDeposits: true,
+              boardingHouseToTags: { tag: true },
+              boardingHouseRules: true,
+              boardingHouseAddress: true,
+            },
+          });
+        return BoardingHouseResDto.forCustomer(boardingHouse);
+        return boardingHouse;
+      }),
+    );
+    return new Pagination(boardingHouses, meta);
+    // return tests;
   }
+  async getListBoardingHouse(user: User, dto: GetListBoardingHousesReqDto) {
+    const { limit, page, startPrice, endPrice, province, ward, district } = dto;
+    let { searchText } = dto;
+    const queryBuilder = this.boardingHouseRepo
+      .createQueryBuilder('boardingHouse')
+      .leftJoinAndSelect(
+        'boardingHouse.boardingHouseAddress',
+        'boardingHouseAddress',
+      )
+      .leftJoinAndSelect('boardingHouse.floors', 'floor')
+      .leftJoinAndSelect('floor.rooms', 'room')
+      .andWhere('boardingHouse.userId = :userId', {
+        userId: user.id,
+      });
 
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+    });
+
+    const tests = Promise.all(
+      items.map((item) => {
+        const test = this.boardingHouseCommonService.getProductPriceRange(item);
+        return test;
+      }),
+    );
+    const boardingHouses = await Promise.all(
+      items.map(async (item) => {
+        const boardingHouse =
+          await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
+            where: { id: item.id },
+            relations: {
+              floors: { rooms: { roomImages: { localFile: true } } },
+              boardingHouseRentDeposits: true,
+              boardingHouseToTags: { tag: true },
+              boardingHouseRules: true,
+              boardingHouseAddress: true,
+            },
+          });
+        return boardingHouse;
+      }),
+    );
+    return new Pagination(boardingHouses, meta);
+  }
   async updateBoardingHouse(user: User, dto: UpdateBoardingHouseReqDto) {
     const {
       id,
