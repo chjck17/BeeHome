@@ -4,6 +4,7 @@ import {
   IsValidArrayString,
   IsValidEnum,
   IsValidNumber,
+  IsValidNumberString,
   IsValidObject,
   IsValidText,
 } from '../../common/decorators/custom-validator.decorator';
@@ -14,6 +15,10 @@ import {
   CreateAddressReqDto,
   UpdateAddressReqDto,
 } from './boarding-house-adress.dto';
+import {
+  CreateBoardingHouseDescriptionReqDto,
+  UpdateBoardingHouseDescriptionReqDto,
+} from './boarding-house-description.dto';
 import {
   CreateBoardingHouseRenDepositReqDto,
   UpdateBoardingHouseRenDepositReqDto,
@@ -33,6 +38,15 @@ export class CreateBoardingHouseReqDto {
   @IsValidNumber()
   floor: number;
 
+  @IsValidNumberString()
+  electricFee: string;
+
+  @IsValidNumberString()
+  waterFee: string;
+
+  @IsValidNumberString()
+  serviceFee: string;
+
   @IsValidEnum({ enum: BoardingHouseType, required: true })
   type: BoardingHouseType;
 
@@ -40,7 +54,13 @@ export class CreateBoardingHouseReqDto {
     { minSize: 1, maxSize: 2, required: true },
     CreateBoardingHouseRenDepositReqDto,
   )
-  houseRentDeposits: CreateBoardingHouseRenDepositReqDto[];
+  houseRentDeposits: CreateBoardingHouseDescriptionReqDto[];
+
+  @IsValidArrayObject(
+    { minSize: 1, maxSize: 2, required: true },
+    CreateBoardingHouseDescriptionReqDto,
+  )
+  houseDescriptions: CreateBoardingHouseDescriptionReqDto[];
 
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: true },
@@ -68,6 +88,15 @@ export class UpdateBoardingHouseReqDto {
   @IsValidEnum({ enum: BoardingHouseType, required: false })
   type?: BoardingHouseType;
 
+  @IsValidNumberString({ required: false })
+  electricFee?: string;
+
+  @IsValidNumberString({ required: false })
+  waterFee?: string;
+
+  @IsValidNumberString({ required: false })
+  serviceFee?: string;
+
   @IsValidArrayString({ minSize: 1, required: true })
   tagIds: string[];
 
@@ -76,6 +105,12 @@ export class UpdateBoardingHouseReqDto {
     UpdateBoardingHouseRenDepositReqDto,
   )
   houseRentDeposits: UpdateBoardingHouseRenDepositReqDto[];
+
+  @IsValidArrayObject(
+    { minSize: 1, maxSize: 2, required: true },
+    UpdateBoardingHouseDescriptionReqDto,
+  )
+  houseDescriptions: UpdateBoardingHouseDescriptionReqDto[];
 
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: true },

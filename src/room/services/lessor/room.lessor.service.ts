@@ -111,8 +111,10 @@ export class RoomLessorService {
       where: { id },
       relations: {
         roomImages: true,
-        roomToAttributes: true,
-        roomToCategories: true,
+        roomToAttributes: {
+          roomAttributeTerm: { roomAttributeTermDetails: true },
+        },
+        roomToCategories: { categoryType: { categoryTypeDetails: true } },
       },
     });
     return room;

@@ -17,7 +17,6 @@ import {
   CurrentUser,
 } from '../../../common/decorators/auth.decorator';
 
-import { DeleteCategoriesReqDto } from '../../../category/dtos/lessor/req/category.lessor.req.dto';
 import { RoomAttributeLessorService } from '../../services/lessor/room-attribute.lessor.service';
 import {
   CreateRoomAttributeReqDto,

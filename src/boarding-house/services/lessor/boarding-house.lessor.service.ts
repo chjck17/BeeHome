@@ -23,12 +23,14 @@ import { BoardingHouseToTagRuleRepository } from '../../repositories/boarding-ho
 import { Status } from '../../../common/enums/status.enum';
 import { BoardingHouseResDto } from '../../dtos/res/boarding-house.res.dto';
 import { BoardingHouseToTag } from '../../entities/boarding-house-to-tag.entity';
+import { BoardingHouseDescriptionRepository } from '../../repositories/boarding-house-description.repository';
 
 @Injectable()
 export class BoardingHouseLessorService {
   constructor(
     private boardingHouseRepo: BoardingHouseRepository,
     private boardingHouseAddressRepo: BoardingHouseAddressRepository,
+    private boardingHouseDescriptionRepo: BoardingHouseDescriptionRepository,
     private boardingHouseRuleRepo: BoardingHouseRuleRepository,
     private boardingHouseRentDepositRepo: BoardingHouseRentDepositRepository,
     private boardingHouseToTagRepo: BoardingHouseToTagRuleRepository,
@@ -41,9 +43,13 @@ export class BoardingHouseLessorService {
       name,
       type,
       houseRentDeposits,
+      houseDescriptions,
       boardingHouseRules,
       address,
       floor,
+      electricFee,
+      waterFee,
+      serviceFee,
       tagIds,
     } = dto;
     const boardingHouse = this.boardingHouseRepo.create({
@@ -51,6 +57,9 @@ export class BoardingHouseLessorService {
       name: name,
       type: type,
       status: Status.ACTIVE,
+      electricFee,
+      waterFee,
+      serviceFee,
     });
     await this.boardingHouseRepo.save(boardingHouse);
 
@@ -83,6 +92,18 @@ export class BoardingHouseLessorService {
           content: item.content,
         });
         await this.boardingHouseRuleRepo.save(boardingHouseRole);
+      }),
+    ]);
+
+    await Promise.all([
+      houseDescriptions.map(async (item) => {
+        const boardingHouseDescription =
+          this.boardingHouseDescriptionRepo.create({
+            boardingHouseId: boardingHouse.id,
+            lang: item.lang,
+            content: item.content,
+          });
+        await this.boardingHouseDescriptionRepo.save(boardingHouseDescription);
       }),
     ]);
 
@@ -164,10 +185,14 @@ export class BoardingHouseLessorService {
       name,
       type,
       houseRentDeposits,
+      houseDescriptions,
       boardingHouseRules,
       address,
       tagIds,
       status,
+      electricFee,
+      waterFee,
+      serviceFee,
     } = dto;
     const existBoardingHouse = await this.boardingHouseRepo.findOne({
       where: { id: id, user: { id: user.id } },
@@ -188,6 +213,9 @@ export class BoardingHouseLessorService {
       name: name,
       type: type,
       status: status,
+      electricFee: electricFee,
+      waterFee: waterFee,
+      serviceFee: serviceFee,
     });
 
     await this.boardingHouseAddressRepo.save({
@@ -222,14 +250,17 @@ export class BoardingHouseLessorService {
       }),
     ]);
 
-    // await Promise.all([
-    //   tagIds.map(async (item) => {
-    //     await this.boardingHouseToTagRepo.save({
-    //       boardingHouseId: existBoardingHouse.id,
-    //       tagId: item,
-    //     });
-    //   }),
-    // ]);
+    await Promise.all([
+      houseDescriptions.map(async (item) => {
+        const boardingDescription = this.boardingHouseDescriptionRepo.create({
+          id: item.id,
+          boardingHouseId: existBoardingHouse.id,
+          lang: item.lang,
+          content: item.content,
+        });
+        await this.boardingHouseDescriptionRepo.save(boardingDescription);
+      }),
+    ]);
     await this.saveItem(
       existBoardingHouse.id,
       existBoardingHouse.boardingHouseToTags,

@@ -10,6 +10,7 @@ import { UniqueWithSoftDelete } from '../../common/decorators/typeorm.decorator'
 
 import { LessorRank, LessorStatus } from '../enums/lessor.enum';
 import { User } from './user.entity';
+import { LocalFile } from '../../local-file/local-file.entity';
 
 @Entity()
 export class Lessor extends BaseEntity {
@@ -52,12 +53,12 @@ export class Lessor extends BaseEntity {
   // events: Event[];
   // // End join event
 
-  // // Join file
-  // @Column({ name: 'avatar_id', nullable: true })
-  // avatarId: number;
+  // Join file
+  @Column({ nullable: true })
+  avatarId: number;
 
-  // @OneToOne(() => File)
-  // @JoinColumn({ name: 'avatar_id' })
-  // avatar: File;
-  // // End join file
+  @OneToOne(() => LocalFile)
+  @JoinColumn()
+  avatar: LocalFile;
+  // End join file
 }

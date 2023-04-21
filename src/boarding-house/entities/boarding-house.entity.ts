@@ -16,6 +16,7 @@ import { BoardingHouseAddress } from './boarding-house-address.entity';
 import { BoardingHouseRule } from './boarding-house-rule.entity';
 import { BoardingHouseRentDeposit } from './boarding-house-rent-deposit.entity';
 import { BaseEntity } from '../../common/entities/base.entity';
+import { BoardingHouseDescription } from './boarding-house-description.entity';
 
 @Entity()
 export class BoardingHouse extends BaseEntity {
@@ -30,6 +31,15 @@ export class BoardingHouse extends BaseEntity {
 
   @Column()
   name: string;
+
+  @Column({ nullable: true })
+  electricFee: string;
+
+  @Column({ nullable: true })
+  waterFee: string;
+
+  @Column({ nullable: true })
+  serviceFee: string;
   // Join user
   @Column({ name: 'user_id' })
   userId: number;
@@ -53,4 +63,7 @@ export class BoardingHouse extends BaseEntity {
 
   @OneToMany(() => BoardingHouseRentDeposit, (item) => item.boardingHouse)
   boardingHouseRentDeposits: BoardingHouseRentDeposit[];
+
+  @OneToMany(() => BoardingHouseDescription, (item) => item.boardingHouse)
+  boardingHouseDescriptions: BoardingHouseDescription[];
 }

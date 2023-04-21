@@ -1,6 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseEntity } from '../common/entities/base.entity';
 import { RoomImage } from '../room/entities/room-image.entity';
+import { Lessor } from '../auth/entities/lessor.entity';
 
 @Entity()
 export class LocalFile extends BaseEntity {
@@ -18,4 +25,7 @@ export class LocalFile extends BaseEntity {
 
   @OneToMany(() => RoomImage, (item) => item.localFile)
   roomImages: RoomImage[];
+
+  @OneToOne(() => Lessor, (item) => item.avatar)
+  avatar: Lessor;
 }

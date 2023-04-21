@@ -29,7 +29,7 @@ export class ProfileLessorService {
       address,
       name,
       phoneNumber,
-      // avatarId,
+      avatarId,
     };
 
     await this.lessorRepo.save(lessor);
