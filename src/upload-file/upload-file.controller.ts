@@ -65,6 +65,8 @@ export class UploadFileController {
     @Body() body: MultipleFileDto,
   ) {
     const photos = filesMapper({ files, req });
+    // return photos;
+
     const imgs = await Promise.all(
       photos.map(async (item) => {
         const img = await this.uploadFileService.addAvatar(2, {

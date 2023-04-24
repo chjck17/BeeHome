@@ -110,7 +110,7 @@ export class RoomLessorService {
     const room = await this.roomRepo.findOneOrThrowNotFoundExc({
       where: { id },
       relations: {
-        roomImages: true,
+        roomImages: { localFile: true },
         roomToAttributes: {
           roomAttributeTerm: { roomAttributeTermDetails: true },
         },
