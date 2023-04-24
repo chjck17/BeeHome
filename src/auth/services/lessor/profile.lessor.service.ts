@@ -11,7 +11,7 @@ export class ProfileLessorService {
   async get(user: User) {
     const lessor = await this.lessorRepo.findOneOrThrowNotFoundExc({
       where: { userId: user.id },
-      // relations: { avatar: true },
+      relations: { avatar: true },
     });
 
     return LessorResDto.forLessor(lessor);

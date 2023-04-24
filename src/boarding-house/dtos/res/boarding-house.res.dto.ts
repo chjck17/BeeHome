@@ -1,5 +1,9 @@
 import { BoardingHouse } from '../../entities/boarding-house.entity';
-
+import { BoardingHousePriceResDto } from '../common/misc.res.dto';
+interface BoardingHouseResDtoParams {
+  dataBoardingHouse: BoardingHouse;
+  priceRange?: BoardingHousePriceResDto;
+}
 export class BoardingHouseResDto {
   id: number;
   img: string;
@@ -26,9 +30,9 @@ export class BoardingHouseResDto {
       .path
       ? dataBoardingHouse?.floors[0]?.rooms[0]?.roomImages[0]?.localFile.path
       : null;
-    dto.price = dataBoardingHouse?.floors[0]?.rooms[0]?.price
-      ? dataBoardingHouse?.floors[0]?.rooms[0]?.price
-      : null;
+    // dto.price = dataBoardingHouse?.floors[0]?.rooms[0]?.price
+    //   ? dataBoardingHouse?.floors[0]?.rooms[0]?.price
+    //   : null;
     dto.type = dataBoardingHouse?.type ? dataBoardingHouse?.type : null;
     dto.title = dataBoardingHouse?.name ? dataBoardingHouse?.name : null;
 
@@ -44,10 +48,15 @@ export class BoardingHouseResDto {
     dto.posterName = null;
   }
 
-  static forCustomer(dataBoardingHouse: BoardingHouse) {
+  static forCustomer({
+    dataBoardingHouse,
+    priceRange,
+  }: BoardingHouseResDtoParams) {
     if (!dataBoardingHouse) return null;
     const result = new BoardingHouseResDto();
-
+    result.price = String(priceRange?.range.min)
+      ? String(priceRange?.range.min)
+      : null;
     this.mapProperty(result, dataBoardingHouse);
     return result;
   }

@@ -115,16 +115,17 @@ export class BoardingHouseLessorService {
       });
       await this.floorRepo.save(floor);
     }
-
-    await Promise.all([
-      tagIds.map(async (item) => {
-        const tag = this.boardingHouseToTagRepo.create({
-          boardingHouseId: boardingHouse.id,
-          tagId: Number(item),
-        });
-        await this.boardingHouseToTagRepo.save(tag);
-      }),
-    ]);
+    if (tagIds.length) {
+      await Promise.all([
+        tagIds.map(async (item) => {
+          const tag = this.boardingHouseToTagRepo.create({
+            boardingHouseId: boardingHouse.id,
+            tagId: Number(item),
+          });
+          await this.boardingHouseToTagRepo.save(tag);
+        }),
+      ]);
+    }
     return boardingHouse;
     // return dto;
   }
@@ -150,7 +151,7 @@ export class BoardingHouseLessorService {
     return boardingHouse;
   }
 
-  async getListBoardingHouseByFiler(
+  async getListBoardingHouseByFilter(
     user: User,
     dto: GetListBoardingHousesReqDto,
   ) {
@@ -200,12 +201,12 @@ export class BoardingHouseLessorService {
       page,
     });
 
-    const tests = Promise.all(
-      items.map((item) => {
-        const test = this.boardingHouseCommonService.getProductPriceRange(item);
-        return test;
-      }),
-    );
+    // const tests = Promise.all(
+    //   items.map((item) => {
+    //     const test = this.boardingHouseCommonService.getBoardingHousePriceRange(item);
+    //     return test;
+    //   }),
+    // );
     const boardingHouses = await Promise.all(
       items.map(async (item) => {
         const boardingHouse =
@@ -219,7 +220,7 @@ export class BoardingHouseLessorService {
               boardingHouseAddress: true,
             },
           });
-        return BoardingHouseResDto.forCustomer(boardingHouse);
+        // return BoardingHouseResDto.forCustomer(boardingHouse);
         return boardingHouse;
       }),
     );
@@ -246,12 +247,6 @@ export class BoardingHouseLessorService {
       page,
     });
 
-    const tests = Promise.all(
-      items.map((item) => {
-        const test = this.boardingHouseCommonService.getProductPriceRange(item);
-        return test;
-      }),
-    );
     const boardingHouses = await Promise.all(
       items.map(async (item) => {
         const boardingHouse =

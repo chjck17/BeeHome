@@ -39,6 +39,16 @@ export class BoardingHouseLessorController {
     return this.boardingHouseLessorService.getListBoardingHouse(user, query);
   }
 
+  @Get('search')
+  findAllByFilter(
+    @CurrentUser() user: User,
+    @Query() query: GetListBoardingHousesReqDto,
+  ) {
+    return this.boardingHouseLessorService.getListBoardingHouseByFilter(
+      user,
+      query,
+    );
+  }
   @Get(':id')
   findOne(@CurrentUser() user: User, @Param('id') id: string) {
     return this.boardingHouseLessorService.findOne(user, Number(id));

@@ -21,6 +21,7 @@ import { LocalFilesModule } from './local-file/local-file.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
 import { ProvinceModule } from './province/province.module';
 import { BoardingHouseModule } from './boarding-house/boarding-house.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { BoardingHouseModule } from './boarding-house/boarding-house.module';
     ProvinceModule,
     BoardingHouseModule,
     TagModule,
+    CommentModule,
   ],
 
   controllers: [],

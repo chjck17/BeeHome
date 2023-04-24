@@ -20,6 +20,7 @@ import { BoardingHouseRuleRepository } from '../../repositories/boarding-house-r
 import { BoardingHouseRentDepositRepository } from '../../repositories/boarding-house-rent-deposits.repository';
 import { FloorRepository } from '../../../floor/repositories/floor.repository';
 import { BoardingHouseResDto } from '../../dtos/res/boarding-house.res.dto';
+import { BoardingHouseCommonService } from '../common/boardingHouse.common.service';
 
 @Injectable()
 export class BoardingHouseCustomerService {
@@ -28,6 +29,7 @@ export class BoardingHouseCustomerService {
     private boardingHouseAddressRepo: BoardingHouseAddressRepository,
     private boardingHouseRuleRepo: BoardingHouseRuleRepository,
     private boardingHouseRentDepositRepo: BoardingHouseRentDepositRepository,
+    private boardingHouseCommonService: BoardingHouseCommonService,
     private floorRepo: FloorRepository,
   ) {}
 
@@ -40,14 +42,51 @@ export class BoardingHouseCustomerService {
   }
 
   async getListBoardingHouse(dto: GetListBoardingHousesReqDto) {
-    const { limit, page } = dto;
-    const queryBuilder =
-      this.boardingHouseRepo.createQueryBuilder('boardingHouse');
+    const { limit, page, startPrice, endPrice, province, ward, district } = dto;
+    let { searchText } = dto;
+    const queryBuilder = this.boardingHouseRepo
+      .createQueryBuilder('boardingHouse')
+      .leftJoinAndSelect(
+        'boardingHouse.boardingHouseAddress',
+        'boardingHouseAddress',
+      )
+      .leftJoinAndSelect('boardingHouse.floors', 'floor')
+      .leftJoinAndSelect('floor.rooms', 'room');
+
+    if (searchText) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouse.name ILIKE :searchText', {
+        searchText,
+      });
+    }
+
+    if (province) {
+      queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
+        province,
+      });
+    }
+
+    if (ward) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
+    }
+
+    if (district) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
+        district,
+      });
+    }
+    // if (startPrice)
+    //   queryBuilder.where('game.startDate > :startDate', { startPrice });
+    // if (endPrice) queryBuilder.where('game.endDate < :endDate', { endPrice });
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
     });
-    const boardingHouses = await Promise.all(
+
+    // const tests = Promise.all(items.map((item) => {}));
+    let boardingHouses = await Promise.all(
       items.map(async (item) => {
         const boardingHouse =
           await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
@@ -58,11 +97,25 @@ export class BoardingHouseCustomerService {
               boardingHouseToTags: { tag: true },
               boardingHouseRules: true,
               boardingHouseAddress: true,
+              commentToBoardingHouses: { comment: true },
             },
           });
-        return BoardingHouseResDto.forCustomer(boardingHouse);
+        const priceRange =
+          await this.boardingHouseCommonService.getBoardingHousePriceRange(
+            item,
+          );
+        return BoardingHouseResDto.forCustomer({
+          dataBoardingHouse: boardingHouse,
+          priceRange,
+        });
       }),
     );
+    if (startPrice && endPrice) {
+      boardingHouses = boardingHouses.filter(
+        (item) => item.price >= startPrice && item.price <= endPrice,
+      );
+    }
     return new Pagination(boardingHouses, meta);
+    // return tests;
   }
 }

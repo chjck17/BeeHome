@@ -14,7 +14,7 @@ export class BoardingHouseCommonService {
     private floorRepo: FloorRepository,
   ) {}
 
-  async getProductPriceRange(
+  async getBoardingHousePriceRange(
     boardingHouse: BoardingHouse,
   ): Promise<BoardingHousePriceResDto> {
     const result = new BoardingHousePriceResDto();

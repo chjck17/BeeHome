@@ -32,7 +32,7 @@ export class CreateBoardingHouseReqDto {
   @IsValidText({ trim: true, required: true })
   name: string;
 
-  @IsValidArrayString({ minSize: 1, required: true })
+  @IsValidArrayString({ required: false })
   tagIds: string[];
 
   @IsValidNumber()

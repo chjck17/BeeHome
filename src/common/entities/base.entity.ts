@@ -1,8 +1,8 @@
 import {
-    CreateDateColumn,
-    DeleteDateColumn,
-    UpdateDateColumn,
-    VersionColumn
+  CreateDateColumn,
+  DeleteDateColumn,
+  UpdateDateColumn,
+  VersionColumn,
 } from 'typeorm';
 
 export class BaseEntity {
