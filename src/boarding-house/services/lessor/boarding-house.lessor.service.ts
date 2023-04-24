@@ -258,6 +258,7 @@ export class BoardingHouseLessorService {
               boardingHouseToTags: { tag: true },
               boardingHouseRules: true,
               boardingHouseAddress: true,
+              boardingHouseDescriptions: true,
             },
           });
         return boardingHouse;

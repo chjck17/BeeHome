@@ -54,11 +54,11 @@ export class Lessor extends BaseEntity {
   // // End join event
 
   // Join file
-  @Column({ nullable: true })
+  @Column({ name: 'avatar_id', nullable: true })
   avatarId: number;
 
-  @OneToOne(() => LocalFile)
-  @JoinColumn()
+  @OneToOne(() => LocalFile, (item) => item.avatarLessor)
+  @JoinColumn({ name: 'avatar_id' })
   avatar: LocalFile;
   // End join file
 }

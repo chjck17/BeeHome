@@ -27,5 +27,5 @@ export class LocalFile extends BaseEntity {
   roomImages: RoomImage[];
 
   @OneToOne(() => Lessor, (item) => item.avatar)
-  avatar: Lessor;
+  avatarLessor: Lessor;
 }
