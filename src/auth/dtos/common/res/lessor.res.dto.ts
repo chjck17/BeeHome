@@ -11,7 +11,7 @@ export class LessorResDto {
   address: string;
   phoneNumber: string;
   user?: UserResDto;
-  // avatar?: FileResDto;
+  avatar?: string;
 
   static mapProperty(dto: LessorResDto, data: Lessor) {
     dto.id = data.id;
@@ -19,6 +19,7 @@ export class LessorResDto {
     dto.email = data.email;
     dto.address = data.address;
     dto.phoneNumber = data.phoneNumber;
+    dto.avatar = data.avatar?.path ? data.avatar?.path : null;
   }
 
   static forLessor(data?: Lessor) {
@@ -26,7 +27,6 @@ export class LessorResDto {
     if (!data) return result;
 
     this.mapProperty(result, data);
-    // result.avatar = FileResDto.forLessor(data.avatar);
     result.user = UserResDto.forLessor(data.user);
 
     return result;
