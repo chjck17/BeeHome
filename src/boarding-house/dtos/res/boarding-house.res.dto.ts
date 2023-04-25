@@ -40,7 +40,7 @@ export class BoardingHouseResDto {
     dto.saleTag = dataBoardingHouse?.boardingHouseToTags?.map((item) => {
       return item.tag.name;
     });
-    dto.itemDetails = [];
+    // dto.itemDetails = dataBoardingHouse.floors;
     dto.posterAvatar = dataBoardingHouse?.user?.lessor?.avatar?.path
       ? dataBoardingHouse?.user?.lessor?.avatar?.path
       : null;

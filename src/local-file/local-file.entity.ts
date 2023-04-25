@@ -8,6 +8,7 @@ import {
 import { BaseEntity } from '../common/entities/base.entity';
 import { RoomImage } from '../room/entities/room-image.entity';
 import { Lessor } from '../auth/entities/lessor.entity';
+import { BoardingHouseImage } from '../boarding-house/entities/boarding-house-img.entity';
 
 @Entity()
 export class LocalFile extends BaseEntity {
@@ -25,6 +26,9 @@ export class LocalFile extends BaseEntity {
 
   @OneToMany(() => RoomImage, (item) => item.localFile)
   roomImages: RoomImage[];
+
+  @OneToMany(() => BoardingHouseImage, (item) => item.localFile)
+  boardingHouseImages: BoardingHouseImage[];
 
   @OneToOne(() => Lessor, (item) => item.avatar)
   avatarLessor: Lessor;

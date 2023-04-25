@@ -18,6 +18,7 @@ import { BoardingHouseRentDeposit } from './boarding-house-rent-deposit.entity';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { BoardingHouseDescription } from './boarding-house-description.entity';
 import { CommentToBoardingHouse } from '../../comment/entities/commentToBoardingHouse.entity';
+import { BoardingHouseImage } from './boarding-house-img.entity';
 
 @Entity()
 export class BoardingHouse extends BaseEntity {
@@ -70,4 +71,7 @@ export class BoardingHouse extends BaseEntity {
 
   @OneToMany(() => CommentToBoardingHouse, (item) => item.boardingHouse)
   commentToBoardingHouses: CommentToBoardingHouse[];
+
+  @OneToMany(() => BoardingHouseImage, (item) => item.boardingHouse)
+  boardingHouseImages: BoardingHouseImage[];
 }

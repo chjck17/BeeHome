@@ -25,6 +25,8 @@ import { BoardingHouseResDto } from '../../dtos/res/boarding-house.res.dto';
 import { BoardingHouseToTag } from '../../entities/boarding-house-to-tag.entity';
 import { BoardingHouseDescriptionRepository } from '../../repositories/boarding-house-description.repository';
 import { BoardingHouseCommonService } from '../common/boardingHouse.common.service';
+import { BoardingHouseImageRepository } from '../../repositories/boarding-house-img.repository';
+import { BoardingHouseImage } from '../../entities/boarding-house-img.entity';
 
 @Injectable()
 export class BoardingHouseLessorService {
@@ -36,6 +38,8 @@ export class BoardingHouseLessorService {
     private boardingHouseRentDepositRepo: BoardingHouseRentDepositRepository,
     private boardingHouseToTagRepo: BoardingHouseToTagRuleRepository,
     private boardingHouseCommonService: BoardingHouseCommonService,
+    private boardingHouseImageRepo: BoardingHouseImageRepository,
+
     private floorRepo: FloorRepository,
   ) {}
 
@@ -52,6 +56,7 @@ export class BoardingHouseLessorService {
       waterFee,
       serviceFee,
       tagIds,
+      imgIds,
     } = dto;
     const boardingHouse = this.boardingHouseRepo.create({
       userId: user.id,
@@ -72,6 +77,16 @@ export class BoardingHouseLessorService {
       ward: address.ward,
     });
     await this.boardingHouseAddressRepo.save(boardingHouseAddress);
+
+    await Promise.all(
+      imgIds.map(async (id) => {
+        const boardingHouseImage = this.boardingHouseImageRepo.create({
+          boardingHouseId: boardingHouse.id,
+          localFileId: id,
+        });
+        await this.boardingHouseImageRepo.save(boardingHouseImage);
+      }),
+    );
 
     await Promise.all([
       houseRentDeposits.map(async (item) => {
@@ -279,6 +294,7 @@ export class BoardingHouseLessorService {
       electricFee,
       waterFee,
       serviceFee,
+      imgIds,
     } = dto;
     const existBoardingHouse = await this.boardingHouseRepo.findOne({
       where: { id: id, user: { id: user.id } },
@@ -347,6 +363,13 @@ export class BoardingHouseLessorService {
         await this.boardingHouseDescriptionRepo.save(boardingDescription);
       }),
     ]);
+
+    await this.saveItemImgRoom(
+      existBoardingHouse.id,
+      existBoardingHouse.boardingHouseImages,
+      imgIds,
+    );
+
     await this.saveItem(
       existBoardingHouse.id,
       existBoardingHouse.boardingHouseToTags,
@@ -417,5 +440,43 @@ export class BoardingHouseLessorService {
       await this.boardingHouseToTagRepo.insert(itemToInsert);
     }
     // return { itemDetailIdsToRemove, itemDetailsToInsert, itemDetailsToUpdate };
+  }
+
+  private async saveItemImgRoom(
+    itemId: number,
+    items: BoardingHouseImage[],
+    itemsDto: number[],
+  ) {
+    const itemIdsToRemove: number[] = [];
+    const itemToInsert: BoardingHouseImage[] = [];
+
+    for (const itemInDb of items) {
+      const dto = itemsDto.find((id) => Number(id) === itemInDb.id);
+      if (!dto) {
+        itemIdsToRemove.push(itemInDb.id);
+      }
+    }
+
+    for (const id of itemsDto) {
+      const dto = items.find((item) => Number(id) === item.id);
+      if (!dto) {
+        itemToInsert.push(
+          this.boardingHouseImageRepo.create({
+            boardingHouseId: itemId,
+            localFileId: Number(id),
+          }),
+        );
+      }
+    }
+
+    await Promise.all([
+      itemIdsToRemove.length &&
+        this.boardingHouseImageRepo.delete(itemIdsToRemove),
+    ]);
+
+    if (itemToInsert.length) {
+      await this.boardingHouseImageRepo.insert(itemToInsert);
+    }
+    return { itemIdsToRemove, itemToInsert };
   }
 }
