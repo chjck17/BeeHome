@@ -48,6 +48,9 @@ export class UpdateRoomReqDto {
   @IsValidNumberString({ required: false })
   acreage?: string;
 
+  @IsValidArrayNumber({ required: false })
+  imgIds: number[];
+
   @IsValidArrayString({ required: false })
   categoryIds: string[];
 

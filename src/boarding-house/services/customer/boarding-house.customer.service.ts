@@ -77,15 +77,11 @@ export class BoardingHouseCustomerService {
         district,
       });
     }
-    // if (startPrice)
-    //   queryBuilder.where('game.startDate > :startDate', { startPrice });
-    // if (endPrice) queryBuilder.where('game.endDate < :endDate', { endPrice });
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
     });
 
-    // const tests = Promise.all(items.map((item) => {}));
     let boardingHouses = await Promise.all(
       items.map(async (item) => {
         const boardingHouse =
@@ -93,6 +89,7 @@ export class BoardingHouseCustomerService {
             where: { id: item.id },
             relations: {
               floors: { rooms: { roomImages: { localFile: true } } },
+              user: { lessor: { avatar: true } },
               boardingHouseRentDeposits: true,
               boardingHouseToTags: { tag: true },
               boardingHouseRules: true,

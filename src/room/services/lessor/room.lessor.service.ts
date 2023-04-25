@@ -21,6 +21,9 @@ import { RoomToCategoryRepository } from '../../repositories/room-to-category.re
 import { RoomToAttributeRepository } from '../../repositories/room-to-attribute.repository';
 import { RoomToCategory } from '../../entities/room-to-category.entity';
 import { RoomToAttribute } from '../../entities/room-to-attribute.entity';
+import * as fs from 'fs';
+import * as path from 'path';
+import { RoomImage } from '../../entities/room-image.entity';
 
 @Injectable()
 export class RoomLessorService {
@@ -73,13 +76,22 @@ export class RoomLessorService {
     // return dto;
   }
   async updateRoom(dto: UpdateRoomReqDto) {
-    const { roomId, name, status, acreage, price, categoryIds, attributeIds } =
-      dto;
+    const {
+      roomId,
+      name,
+      status,
+      acreage,
+      price,
+      categoryIds,
+      attributeIds,
+      imgIds,
+    } = dto;
     const existRoom = await this.roomRepo.findOne({
       where: { id: roomId },
       relations: {
         roomToCategories: { categoryType: true },
         roomToAttributes: { roomAttributeTerm: true },
+        roomImages: { localFile: true },
       },
     });
     if (!existRoom) {
@@ -93,18 +105,20 @@ export class RoomLessorService {
       price: price,
     });
     await this.roomRepo.save(room);
-    const test1 = await this.saveItemCategory(
+    await this.saveItemCategory(
       room.id,
       existRoom.roomToCategories,
       categoryIds,
     );
-    const test2 = await this.saveItemAttribute(
+    await this.saveItemAttribute(
       room.id,
       existRoom.roomToAttributes,
       attributeIds,
     );
+
+    await this.saveItemImgRoom(room.id, existRoom.roomImages, imgIds);
     // return room;
-    return { test1, test2 };
+    // return { test1, test2 };
   }
   async findOne(user: User, id: number) {
     const room = await this.roomRepo.findOneOrThrowNotFoundExc({
@@ -142,10 +156,29 @@ export class RoomLessorService {
   async deleteRoom(user: User, id: number) {
     const product = await this.roomRepo.findOneOrThrowNotFoundExc({
       where: { id },
+      relations: { roomImages: { localFile: true } },
     });
-    if (product) {
-      await this.roomRepo.softDelete(id);
-    }
+    return product;
+
+    // product.roomImages.map((item) => {
+    //   const filePath = path.join(
+    //     __dirname,
+    //     '../../../../../upload/single',
+    //     item.localFile.filename,
+    //   );
+
+    //   fs.unlink(filePath, (err) => {
+    //     if (err) {
+    //       console.error(err);
+    //     } else {
+    //       console.log('File deleted successfully');
+    //     }
+    //   });
+    // });
+
+    // if (product) {
+    //   await this.roomRepo.softDelete(id);
+    // }
   }
 
   async deleteListRoom(
@@ -234,6 +267,43 @@ export class RoomLessorService {
 
     if (itemToInsert.length) {
       await this.roomToAttributeRepo.insert(itemToInsert);
+    }
+    return { itemIdsToRemove, itemToInsert };
+  }
+
+  private async saveItemImgRoom(
+    itemId: number,
+    items: RoomImage[],
+    itemsDto: number[],
+  ) {
+    const itemIdsToRemove: number[] = [];
+    const itemToInsert: RoomImage[] = [];
+
+    for (const itemInDb of items) {
+      const dto = itemsDto.find((id) => Number(id) === itemInDb.id);
+      if (!dto) {
+        itemIdsToRemove.push(itemInDb.id);
+      }
+    }
+
+    for (const id of itemsDto) {
+      const dto = items.find((item) => Number(id) === item.id);
+      if (!dto) {
+        itemToInsert.push(
+          this.roomImageRepo.create({
+            roomId: itemId,
+            localFileId: Number(id),
+          }),
+        );
+      }
+    }
+
+    await Promise.all([
+      itemIdsToRemove.length && this.roomImageRepo.delete(itemIdsToRemove),
+    ]);
+
+    if (itemToInsert.length) {
+      await this.roomImageRepo.insert(itemToInsert);
     }
     return { itemIdsToRemove, itemToInsert };
   }

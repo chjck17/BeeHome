@@ -30,13 +30,10 @@ export class BoardingHouseResDto {
       .path
       ? dataBoardingHouse?.floors[0]?.rooms[0]?.roomImages[0]?.localFile.path
       : null;
-    // dto.price = dataBoardingHouse?.floors[0]?.rooms[0]?.price
-    //   ? dataBoardingHouse?.floors[0]?.rooms[0]?.price
-    //   : null;
+
     dto.type = dataBoardingHouse?.type ? dataBoardingHouse?.type : null;
     dto.title = dataBoardingHouse?.name ? dataBoardingHouse?.name : null;
 
-    //dto.location = `${dataBoardingHouse?.boardingHouseAddress[0]?.address} ${dataBoardingHouse?.boardingHouseAddress[0]?.city} ${dataBoardingHouse?.boardingHouseAddress[0]?.district} ${dataBoardingHouse?.boardingHouseAddress[0]?.ward}`;
     dto.location = dataBoardingHouse?.boardingHouseAddress?.address
       ? dataBoardingHouse?.boardingHouseAddress?.address
       : null;
@@ -44,8 +41,12 @@ export class BoardingHouseResDto {
       return item.tag.name;
     });
     dto.itemDetails = [];
-    dto.posterAvatar = null;
-    dto.posterName = null;
+    dto.posterAvatar = dataBoardingHouse?.user?.lessor?.avatar?.path
+      ? dataBoardingHouse?.user?.lessor?.avatar?.path
+      : null;
+    dto.posterName = dataBoardingHouse?.user?.lessor?.name
+      ? dataBoardingHouse?.user?.lessor?.name
+      : null;
   }
 
   static forCustomer({

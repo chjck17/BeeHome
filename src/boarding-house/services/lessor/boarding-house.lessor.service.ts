@@ -229,7 +229,6 @@ export class BoardingHouseLessorService {
   }
   async getListBoardingHouse(user: User, dto: GetListBoardingHousesReqDto) {
     const { limit, page, startPrice, endPrice, province, ward, district } = dto;
-    let { searchText } = dto;
     const queryBuilder = this.boardingHouseRepo
       .createQueryBuilder('boardingHouse')
       .leftJoinAndSelect(
