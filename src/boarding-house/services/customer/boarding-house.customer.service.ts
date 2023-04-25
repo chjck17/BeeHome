@@ -95,6 +95,7 @@ export class BoardingHouseCustomerService {
               boardingHouseRules: true,
               boardingHouseAddress: true,
               commentToBoardingHouses: { comment: true },
+              boardingHouseImages: { localFile: true },
             },
           });
         const priceRange =

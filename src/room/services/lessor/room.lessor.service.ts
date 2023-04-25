@@ -158,7 +158,7 @@ export class RoomLessorService {
       where: { id },
       relations: { roomImages: { localFile: true } },
     });
-    return product;
+    // return product;
 
     // product.roomImages.map((item) => {
     //   const filePath = path.join(
@@ -176,9 +176,9 @@ export class RoomLessorService {
     //   });
     // });
 
-    // if (product) {
-    //   await this.roomRepo.softDelete(id);
-    // }
+    if (product) {
+      await this.roomRepo.softDelete(id);
+    }
   }
 
   async deleteListRoom(
