@@ -5,12 +5,17 @@ import { BoardingHousePriceResDto } from '../../dtos/common/misc.res.dto';
 import { RoomRepository } from '../../../room/repositories/room.repository';
 import { FloorRepository } from '../../../floor/repositories/floor.repository';
 import { Floor } from '../../../floor/entities/floor.entity';
+import { RoomAttributeRepository } from '../../../room/repositories/room-attribute.repository';
+import { RoomAttributeTermRepository } from '../../../room/repositories/room-attribute-term.repository';
+import { RoomAttributeTermDetailRepository } from '../../../room/repositories/room-attribute-term-detail.repository';
 
 @Injectable()
 export class BoardingHouseCommonService {
   constructor(
     private boardingHouseRepo: BoardingHouseRepository,
     private roomRepo: RoomRepository,
+    private roomAttributeTermDetailRepo: RoomAttributeTermDetailRepository,
+
     private floorRepo: FloorRepository,
   ) {}
 
@@ -47,6 +52,29 @@ export class BoardingHouseCommonService {
     return result;
   }
 
+  async getBoardingHouseAttribute(boardingHouse: BoardingHouse) {
+    // const result = new BoardingHousePriceResDto();
+
+    const queryBuilder = this.roomAttributeTermDetailRepo
+      .createQueryBuilder('roomAttributeTermDetail')
+      .innerJoin(
+        'roomAttributeTermDetail.roomAttributeTerm',
+        'roomAttributeTerm',
+      )
+
+      .innerJoin('roomAttributeTerm.roomToAttributes', 'roomToAttribute')
+      .innerJoin('roomToAttribute.room', 'room')
+
+      .innerJoin('room.floor', 'floor')
+      .innerJoin('floor.boardingHouse', 'boardingHouse')
+
+      .andWhere('boardingHouse.id = :id', { id: boardingHouse.id })
+      .andWhere('roomAttributeTermDetail.lang = :lang', { lang: 'VN' })
+
+      .getMany();
+
+    return queryBuilder;
+  }
   // async getProductPointRange(product: Product): Promise<ProductPointResDto> {
   //   const result = new ProductPointResDto();
 

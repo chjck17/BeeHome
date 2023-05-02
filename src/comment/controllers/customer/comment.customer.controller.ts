@@ -23,24 +23,24 @@ import {
   UpdateCommentReqDto,
 } from '../../dtos/comment.req.dto';
 
-@Controller(`${PrefixType.LESSOR}/comment`)
-@AuthenticateCustomer()
+@Controller(`${PrefixType.CUSTOMER}/comment`)
 @ApiTags('Comment Customer')
 export class CommentCustomerController {
   constructor(
     private readonly commentCustomerService: CommentCustomerService,
   ) {}
 
-  @Get()
-  findAll(@CurrentUser() user: User, @Query() query: GetListCommentsReqDto) {
-    return this.commentCustomerService.getListComment(user, query);
-  }
-
   @Get(':id')
-  findOne(@CurrentUser() user: User, @Param('id') id: string) {
-    return this.commentCustomerService.findOne(user, Number(id));
+  findAll(@Param('id') id: string) {
+    return this.commentCustomerService.getListComment(Number(id));
   }
 
+  // @Get(':id')
+  // findOne(@CurrentUser() user: User, @Param('id') id: string) {
+  //   return this.commentCustomerService.findOne(Number(id));
+  // }
+
+  @AuthenticateCustomer()
   @Post()
   createComment(
     @CurrentUser() user: User,

@@ -21,6 +21,10 @@ import { BoardingHouseCommonService } from './services/common/boardingHouse.comm
 import { RoomRepository } from '../room/repositories/room.repository';
 import { BoardingHouseImageRepository } from './repositories/boarding-house-img.repository';
 import { BoardingHouseImage } from './entities/boarding-house-img.entity';
+import { RoomAttributeTermRepository } from '../room/repositories/room-attribute-term.repository';
+import { RoomAttributeTermDetailRepository } from '../room/repositories/room-attribute-term-detail.repository';
+import { CommentRepository } from '../comment/repositories/comment.repository';
+import { CommentToBoardingHouseRepository } from '../comment/repositories/commentToBoardingHouse.repository';
 
 @Module({
   imports: [
@@ -48,6 +52,7 @@ import { BoardingHouseImage } from './entities/boarding-house-img.entity';
     BoardingHouseToTagRuleRepository,
     BoardingHouseCommonService,
     BoardingHouseImageRepository,
+    RoomAttributeTermDetailRepository,
   ],
 })
 export class BoardingHouseModule {}

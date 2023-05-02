@@ -9,6 +9,7 @@ import {
   IsValidText,
 } from '../../common/decorators/custom-validator.decorator';
 import { PaginationReqDto } from '../../common/dtos/pagination.dto';
+import { Language } from '../../common/enums/lang.enum';
 import { Status } from '../../common/enums/status.enum';
 import { BoardingHouseType } from '../enums/type.enum';
 import {
@@ -77,6 +78,9 @@ export class CreateBoardingHouseReqDto {
   address: CreateAddressReqDto;
 }
 export class GetListBoardingHousesReqDto extends PaginationReqDto {
+  @IsValidEnum({ enum: Language, required: false })
+  lang?: Language;
+
   @IsValidText({ trim: true, required: false })
   searchText?: string;
 
@@ -95,7 +99,28 @@ export class GetListBoardingHousesReqDto extends PaginationReqDto {
   @IsValidText({ trim: true, required: false })
   district?: string;
 }
+export class GetListBoardingHousesCustomerReqDto extends PaginationReqDto {
+  @IsValidEnum({ enum: Language, required: false })
+  lang?: Language;
 
+  @IsValidText({ trim: true, required: false })
+  searchText?: string;
+
+  @IsValidNumberString({ required: false })
+  startPrice?: string;
+
+  @IsValidNumberString({ required: false })
+  endPrice?: string;
+
+  @IsValidText({ trim: true, required: false })
+  province?: string;
+
+  @IsValidText({ trim: true, required: false })
+  ward?: string;
+
+  @IsValidText({ trim: true, required: false })
+  district?: string;
+}
 export class UpdateBoardingHouseReqDto {
   @IsValidNumber()
   id: number;
@@ -119,33 +144,34 @@ export class UpdateBoardingHouseReqDto {
   serviceFee?: string;
 
   @IsValidArrayNumber({ required: false })
-  imgIds: number[];
+  imgIds?: number[];
 
-  @IsValidArrayString({ minSize: 1, required: true })
-  tagIds: string[];
+  @IsValidArrayString({ minSize: 1, required: false })
+  tagIds?: string[];
 
   @IsValidArrayObject(
-    { minSize: 1, maxSize: 2, required: true },
+    { minSize: 1, maxSize: 2, required: false },
     UpdateBoardingHouseRenDepositReqDto,
   )
-  houseRentDeposits: UpdateBoardingHouseRenDepositReqDto[];
+  houseRentDeposits?: UpdateBoardingHouseRenDepositReqDto[];
 
   @IsValidArrayObject(
-    { minSize: 1, maxSize: 2, required: true },
+    { minSize: 1, maxSize: 2, required: false },
     UpdateBoardingHouseDescriptionReqDto,
   )
-  houseDescriptions: UpdateBoardingHouseDescriptionReqDto[];
+  houseDescriptions?: UpdateBoardingHouseDescriptionReqDto[];
 
   @IsValidArrayObject(
-    { minSize: 1, maxSize: 2, required: true },
+    { minSize: 1, maxSize: 2, required: false },
     UpdateBoardingHouseRuleReqDto,
   )
-  boardingHouseRules: UpdateBoardingHouseRuleReqDto[];
+  boardingHouseRules?: UpdateBoardingHouseRuleReqDto[];
 
   @IsValidObject({
     object: UpdateAddressReqDto,
+    required: false,
   })
-  address: UpdateAddressReqDto;
+  address?: UpdateAddressReqDto;
 }
 export class DeleteListReqDto {
   @IsValidArrayNumber({ minSize: 1, required: true })
