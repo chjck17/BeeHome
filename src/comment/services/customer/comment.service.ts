@@ -16,11 +16,13 @@ import {
 } from '../../../common/exceptions/custom.exception';
 import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
 import { CommentToBoardingHouseRepository } from '../../repositories/commentToBoardingHouse.repository';
+import { BoardingHouseRepository } from '../../../boarding-house/repositories/boarding-house.repository';
 
 @Injectable()
 export class CommentCustomerService {
   constructor(
     private commentRepo: CommentRepository,
+    private boardingHouseRepo: BoardingHouseRepository,
     private commentToBoardingHouseRepo: CommentToBoardingHouseRepository,
   ) {}
 
@@ -40,26 +42,22 @@ export class CommentCustomerService {
 
     return comment;
   }
-  async findOne(user: User, id: number) {
+  async findOne(id: number) {
     const comment = await this.commentRepo.findOneOrThrowNotFoundExc({
-      where: { id, userId: user.id },
+      where: { id },
     });
     return comment;
   }
 
-  async getListComment(user: User, dto: GetListCommentsReqDto) {
-    const { limit, page } = dto;
-    const queryBuilder = this.commentRepo
-      .createQueryBuilder('comment')
-      .andWhere('comment.userId = :userId', {
-        userId: user.id,
-      });
-    const { items, meta } = await paginate(queryBuilder, {
-      limit,
-      page,
+  async getListComment(id: number) {
+    const comment = await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
+      where: { id },
+      relations: {
+        commentToBoardingHouses: { comment: { user: { customer: true } } },
+      },
+      order: { commentToBoardingHouses: { comment: { createdAt: 'DESC' } } },
     });
-
-    return new Pagination(items, meta);
+    return comment;
   }
 
   async updateComment(user: User, id: number, dto: UpdateCommentReqDto) {

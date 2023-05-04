@@ -1,82 +1,93 @@
 import { Injectable } from '@nestjs/common';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-
-import { In } from 'typeorm';
 import { BoardingHouseRepository } from '../../repositories/boarding-house.repository';
-import {
-  CreateBoardingHouseReqDto,
-  DeleteListReqDto,
-  GetListBoardingHousesReqDto,
-  UpdateBoardingHouseReqDto,
-} from '../../dtos/boarding-house.req.dto';
-import { User } from '../../../auth/entities/user.entity';
-import {
-  BadRequestExc,
-  ConflictExc,
-} from '../../../common/exceptions/custom.exception';
-import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
-import { BoardingHouseAddressRepository } from '../../repositories/boarding-house-address.repository';
-import { BoardingHouseRuleRepository } from '../../repositories/boarding-house-rule.repository';
-import { BoardingHouseRentDepositRepository } from '../../repositories/boarding-house-rent-deposits.repository';
-import { FloorRepository } from '../../../floor/repositories/floor.repository';
+import { GetListBoardingHousesCustomerReqDto } from '../../dtos/boarding-house.req.dto';
 import { BoardingHouseResDto } from '../../dtos/res/boarding-house.res.dto';
 import { BoardingHouseCommonService } from '../common/boardingHouse.common.service';
+import { addCommentCustomerReqDto } from '../../dtos/customer/customer.req.dto';
+import { User } from '../../../auth/entities/user.entity';
+import { CommentRepository } from '../../../comment/repositories/comment.repository';
+import { CommentToBoardingHouseRepository } from '../../../comment/repositories/commentToBoardingHouse.repository';
 
 @Injectable()
 export class BoardingHouseCustomerService {
   constructor(
     private boardingHouseRepo: BoardingHouseRepository,
-    private boardingHouseAddressRepo: BoardingHouseAddressRepository,
-    private boardingHouseRuleRepo: BoardingHouseRuleRepository,
-    private boardingHouseRentDepositRepo: BoardingHouseRentDepositRepository,
+    // private commentRepo: CommentRepository,
+    // private commentToBoardingHouseRepo: CommentToBoardingHouseRepository,
     private boardingHouseCommonService: BoardingHouseCommonService,
-    private floorRepo: FloorRepository,
   ) {}
 
   async findOne(id: number) {
     const boardingHouse =
       await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
         where: { id },
+        relations: {
+          floors: {
+            rooms: {
+              roomToCategories: true,
+              roomToAttributes: {
+                roomAttributeTerm: { roomAttributeTermDetails: true },
+              },
+              roomImages: { localFile: true },
+            },
+          },
+          commentToBoardingHouses: { comment: { user: { customer: true } } },
+          boardingHouseRentDeposits: true,
+          boardingHouseToTags: { tag: true },
+          boardingHouseRules: true,
+          boardingHouseAddress: true,
+          boardingHouseDescriptions: true,
+        },
       });
     return boardingHouse;
   }
 
-  async getListBoardingHouse(dto: GetListBoardingHousesReqDto) {
-    const { limit, page, startPrice, endPrice, province, ward, district } = dto;
+  async getListBoardingHouse(dto: GetListBoardingHousesCustomerReqDto) {
+    const {
+      limit,
+      page,
+      startPrice,
+      endPrice,
+      province,
+      ward,
+      district,
+      lang,
+    } = dto;
     let { searchText } = dto;
-    const queryBuilder = this.boardingHouseRepo
-      .createQueryBuilder('boardingHouse')
-      .leftJoinAndSelect(
-        'boardingHouse.boardingHouseAddress',
-        'boardingHouseAddress',
-      )
-      .leftJoinAndSelect('boardingHouse.floors', 'floor')
-      .leftJoinAndSelect('floor.rooms', 'room');
+    const queryBuilder =
+      this.boardingHouseRepo.createQueryBuilder('boardingHouse');
+    // .leftJoinAndSelect(
+    //   'boardingHouse.boardingHouseAddress',
+    //   'boardingHouseAddress',
+    // )
+    // .leftJoinAndSelect('boardingHouse.floors', 'floor')
+    // .leftJoinAndSelect('floor.rooms', 'room');
 
-    if (searchText) {
-      searchText = `%${searchText}%`;
-      queryBuilder.where('boardingHouse.name ILIKE :searchText', {
-        searchText,
-      });
-    }
+    // if (searchText) {
+    //   searchText = `%${searchText}%`;
+    //   queryBuilder.where('boardingHouse.name ILIKE :searchText', {
+    //     searchText,
+    //   });
+    // }
 
-    if (province) {
-      queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
-        province,
-      });
-    }
+    // if (province) {
+    //   queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
+    //     province,
+    //   });
+    // }
 
-    if (ward) {
-      searchText = `%${searchText}%`;
-      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
-    }
+    // if (ward) {
+    //   searchText = `%${searchText}%`;
+    //   queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
+    // }
 
-    if (district) {
-      searchText = `%${searchText}%`;
-      queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
-        district,
-      });
-    }
+    // if (district) {
+    //   searchText = `%${searchText}%`;
+    //   queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
+    //     district,
+    //   });
+    // }
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
@@ -86,15 +97,23 @@ export class BoardingHouseCustomerService {
       items.map(async (item) => {
         const boardingHouse =
           await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
-            where: { id: item.id },
+            where: {
+              id: item.id,
+              boardingHouseRentDeposits: { lang: lang },
+              boardingHouseRules: { lang: lang },
+              boardingHouseDescriptions: { lang: lang },
+            },
             relations: {
               floors: { rooms: { roomImages: { localFile: true } } },
               user: { lessor: { avatar: true } },
               boardingHouseRentDeposits: true,
+              boardingHouseDescriptions: true,
               boardingHouseToTags: { tag: true },
               boardingHouseRules: true,
               boardingHouseAddress: true,
-              commentToBoardingHouses: { comment: true },
+              commentToBoardingHouses: {
+                comment: { user: { customer: true } },
+              },
               boardingHouseImages: { localFile: true },
             },
           });
@@ -102,18 +121,40 @@ export class BoardingHouseCustomerService {
           await this.boardingHouseCommonService.getBoardingHousePriceRange(
             item,
           );
+        const attributes =
+          await this.boardingHouseCommonService.getBoardingHouseAttribute(item);
+
         return BoardingHouseResDto.forCustomer({
           dataBoardingHouse: boardingHouse,
           priceRange,
+          attributes,
         });
+        // return boardingHouse;
       }),
     );
-    if (startPrice && endPrice) {
-      boardingHouses = boardingHouses.filter(
-        (item) => item.price >= startPrice && item.price <= endPrice,
-      );
-    }
+    // if (startPrice && endPrice) {
+    //   boardingHouses = boardingHouses.filter(
+    //     (item) => item.price >= startPrice && item.price <= endPrice,
+    //   );
+    // }
     return new Pagination(boardingHouses, meta);
     // return tests;
   }
+
+  // async comment(dto: addCommentCustomerReqDto, user: User) {
+  //   const { boardingHouseId, content, star } = dto;
+
+  //   const comment = this.commentRepo.create({
+  //     userId: user.id,
+  //     content: content,
+  //     star: star,
+  //   });
+  //   await this.commentRepo.save(comment);
+
+  //   const commentToBoardingHouse = this.commentToBoardingHouseRepo.create({
+  //     commentId: comment.id,
+  //     boardingHouseId: boardingHouseId,
+  //   });
+  //   await this.commentToBoardingHouseRepo.save(commentToBoardingHouse);
+  // }
 }

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
-import { Authorize } from '../../../common/decorators/auth.decorator';
+import { AuthenticateAdmin, Authorize } from '../../../common/decorators/auth.decorator';
 import { PaginationResponse } from '../../../common/decorators/pagination-response.decorator';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import { Action, Resource } from '../../../common/enums/casl.enum';
@@ -22,6 +22,7 @@ import { LessorAdminService } from '../../services/admin/lessor.admin.service';
 
 @Controller(`${PrefixType.ADMIN}/lessor`)
 @ApiTags('Manage Lessor')
+@AuthenticateAdmin()
 // @Authorize({ action: Action.MANAGE, resource: Resource.LESSOR })
 export class LessorAdminController {
   constructor(private lessorAdminService: LessorAdminService) {}

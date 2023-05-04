@@ -8,6 +8,7 @@ import { CommentCustomerController } from './controllers/customer/comment.custom
 import { Comment } from './entities/comment.entity';
 import { CommentToBoardingHouse } from './entities/commentToBoardingHouse.entity';
 import { CommentToBoardingHouseRepository } from './repositories/commentToBoardingHouse.repository';
+import { BoardingHouseRepository } from '../boarding-house/repositories/boarding-house.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Comment, CommentToBoardingHouse])],
@@ -16,6 +17,7 @@ import { CommentToBoardingHouseRepository } from './repositories/commentToBoardi
     CommentRepository,
     CommentCustomerService,
     CommentToBoardingHouseRepository,
+    BoardingHouseRepository,
   ],
 })
 export class CommentModule {}
