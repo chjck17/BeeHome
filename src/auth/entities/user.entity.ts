@@ -19,6 +19,7 @@ import { Tag } from '../../tag/entities/tag.entity';
 import { RoomAttributeTerm } from '../../room/entities/room-attribute-term.entity';
 import { RoomAttribute } from '../../room/entities/room-attribute.entity';
 import { Comment } from '../../comment/entities/comment.entity';
+import { Book } from '../../book/entities/book.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -67,6 +68,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Tag, (tag) => tag.user)
   tags: Tag[];
+
+  @OneToMany(() => Book, (tag) => tag.user)
+  books: Book[];
 
   @OneToMany(() => Comment, (tag) => tag.user)
   comments: Comment[];

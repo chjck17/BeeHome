@@ -34,7 +34,7 @@ export function UniqueWithSoftDelete(
 
 export function PartialIndexWithSoftDelete(
   fields: string[],
-  options: IndexOptions,
+  options: Omit<IndexOptions, 'where'>,
   softDeletePropertyKey = 'deleted_at',
 ): ClassDecorator {
   return function (target: any): void {

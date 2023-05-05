@@ -21,16 +21,11 @@ export class BoardingHouseResDto {
   waterFee: string;
   serviceFee: string;
   attributes: string[];
-  //   garages: string;
   itemDetails: string[];
   posterAvatar: string;
   posterName: string;
+  posterId: number;
   comment: Comment[];
-  //   imgList: string;
-  //   built: string;
-  //   amenities: string;
-  //   featured: string;
-  //   created_at: string;
   static mapProperty(
     dto: BoardingHouseResDto,
     dataBoardingHouse: BoardingHouse,
@@ -70,6 +65,9 @@ export class BoardingHouseResDto {
       : null;
     dto.posterName = dataBoardingHouse?.user?.lessor?.name
       ? dataBoardingHouse?.user?.lessor?.name
+      : null;
+    dto.posterId = dataBoardingHouse?.user?.lessor?.id
+      ? dataBoardingHouse?.user?.lessor?.id
       : null;
     dto.electricFee = dataBoardingHouse?.electricFee
       ? dataBoardingHouse?.electricFee
