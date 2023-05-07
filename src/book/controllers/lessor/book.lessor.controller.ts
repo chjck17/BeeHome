@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import {
   GetListBooksReqDto,
 } from '../../dtos/book.req.dto';
 import { BookLessorService } from '../../services/lessor/book.lessor.service';
+import { UpdateStatusLessorBookReqDto } from '../../dtos/lessor/book-status.lessor.req.dto';
 
 @Controller(`${PrefixType.LESSOR}/book`)
 @AuthenticateLessor()
@@ -31,7 +33,13 @@ export class BookLessorController {
   findAll(@CurrentUser() user: User, @Query() query: GetListBooksReqDto) {
     return this.bookLessorService.getListBook(user, query);
   }
-
+  @Patch('status')
+  updateStatus(
+    @CurrentUser() user: User,
+    @Body() dto: UpdateStatusLessorBookReqDto,
+  ) {
+    return this.bookLessorService.updateStatus(user, dto);
+  }
   // @Get(':id')
   // findOne(@CurrentUser() user: User, @Param('id') id: string) {
   //   return this.bookLessorService.findOne(user, Number(id));

@@ -13,8 +13,7 @@ import { CommentToBoardingHouseRepository } from '../../../comment/repositories/
 export class BoardingHouseCustomerService {
   constructor(
     private boardingHouseRepo: BoardingHouseRepository,
-    // private commentRepo: CommentRepository,
-    // private commentToBoardingHouseRepo: CommentToBoardingHouseRepository,
+
     private boardingHouseCommonService: BoardingHouseCommonService,
   ) {}
 
@@ -55,39 +54,39 @@ export class BoardingHouseCustomerService {
       lang,
     } = dto;
     let { searchText } = dto;
-    const queryBuilder =
-      this.boardingHouseRepo.createQueryBuilder('boardingHouse');
-    // .leftJoinAndSelect(
-    //   'boardingHouse.boardingHouseAddress',
-    //   'boardingHouseAddress',
-    // )
+    const queryBuilder = this.boardingHouseRepo
+      .createQueryBuilder('boardingHouse')
+      .leftJoinAndSelect(
+        'boardingHouse.boardingHouseAddress',
+        'boardingHouseAddress',
+      );
     // .leftJoinAndSelect('boardingHouse.floors', 'floor')
     // .leftJoinAndSelect('floor.rooms', 'room');
 
-    // if (searchText) {
-    //   searchText = `%${searchText}%`;
-    //   queryBuilder.where('boardingHouse.name ILIKE :searchText', {
-    //     searchText,
-    //   });
-    // }
+    if (searchText) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouse.name ILIKE :searchText', {
+        searchText,
+      });
+    }
 
-    // if (province) {
-    //   queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
-    //     province,
-    //   });
-    // }
+    if (province) {
+      queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
+        province,
+      });
+    }
 
-    // if (ward) {
-    //   searchText = `%${searchText}%`;
-    //   queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
-    // }
+    if (ward) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
+    }
 
-    // if (district) {
-    //   searchText = `%${searchText}%`;
-    //   queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
-    //     district,
-    //   });
-    // }
+    if (district) {
+      searchText = `%${searchText}%`;
+      queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
+        district,
+      });
+    }
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
@@ -132,11 +131,11 @@ export class BoardingHouseCustomerService {
         // return boardingHouse;
       }),
     );
-    // if (startPrice && endPrice) {
-    //   boardingHouses = boardingHouses.filter(
-    //     (item) => item.price >= startPrice && item.price <= endPrice,
-    //   );
-    // }
+    if (startPrice && endPrice) {
+      boardingHouses = boardingHouses.filter(
+        (item) => item.price >= startPrice && item.price <= endPrice,
+      );
+    }
     return new Pagination(boardingHouses, meta);
     // return tests;
   }

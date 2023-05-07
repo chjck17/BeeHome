@@ -133,7 +133,6 @@ export class RoomLessorService {
     });
     return room;
   }
-
   async getListRoom(user: User, dto: GetListRoomsReqDto) {
     const { limit, page } = dto;
     const queryBuilder = this.roomRepo

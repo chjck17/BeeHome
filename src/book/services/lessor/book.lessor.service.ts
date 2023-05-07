@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 
-import { In } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { BookRepository } from '../../repositories/book.repository';
 import { User } from '../../../auth/entities/user.entity';
 import {
@@ -13,8 +13,10 @@ import {
 import {
   BadRequestExc,
   ConflictExc,
+  NotFoundExc,
 } from '../../../common/exceptions/custom.exception';
 import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
+import { UpdateStatusLessorBookReqDto } from '../../dtos/lessor/book-status.lessor.req.dto';
 
 @Injectable()
 export class BookLessorService {
@@ -71,7 +73,16 @@ export class BookLessorService {
 
     return new Pagination(items, meta);
   }
+  async updateStatus(user: User, dto: UpdateStatusLessorBookReqDto) {
+    const { status, bookId } = dto;
 
+    const { affected } = await this.bookRepo.update(
+      { id: bookId, deletedAt: IsNull() },
+      { status },
+    );
+
+    if (affected < 1) throw new NotFoundExc('Lessor not found');
+  }
   // async updateBook(user: User, id: number, bookDto: UpdateBookReqDto) {
   //   const existBook = await this.bookRepo.findOneBy({
   //     id: id,

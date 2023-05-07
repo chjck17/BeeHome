@@ -11,10 +11,14 @@ import { BaseEntity } from '../../common/entities/base.entity';
 import { User } from '../../auth/entities/user.entity';
 import { Room } from '../../room/entities/room.entity';
 import { PartialIndexWithSoftDelete } from '../../common/decorators/typeorm.decorator';
+import { BookStatus } from '../enums/book.enum';
 @Entity()
 export class Book extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ default: BookStatus.PROCESSING, enum: BookStatus, nullable: true })
+  status: BookStatus;
 
   @Column({ type: 'timestamptz' })
   dateMeet: Date;
