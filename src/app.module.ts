@@ -22,6 +22,7 @@ import { UploadFileModule } from './upload-file/upload-file.module';
 import { ProvinceModule } from './province/province.module';
 import { BoardingHouseModule } from './boarding-house/boarding-house.module';
 import { CommentModule } from './comment/comment.module';
+import { BookModule } from './book/book.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { CommentModule } from './comment/comment.module';
     BoardingHouseModule,
     TagModule,
     CommentModule,
+    BookModule,
   ],
 
   controllers: [],

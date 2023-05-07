@@ -56,7 +56,7 @@ export class ProfileCustomerService {
     customer.firstName = firstName;
     customer.lastName = lastName;
     customer.phoneNumber = phoneNumber;
-
+    customer.avatarId = avatarId;
     // if (avatarId) {
     //   await this.fileRepo.findOneByOrThrowNotFoundExc({
     //     id: avatarId,

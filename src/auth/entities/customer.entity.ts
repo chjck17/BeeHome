@@ -9,6 +9,7 @@ import {
 import { BaseEntity } from '../../common/entities/base.entity';
 import { CustomerStatus } from '../enums/customer.enum';
 import { User } from './user.entity';
+import { LocalFile } from '../../local-file/local-file.entity';
 
 @Entity()
 export class Customer extends BaseEntity {
@@ -54,6 +55,13 @@ export class Customer extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
   // End join user
+
+  @Column({ name: 'avatar_id', nullable: true })
+  avatarId: number;
+
+  @OneToOne(() => LocalFile, (item) => item.avatarLessor)
+  @JoinColumn({ name: 'avatar_id' })
+  avatar: LocalFile;
 
   // // Join lessor_user
   // @Column({ name: 'lessor_user_id' })

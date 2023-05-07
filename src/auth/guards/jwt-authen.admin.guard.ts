@@ -41,7 +41,7 @@ export class JwtAuthenAdminGuard extends AuthGuard(StrategyName.ADMIN) {
     status?: any,
   ): TUser {
     if (err || !user) {
-      throw new UnauthorizedException('Invalid Credentials');
+      throw new UnauthorizedException('Invalid Credentials ss');
     }
     return user;
   }
