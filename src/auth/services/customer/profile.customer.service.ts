@@ -25,7 +25,7 @@ export class ProfileCustomerService {
   async getProfile(user: User) {
     const customer = await this.customerRepo.findOneOrThrowNotFoundExc({
       where: { userId: user.id },
-      // relations: { avatar: true },
+      relations: { avatar: true },
     });
 
     return CustomerResDto.forCustomer(customer);

@@ -5,14 +5,11 @@ import { In, IsNull } from 'typeorm';
 import { BookRepository } from '../../repositories/book.repository';
 import { User } from '../../../auth/entities/user.entity';
 import {
-  CreateBookReqDto,
   DeleteListBookReqDto,
   GetListBooksReqDto,
-  UpdateBookReqDto,
 } from '../../dtos/book.req.dto';
 import {
   BadRequestExc,
-  ConflictExc,
   NotFoundExc,
 } from '../../../common/exceptions/custom.exception';
 import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
@@ -21,44 +18,6 @@ import { UpdateStatusLessorBookReqDto } from '../../dtos/lessor/book-status.less
 @Injectable()
 export class BookLessorService {
   constructor(private bookRepo: BookRepository) {}
-
-  // async createBook(bookDto: CreateBookReqDto) {
-  //   const existBook = await this.bookRepo.findOneBy({
-  //     roomId: bookDto.roomId,
-  //     userId: bookDto.userId,
-  //     email: bookDto.email,
-  //   });
-  //   if (!existBook) {
-  //     const book = this.bookRepo.create({
-  //       userId: bookDto.userId,
-  //       roomId: bookDto.roomId,
-  //       firstName: bookDto.firstName,
-  //       lastName: bookDto.lastName,
-  //       email: bookDto.email,
-  //       phoneNumber: bookDto.phoneNumber,
-  //       dateMeet: bookDto.dateMeet,
-  //     });
-  //     await this.bookRepo.save(book);
-  //     return book;
-  //   }
-  //   const book = this.bookRepo.create({
-  //     ...existBook,
-  //     firstName: bookDto.firstName,
-  //     lastName: bookDto.lastName,
-  //     email: bookDto.email,
-  //     phoneNumber: bookDto.phoneNumber,
-  //     dateMeet: bookDto.dateMeet,
-  //   });
-  //   await this.bookRepo.save(book);
-  //   return book;
-  // }
-  // async findOne(user: User, id: number) {
-  //   const book = await this.bookRepo.findOneOrThrowNotFoundExc({
-  //     where: { id, userId: user.id },
-  //   });
-  //   return book;
-  // }
-
   async getListBook(user: User, dto: GetListBooksReqDto) {
     const { limit, page } = dto;
     const queryBuilder = this.bookRepo
@@ -83,23 +42,6 @@ export class BookLessorService {
 
     if (affected < 1) throw new NotFoundExc('Lessor not found');
   }
-  // async updateBook(user: User, id: number, bookDto: UpdateBookReqDto) {
-  //   const existBook = await this.bookRepo.findOneBy({
-  //     id: id,
-  //     user: { id: user.id },
-  //   });
-  //   if (!existBook) {
-  //     throw new ConflictExc('common');
-  //   }
-  //   const book = this.bookRepo.create({
-  //     ...existBook,
-  //     name: bookDto.name,
-  //     slug: bookDto.slug,
-  //     description: bookDto.description,
-  //   });
-  //   await this.bookRepo.save(book);
-  //   return book;
-  // }
 
   async deleteBook(user: User, id: number) {
     const product = await this.bookRepo.findOneOrThrowNotFoundExc({
