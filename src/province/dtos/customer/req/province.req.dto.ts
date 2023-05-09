@@ -19,3 +19,14 @@ export class GetListProvinceReqDto {
   @IsValidText({ required: false })
   searchText?: string;
 }
+
+export class GetData {
+  @IsValidText({ required: false })
+  province?: string;
+
+  @IsValidText({ required: false })
+  district?: string;
+
+  @IsValidText({ required: false })
+  ward?: string;
+}
