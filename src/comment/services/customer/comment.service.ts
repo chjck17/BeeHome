@@ -27,18 +27,31 @@ export class CommentCustomerService {
   ) {}
 
   async createComment(user: User, dto: CreateCommentReqDto) {
+    const exitComment = await this.commentRepo.findOne({
+      where: { userId: user.id },
+      relations: { commentToBoardingHouses: true },
+    });
+    if (!exitComment) {
+      const comment = this.commentRepo.create({
+        userId: user.id,
+        content: dto.content,
+        star: dto.star,
+      });
+      await this.commentRepo.save(comment);
+      const commentToBoardingHouse = this.commentToBoardingHouseRepo.create({
+        boardingHouseId: dto.boardingHouseId,
+        commentId: comment.id,
+      });
+      await this.commentToBoardingHouseRepo.save(commentToBoardingHouse);
+      return comment;
+    }
     const comment = this.commentRepo.create({
+      ...exitComment,
       userId: user.id,
       content: dto.content,
       star: dto.star,
     });
-
     await this.commentRepo.save(comment);
-    const commentToBoardingHouse = this.commentToBoardingHouseRepo.create({
-      boardingHouseId: dto.boardingHouseId,
-      commentId: comment.id,
-    });
-    await this.commentToBoardingHouseRepo.save(commentToBoardingHouse);
 
     return comment;
   }
