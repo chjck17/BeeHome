@@ -1,4 +1,5 @@
 // import { FileResDto } from '../../../../file/dtos/res/file.res.dto';
+import { LocalFile } from '../../../../local-file/local-file.entity';
 import { Customer } from '../../../entities/customer.entity';
 import { CustomerStatus } from '../../../enums/customer.enum';
 import { LessorResDto } from './lessor.res.dto';
@@ -15,7 +16,7 @@ export class CustomerResDto {
   status: CustomerStatus;
   user: UserResDto;
   lessor: LessorResDto;
-  // avatar: FileResDto;
+  avatar: LocalFile;
 
   static mapProperty(dto: CustomerResDto, data: Customer) {
     dto.id = data.id;
@@ -25,6 +26,7 @@ export class CustomerResDto {
     dto.firstName = data.firstName;
     dto.lastName = data.lastName;
     dto.birthDate = data.birthDate;
+    dto.avatar = data.avatar;
   }
 
   static forCustomer(data?: Customer) {
