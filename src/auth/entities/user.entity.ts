@@ -29,6 +29,9 @@ export class User extends BaseEntity {
   @Column({ type: 'enum', enum: UserType, default: UserType.LESSOR })
   type: UserType;
 
+  @Column({ default: false })
+  isEmailConfirmed: boolean;
+
   @OneToOne(() => Lessor, (lessor) => lessor.user)
   lessor: Lessor;
 

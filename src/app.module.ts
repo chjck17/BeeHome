@@ -23,6 +23,8 @@ import { ProvinceModule } from './province/province.module';
 import { BoardingHouseModule } from './boarding-house/boarding-house.module';
 import { CommentModule } from './comment/comment.module';
 import { BookModule } from './book/book.module';
+import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import { BookModule } from './book/book.module';
     TagModule,
     CommentModule,
     BookModule,
+    EmailConfirmationModule,
+    EmailModule,
   ],
 
   controllers: [],

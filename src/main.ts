@@ -13,7 +13,11 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({
+      bodyLimit: 52428800, // 50 MB
+      // querystringParser: false,
+      maxParamLength: 200, // tăng giới hạn độ dài của các tham số tuyến đường
+    }),
   );
   app.enableCors({ origin: '*', credentials: true });
   app.register(contentParser);

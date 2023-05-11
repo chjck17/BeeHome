@@ -159,21 +159,21 @@ export class RoomLessorService {
     });
     // return product;
 
-    // product.roomImages.map((item) => {
-    //   const filePath = path.join(
-    //     __dirname,
-    //     '../../../../../upload/single',
-    //     item.localFile.filename,
-    //   );
+    product.roomImages.map((item) => {
+      const filePath = path.join(
+        __dirname,
+        '../../../../../upload/single',
+        item.localFile.filename,
+      );
 
-    //   fs.unlink(filePath, (err) => {
-    //     if (err) {
-    //       console.error(err);
-    //     } else {
-    //       console.log('File deleted successfully');
-    //     }
-    //   });
-    // });
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('File deleted successfully');
+        }
+      });
+    });
 
     if (product) {
       await this.roomRepo.softDelete(id);

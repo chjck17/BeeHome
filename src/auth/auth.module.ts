@@ -40,6 +40,8 @@ import { UserTokenRepository } from './repositories/user-token.repository';
 import { GroupPolicyRepository } from 'src/casl/repositories/group-policies.repository';
 import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group-policies.repository';
 import { ManagerRepository } from './repositories/manager.repository';
+import { EmailConfirmationService } from '../emailConfirmation/emailConfirmation.service';
+import EmailService from '../email/email.service';
 @Module({
   imports: [
     PassportModule,
@@ -91,6 +93,8 @@ import { ManagerRepository } from './repositories/manager.repository';
     UserTokenRepository,
     GroupPolicyRepository,
     UserToGroupPolicyRepository,
+    EmailConfirmationService,
+    EmailService,
   ],
 })
 export class AuthModule {
