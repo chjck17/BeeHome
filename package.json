@@ -59,6 +59,7 @@
     "database": "0.0.2",
     "dayjs": "1.11.7",
     "dotenv": "^16.0.3",
+    "fastify-express": "^0.4.0",
     "fastify-helmet": "^5.3.1",
     "fastify-multer": "^2.0.3",
     "googleapis": "^109.0.1",

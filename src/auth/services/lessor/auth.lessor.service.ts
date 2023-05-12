@@ -103,75 +103,75 @@ export class AuthLessorService {
     return LessorResDto.forLessor(lessor);
   }
 
-  private async handleSendVerification(userId: number, email: string) {
-    const token = nanoid(20);
-    const serverDomain = this.configService.get('serverDomain');
-    const expiresIn = this.configService.get(
-      'auth.verification.tokenExpiresIn',
-    );
-    const verificationLink = `${serverDomain}/lessor/auth/verify/${userId}/${token}`;
+  // private async handleSendVerification(userId: number, email: string) {
+  //   const token = nanoid(20);
+  //   const serverDomain = this.configService.get('serverDomain');
+  //   const expiresIn = this.configService.get(
+  //     'auth.verification.tokenExpiresIn',
+  //   );
+  //   const verificationLink = `${serverDomain}/lessor/auth/verify/${userId}/${token}`;
 
-    const userToken = this.userTokenRepo.create({
-      userId,
-      token,
-      type: UserTokenType.VERIFICATION,
-      expiresAt: dayjs().add(Number(expiresIn), 'second').toDate(),
-    });
-    await this.userTokenRepo.save(userToken);
+  //   const userToken = this.userTokenRepo.create({
+  //     userId,
+  //     token,
+  //     type: UserTokenType.VERIFICATION,
+  //     expiresAt: dayjs().add(Number(expiresIn), 'second').toDate(),
+  //   });
+  //   await this.userTokenRepo.save(userToken);
 
-    // const emailInput: SendTemplatedEmailCommandInput = {
-    //   Destination: { ToAddresses: [email] },
-    //   Template: this.configService.get(
-    //     'aws.ses.templateName.lessor.verifyEmailRequest',
-    //   ),
-    //   TemplateData: JSON.stringify({
-    //     verificationLink,
-    //     email,
-    //   }),
-    // } as SendTemplatedEmailCommandInput;
+  //   const emailInput: SendTemplatedEmailCommandInput = {
+  //     Destination: { ToAddresses: [email] },
+  //     Template: this.configService.get(
+  //       'aws.ses.templateName.lessor.verifyEmailRequest',
+  //     ),
+  //     TemplateData: JSON.stringify({
+  //       verificationLink,
+  //       email,
+  //     }),
+  //   } as SendTemplatedEmailCommandInput;
 
-    // await this.emailService.sendTemplateEmail(emailInput);
-  }
+  //   await this.emailService.sendTemplateEmail(emailInput);
+  // }
 
-  @Transactional()
-  async handleVerification(userId: number, token: string) {
-    const user = await this.userRepo.findOne({
-      where: { id: userId },
-      relations: { lessor: true },
-    });
-    const lessor = user?.lessor;
+  // @Transactional()
+  // async handleVerification(userId: number, token: string) {
+  //   const user = await this.userRepo.findOne({
+  //     where: { id: userId },
+  //     relations: { lessor: true },
+  //   });
+  //   const lessor = user?.lessor;
 
-    if (!user || user.type !== UserType.LESSOR || !lessor)
-      throw new NotFoundExc('Lessor not exist');
+  //   if (!user || user.type !== UserType.LESSOR || !lessor)
+  //     throw new NotFoundExc('Lessor not exist');
 
-    if (lessor.status !== LessorStatus.UNVERIFIED)
-      throw new ExpectationFailedExc(`Lessor don't need verified`);
+  //   if (lessor.status !== LessorStatus.UNVERIFIED)
+  //     throw new ExpectationFailedExc(`Lessor don't need verified`);
 
-    const userToken = await this.userTokenRepo.findOne({
-      where: { userId, type: UserTokenType.VERIFICATION },
-      order: { createdAt: 'DESC' },
-    });
+  //   const userToken = await this.userTokenRepo.findOne({
+  //     where: { userId, type: UserTokenType.VERIFICATION },
+  //     order: { createdAt: 'DESC' },
+  //   });
 
-    if (!userToken || userToken.expiresAt < new Date())
-      throw new ExpectationFailedExc('Token expires');
+  //   if (!userToken || userToken.expiresAt < new Date())
+  //     throw new ExpectationFailedExc('Token expires');
 
-    if (userToken.token !== token) throw new BadRequestExc('Token invalid');
+  //   if (userToken.token !== token) throw new BadRequestExc('Token invalid');
 
-    const webLessorDomain = this.configService.get('webLessorDomain');
-    const verifyLessorSuccessPath = this.configService.get(
-      'auth.verification.verifySuccessPath',
-    );
-    const verifySuccessUrl = `${webLessorDomain}/${verifyLessorSuccessPath}`;
+  //   const webLessorDomain = this.configService.get('webLessorDomain');
+  //   const verifyLessorSuccessPath = this.configService.get(
+  //     'auth.verification.verifySuccessPath',
+  //   );
+  //   const verifySuccessUrl = `${webLessorDomain}/${verifyLessorSuccessPath}`;
 
-    await Promise.all([
-      this.lessorRepo.update(lessor.id, {
-        status: LessorStatus.VERIFIED,
-      }),
-      this.userTokenRepo.softDelete(userToken.id),
-    ]);
+  //   await Promise.all([
+  //     this.lessorRepo.update(lessor.id, {
+  //       status: LessorStatus.VERIFIED,
+  //     }),
+  //     this.userTokenRepo.softDelete(userToken.id),
+  //   ]);
 
-    return verifySuccessUrl;
-  }
+  //   return verifySuccessUrl;
+  // }
 
   async refreshToken(dto: RefreshTokenReqDto) {
     const { refreshToken } = dto;

@@ -27,9 +27,12 @@ export class CommentCustomerService {
   ) {}
 
   async createComment(user: User, dto: CreateCommentReqDto) {
-    const exitComment = await this.commentRepo.findOne({
-      where: { userId: user.id },
-      relations: { commentToBoardingHouses: true },
+    const exitComment = await this.commentToBoardingHouseRepo.findOne({
+      where: {
+        boardingHouseId: dto.boardingHouseId,
+        comment: { userId: user.id },
+      },
+      relations: { comment: true },
     });
     if (!exitComment) {
       const comment = this.commentRepo.create({
@@ -46,7 +49,7 @@ export class CommentCustomerService {
       return comment;
     }
     const comment = this.commentRepo.create({
-      ...exitComment,
+      ...exitComment.comment,
       userId: user.id,
       content: dto.content,
       star: dto.star,

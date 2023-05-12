@@ -25,6 +25,7 @@ import { CustomerRepository } from '../../repositories/customer.repository';
 import { LessorRepository } from '../../repositories/lessor.repository';
 import { UserRepository } from '../../repositories/user.repository';
 import { AuthCommonService } from '../common/auth.common.service';
+import { EmailConfirmationService } from '../../../emailConfirmation/emailConfirmation.service';
 
 @Injectable()
 export class AuthCustomerService {
@@ -36,6 +37,7 @@ export class AuthCustomerService {
     private encryptService: EncryptService,
     private authCommonService: AuthCommonService,
     private lessorRepo: LessorRepository,
+    private emailConfirmation: EmailConfirmationService,
   ) {}
 
   async getCurrent(user: User) {
@@ -56,12 +58,16 @@ export class AuthCustomerService {
       where: {
         email,
       },
+      relations: { user: true },
     });
 
     if (!customer) throw new UnauthorizedExc('Invalid credentials');
     if (!this.encryptService.compareHash(password, customer.password))
       throw new UnauthorizedExc('Invalid credentials');
 
+    if (customer.user.isEmailConfirmed == false) {
+      throw new UnauthorizedExc('Invalid credentials');
+    }
     const payload: JwtAuthPayload = { userId: customer.userId };
     const accessToken = this.authCommonService.generateAccessToken(payload);
     const refreshToken = this.authCommonService.generateRefreshToken(payload);
@@ -91,6 +97,7 @@ export class AuthCustomerService {
       lastName,
       password: this.encryptService.encryptText(password),
     });
+    await this.emailConfirmation.sendVerificationCustomerLink(email);
     // await this.customerRepo.insert(customer);
     const payload: JwtAuthPayload = { userId: customer.userId };
     const accessToken = this.authCommonService.generateAccessToken(payload);
