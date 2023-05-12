@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { BoardingHouseRepository } from '../../repositories/boarding-house.repository';
-import { GetListBoardingHousesCustomerReqDto } from '../../dtos/boarding-house.req.dto';
+import {
+  GetListBoardingHousesByStarCustomerReqDto,
+  GetListBoardingHousesCustomerReqDto,
+} from '../../dtos/boarding-house.req.dto';
 import { BoardingHouseResDto } from '../../dtos/res/boarding-house.res.dto';
 import { BoardingHouseCommonService } from '../common/boardingHouse.common.service';
 import { addCommentCustomerReqDto } from '../../dtos/customer/customer.req.dto';
@@ -156,4 +159,74 @@ export class BoardingHouseCustomerService {
   //   });
   //   await this.commentToBoardingHouseRepo.save(commentToBoardingHouse);
   // }
+
+  async getListBoardingHouseByStar(
+    dto: GetListBoardingHousesByStarCustomerReqDto,
+  ) {
+    const { limit, page } = dto;
+    const queryBuilder = this.boardingHouseRepo
+      .createQueryBuilder('boardingHouse')
+      // .leftJoinAndSelect(
+      //   'boardingHouse.boardingHouseAddress',
+      //   'boardingHouseAddress',
+      // )
+      .leftJoinAndSelect(
+        'boardingHouse.commentToBoardingHouses',
+        'commentToBoardingHouse',
+      )
+      .leftJoinAndSelect('commentToBoardingHouse.comment', 'comment');
+    // .leftJoinAndSelect('Arg(comment.star)', 'comment');
+
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+    });
+
+    let boardingHouses = await Promise.all(
+      items.map(async (item) => {
+        const boardingHouse =
+          await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
+            where: {
+              id: item.id,
+              // boardingHouseRentDeposits: { lang: lang },
+              // boardingHouseRules: { lang: lang },
+              // boardingHouseDescriptions: { lang: lang },
+            },
+            relations: {
+              floors: { rooms: { roomImages: { localFile: true } } },
+              user: { lessor: { avatar: true } },
+              boardingHouseRentDeposits: true,
+              boardingHouseDescriptions: true,
+              boardingHouseToTags: { tag: true },
+              boardingHouseRules: true,
+              boardingHouseAddress: true,
+              commentToBoardingHouses: {
+                comment: { user: { customer: true } },
+              },
+              boardingHouseImages: { localFile: true },
+            },
+          });
+        const priceRange =
+          await this.boardingHouseCommonService.getBoardingHousePriceRange(
+            item,
+          );
+        const attributes =
+          await this.boardingHouseCommonService.getBoardingHouseAttribute(item);
+
+        return BoardingHouseResDto.forCustomer({
+          dataBoardingHouse: boardingHouse,
+          priceRange,
+          attributes,
+        });
+        // return boardingHouse;
+      }),
+    );
+    // if (startPrice && endPrice) {
+    //   boardingHouses = boardingHouses.filter(
+    //     (item) => item.price >= startPrice && item.price <= endPrice,
+    //   );
+    // }
+    return new Pagination(boardingHouses, meta);
+    // return tests;
+  }
 }

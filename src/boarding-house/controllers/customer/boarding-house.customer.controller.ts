@@ -1,6 +1,9 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { PrefixType } from '../../../common/constants/global.constant';
-import { GetListBoardingHousesCustomerReqDto } from '../../dtos/boarding-house.req.dto';
+import {
+  GetListBoardingHousesByStarCustomerReqDto,
+  GetListBoardingHousesCustomerReqDto,
+} from '../../dtos/boarding-house.req.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { BoardingHouseCustomerService } from '../../services/customer/boarding-house.customer.service';
 
@@ -14,6 +17,11 @@ export class BoardingHouseCustomerController {
   @Get()
   findAll(@Query() query: GetListBoardingHousesCustomerReqDto) {
     return this.boardingHouseCustomerService.getListBoardingHouse(query);
+  }
+
+  @Get('star')
+  findAllByStar(@Query() query: GetListBoardingHousesByStarCustomerReqDto) {
+    return this.boardingHouseCustomerService.getListBoardingHouseByStar(query);
   }
 
   @Get(':id')
