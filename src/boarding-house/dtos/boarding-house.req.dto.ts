@@ -121,6 +121,8 @@ export class GetListBoardingHousesCustomerReqDto extends PaginationReqDto {
   @IsValidText({ trim: true, required: false })
   district?: string;
 }
+
+export class GetListBoardingHousesByStarCustomerReqDto extends PaginationReqDto {}
 export class UpdateBoardingHouseReqDto {
   @IsValidNumber()
   id: number;
