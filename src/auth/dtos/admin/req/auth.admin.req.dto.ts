@@ -2,7 +2,7 @@ import { IsValidText } from '../../../../common/decorators/custom-validator.deco
 
 export class AdminLoginReqDto {
   @IsValidText()
-  username: string;
+  email: string;
 
   @IsValidText()
   password: string;
