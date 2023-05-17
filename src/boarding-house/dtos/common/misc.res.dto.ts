@@ -7,7 +7,9 @@ export class BoardingHousePriceResDto {
   normalPrice?: number;
   salePrice?: number;
 }
-
+export class BoardingHouseStarResDto {
+  avg?: number;
+}
 export class BoardingHousePointResDto {
   range?: {
     min: number;

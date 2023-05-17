@@ -24,6 +24,12 @@ export class CreateRoomReqDto {
   @IsValidNumberString()
   acreage: string;
 
+  @IsValidNumberString()
+  roomSimple: string;
+
+  @IsValidNumberString()
+  toilet: string;
+
   @IsValidArrayNumber({ minSize: 1, required: true })
   imgIds: number[];
 
@@ -47,6 +53,12 @@ export class UpdateRoomReqDto {
 
   @IsValidNumberString({ required: false })
   acreage?: string;
+
+  @IsValidNumberString()
+  roomSimple?: string;
+
+  @IsValidNumberString()
+  toilet?: string;
 
   @IsValidArrayNumber({ required: false })
   imgIds: number[];

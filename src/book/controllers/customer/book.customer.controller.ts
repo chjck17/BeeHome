@@ -29,33 +29,10 @@ import {
 export class BookCustomerController {
   constructor(private readonly bookCustomerService: BookCustomerService) {}
 
-  // @Get()
-  // findAll(@CurrentUser() user: User, @Query() query: GetListBooksReqDto) {
-  //   return this.bookCustomerService.getListBook(user, query);
-  // }
-
-  // @Get(':id')
-  // findOne(@CurrentUser() user: User, @Param('id') id: string) {
-  //   return this.bookCustomerService.findOne(user, Number(id));
-  // }
-
   @Post()
   createBook(@Body() createBookDto: CreateBookReqDto) {
     return this.bookCustomerService.createBook(createBookDto);
   }
-
-  // @Patch(':id')
-  // update(
-  //   @CurrentUser() user: User,
-  //   @Param('id') id: string,
-  //   @Body() updateProductDto: UpdateBookReqDto,
-  // ) {
-  //   return this.bookCustomerService.updateBook(
-  //     user,
-  //     Number(id),
-  //     updateProductDto,
-  //   );
-  // }
 
   @Delete(':id')
   remove(@CurrentUser() user: User, @Param('id') id: string) {

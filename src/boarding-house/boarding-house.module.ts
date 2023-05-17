@@ -53,6 +53,7 @@ import { CommentToBoardingHouseRepository } from '../comment/repositories/commen
     BoardingHouseCommonService,
     BoardingHouseImageRepository,
     RoomAttributeTermDetailRepository,
+    CommentRepository,
   ],
 })
 export class BoardingHouseModule {}

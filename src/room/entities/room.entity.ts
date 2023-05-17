@@ -28,6 +28,12 @@ export class Room extends BaseEntity {
   @Column()
   acreage: string;
 
+  @Column({ default: '0' })
+  roomSimple: string;
+
+  @Column({ default: '1' })
+  toilet: string;
+
   @Column()
   status: RoomStatus;
   //--------------------------------------------------------------

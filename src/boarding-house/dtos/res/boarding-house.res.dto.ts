@@ -1,10 +1,14 @@
 import { Comment } from '../../../comment/entities/comment.entity';
 import { BoardingHouse } from '../../entities/boarding-house.entity';
-import { BoardingHousePriceResDto } from '../common/misc.res.dto';
+import {
+  BoardingHousePriceResDto,
+  BoardingHouseStarResDto,
+} from '../common/misc.res.dto';
 interface BoardingHouseResDtoParams {
   dataBoardingHouse: BoardingHouse;
   priceRange?: BoardingHousePriceResDto;
   attributes?: any;
+  star?: BoardingHouseStarResDto;
 }
 export class BoardingHouseResDto {
   id: number;
@@ -26,6 +30,7 @@ export class BoardingHouseResDto {
   posterName: string;
   posterId: number;
   comment: Comment[];
+  starAvg: string;
   static mapProperty(
     dto: BoardingHouseResDto,
     dataBoardingHouse: BoardingHouse,
@@ -91,13 +96,14 @@ export class BoardingHouseResDto {
     dataBoardingHouse,
     priceRange,
     attributes,
+    star,
   }: BoardingHouseResDtoParams) {
     if (!dataBoardingHouse) return null;
     const result = new BoardingHouseResDto();
     result.price = String(priceRange?.range.min)
       ? String(priceRange?.range.min)
       : null;
-
+    result.starAvg = String(star?.avg) ? String(star?.avg) : null;
     result.attributes = attributes.map((item) => {
       const attribute = item.name;
       return attribute;

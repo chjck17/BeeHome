@@ -130,13 +130,16 @@ export class BoardingHouseCustomerService {
           dataBoardingHouse: boardingHouse,
           priceRange,
           attributes,
+          star: null,
         });
         // return boardingHouse;
       }),
     );
     if (startPrice && endPrice) {
       boardingHouses = boardingHouses.filter(
-        (item) => item.price >= startPrice && item.price <= endPrice,
+        (item) =>
+          Number(item.price) >= Number(startPrice) &&
+          Number(item.price) <= Number(endPrice),
       );
     }
     return new Pagination(boardingHouses, meta);
@@ -166,21 +169,20 @@ export class BoardingHouseCustomerService {
     const { limit, page } = dto;
     const queryBuilder = this.boardingHouseRepo
       .createQueryBuilder('boardingHouse')
-      // .leftJoinAndSelect(
-      //   'boardingHouse.boardingHouseAddress',
-      //   'boardingHouseAddress',
-      // )
-      .leftJoinAndSelect(
+      .innerJoin(
         'boardingHouse.commentToBoardingHouses',
         'commentToBoardingHouse',
       )
-      .leftJoinAndSelect('commentToBoardingHouse.comment', 'comment');
-    // .leftJoinAndSelect('Arg(comment.star)', 'comment');
+      .innerJoin('commentToBoardingHouse.comment', 'comment')
+      .addSelect('AVG(CAST(comment.star AS numeric)) as starAvg ')
+      .groupBy('boardingHouse.id')
+      .orderBy('starAvg', 'DESC');
 
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
     });
+    // return items;
 
     let boardingHouses = await Promise.all(
       items.map(async (item) => {
@@ -206,27 +208,24 @@ export class BoardingHouseCustomerService {
               boardingHouseImages: { localFile: true },
             },
           });
+        const star =
+          await this.boardingHouseCommonService.getBoardingHouseAvgStar(item);
         const priceRange =
           await this.boardingHouseCommonService.getBoardingHousePriceRange(
             item,
           );
         const attributes =
           await this.boardingHouseCommonService.getBoardingHouseAttribute(item);
-
+        // return { star, priceRange };
         return BoardingHouseResDto.forCustomer({
           dataBoardingHouse: boardingHouse,
           priceRange,
           attributes,
+          star,
         });
-        // return boardingHouse;
       }),
     );
-    // if (startPrice && endPrice) {
-    //   boardingHouses = boardingHouses.filter(
-    //     (item) => item.price >= startPrice && item.price <= endPrice,
-    //   );
-    // }
+
     return new Pagination(boardingHouses, meta);
-    // return tests;
   }
 }

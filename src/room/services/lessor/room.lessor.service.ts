@@ -34,13 +34,24 @@ export class RoomLessorService {
     private roomToAttributeRepo: RoomToAttributeRepository,
   ) {}
   async createRoom(dto: CreateRoomReqDto) {
-    const { name, price, acreage, floorId, categoryIds, attributeIds, imgIds } =
-      dto;
+    const {
+      name,
+      price,
+      acreage,
+      floorId,
+      categoryIds,
+      attributeIds,
+      imgIds,
+      roomSimple,
+      toilet,
+    } = dto;
     const room = this.roomRepo.create({
       floorId: floorId,
       name: name,
       price: price,
       acreage: acreage,
+      roomSimple: roomSimple,
+      toilet: toilet,
       status: RoomStatus.ACTIVE,
     });
     await this.roomRepo.save(room);
@@ -85,6 +96,8 @@ export class RoomLessorService {
       categoryIds,
       attributeIds,
       imgIds,
+      roomSimple,
+      toilet,
     } = dto;
     const existRoom = await this.roomRepo.findOne({
       where: { id: roomId },
@@ -103,6 +116,8 @@ export class RoomLessorService {
       name: name,
       acreage: acreage,
       price: price,
+      roomSimple: roomSimple,
+      toilet: toilet,
     });
     await this.roomRepo.save(room);
     await this.saveItemCategory(
