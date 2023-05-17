@@ -24,13 +24,13 @@ export class AuthAdminService {
   ) {}
 
   async login(dto: AdminLoginReqDto) {
-    const { username, password } = dto;
+    const { email, password } = dto;
     // return this.encryptService.encryptText(password);
     const admin = await this.adminRepo
       .createQueryBuilder('admin')
       .addSelect('admin.password')
       .innerJoinAndSelect('admin.user', 'user')
-      .where('admin.username = :username', { username })
+      .where('admin.username = :username', { username: email })
       .getOne();
     if (!admin) throw new UnauthorizedExc();
 
