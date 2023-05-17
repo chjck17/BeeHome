@@ -20,6 +20,7 @@ import { RoomAttributeTerm } from '../../room/entities/room-attribute-term.entit
 import { RoomAttribute } from '../../room/entities/room-attribute.entity';
 import { Comment } from '../../comment/entities/comment.entity';
 import { Book } from '../../book/entities/book.entity';
+import { BookDisable } from '../../book/entities/book-disable.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -80,6 +81,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => RoomAttribute, (item) => item.user)
   roomAttributes: RoomAttribute[];
+
+  @OneToMany(() => BookDisable, (item) => item.user)
+  bookDisables: BookDisable[];
   // // Join customer
   // @OneToMany(() => Customer, (customer) => customer.lessorUser)
   // customersOfLessor: Customer[];

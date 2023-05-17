@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { BoardingHouseRepository } from '../../repositories/boarding-house.repository';
 import { BoardingHouse } from '../../entities/boarding-house.entity';
-import { BoardingHousePriceResDto } from '../../dtos/common/misc.res.dto';
+import {
+  BoardingHousePriceResDto,
+  BoardingHouseStarResDto,
+} from '../../dtos/common/misc.res.dto';
 import { RoomRepository } from '../../../room/repositories/room.repository';
 import { FloorRepository } from '../../../floor/repositories/floor.repository';
 import { Floor } from '../../../floor/entities/floor.entity';
 import { RoomAttributeRepository } from '../../../room/repositories/room-attribute.repository';
 import { RoomAttributeTermRepository } from '../../../room/repositories/room-attribute-term.repository';
 import { RoomAttributeTermDetailRepository } from '../../../room/repositories/room-attribute-term-detail.repository';
+import { CommentRepository } from '../../../comment/repositories/comment.repository';
 
 @Injectable()
 export class BoardingHouseCommonService {
@@ -15,6 +19,7 @@ export class BoardingHouseCommonService {
     private boardingHouseRepo: BoardingHouseRepository,
     private roomRepo: RoomRepository,
     private roomAttributeTermDetailRepo: RoomAttributeTermDetailRepository,
+    private commentRepo: CommentRepository,
 
     private floorRepo: FloorRepository,
   ) {}
@@ -48,6 +53,29 @@ export class BoardingHouseCommonService {
       min: Number(priceRange?.minPrice),
       max: Number(priceRange?.maxPrice),
     };
+
+    return result;
+  }
+
+  async getBoardingHouseAvgStar(
+    boardingHouse: BoardingHouse,
+  ): Promise<BoardingHouseStarResDto> {
+    const result = new BoardingHouseStarResDto();
+
+    const queryBuilder = this.commentRepo
+      .createQueryBuilder('comment')
+      .innerJoin('comment.commentToBoardingHouses', 'commentToBoardingHouse')
+      .innerJoin('commentToBoardingHouse.boardingHouse', 'boardingHouse')
+      .where('boardingHouse.id = :id', { id: boardingHouse.id });
+
+    let starAvg: { avgStar: number };
+    // if (product.onSale) {
+    starAvg = await queryBuilder
+      .select('AVG(CAST(comment.star AS numeric))', 'avgStar')
+      // .groupBy('comment.created_at')
+      .getRawOne();
+
+    result.avg = starAvg.avgStar;
 
     return result;
   }
