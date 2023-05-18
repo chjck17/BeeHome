@@ -25,6 +25,7 @@ import { CommentModule } from './comment/comment.module';
 import { BookModule } from './book/book.module';
 import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.module';
 import { EmailModule } from './email/email.module';
+import { PredictBoardingHouseLessorModule } from './predict/predict.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { EmailModule } from './email/email.module';
     CommentModule,
     BookModule,
     EmailConfirmationModule,
+    PredictBoardingHouseLessorModule,
     EmailModule,
   ],
 
