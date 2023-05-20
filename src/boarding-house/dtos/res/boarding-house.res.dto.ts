@@ -23,6 +23,7 @@ export class BoardingHouseResDto {
   saleTag: string[];
   electricFee: string;
   waterFee: string;
+
   serviceFee: string;
   attributes: string[];
   itemDetails: string[];

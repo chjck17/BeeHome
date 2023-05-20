@@ -143,7 +143,6 @@ export class BoardingHouseCustomerService {
       );
     }
     return new Pagination(boardingHouses, meta);
-    // return tests;
   }
 
   // async comment(dto: addCommentCustomerReqDto, user: User) {
