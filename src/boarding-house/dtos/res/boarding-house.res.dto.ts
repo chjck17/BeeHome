@@ -53,11 +53,11 @@ export class BoardingHouseResDto {
       dataBoardingHouse?.boardingHouseAddress?.ward
         ? dataBoardingHouse?.boardingHouseAddress?.address +
           ',' +
-          dataBoardingHouse?.boardingHouseAddress?.province +
+          dataBoardingHouse?.boardingHouseAddress?.ward +
           ',' +
           dataBoardingHouse?.boardingHouseAddress?.district +
           ',' +
-          dataBoardingHouse?.boardingHouseAddress?.ward
+          dataBoardingHouse?.boardingHouseAddress?.province
         : null;
     dto.saleTag = dataBoardingHouse?.boardingHouseToTags?.map((item) => {
       return item.tag.name;
