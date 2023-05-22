@@ -42,6 +42,7 @@ import { UserToGroupPolicyRepository } from 'src/casl/repositories/user-to-group
 import { ManagerRepository } from './repositories/manager.repository';
 import { EmailConfirmationService } from '../emailConfirmation/emailConfirmation.service';
 import EmailService from '../email/email.service';
+import { BookRepository } from '../book/repositories/book.repository';
 @Module({
   imports: [
     PassportModule,
@@ -66,6 +67,7 @@ import EmailService from '../email/email.service';
     LessorAdminController,
     CustomerAdminController,
     ProfileLessorController,
+
     ProfileAdminController,
     ProfileCustomerController,
   ],
@@ -73,6 +75,7 @@ import EmailService from '../email/email.service';
     AuthAdminService,
     AuthLessorService,
     AuthCustomerService,
+    BookRepository,
     AdminAdminService,
     LessorAdminService,
     CustomerAdminService,

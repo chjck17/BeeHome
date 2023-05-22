@@ -7,6 +7,8 @@ import { UserRepository } from '../auth/repositories/user.repository';
 import { User } from '../auth/entities/user.entity';
 import { CustomerRepository } from '../auth/repositories/customer.repository';
 import { LessorRepository } from '../auth/repositories/lessor.repository';
+import { BookRepository } from '../book/repositories/book.repository';
+import { BookStatus } from '../book/enums/book.enum';
 // import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -17,6 +19,8 @@ export class EmailConfirmationService {
     private readonly emailService: EmailService,
     private readonly userRepo: UserRepository,
     private readonly customerRepo: CustomerRepository,
+    private readonly bookRepo: BookRepository,
+
     private readonly lessorRepo: LessorRepository,
   ) {}
 
@@ -41,6 +45,51 @@ export class EmailConfirmationService {
       text,
     });
   }
+
+  public sendVerificationLessorLink(email: string) {
+    const payload: VerificationTokenPayload = { email };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+
+    const url = `${this.configService.get(
+      'EMAIL_CONFIRMATION_URL_LESSOR',
+    )}/${token}`;
+
+    const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
+
+    return this.emailService.sendMail({
+      to: email,
+      subject: 'Email confirmation',
+      text,
+    });
+  }
+
+  public sendVerificationBookingDate(email: string) {
+    const payload: VerificationTokenPayload = { email };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+
+    const url = `${this.configService.get(
+      'EMAIL_CONFIRMATION_BOOKING_DATE_URL_CUSTOMER',
+    )}/${token}`;
+
+    const text = `Chào bạn chúng tôi là Beehome vui lòng xác thực email để xác nhận ngày gặp : ${url}`;
+
+    return this.emailService.sendMail({
+      to: email,
+      subject: 'Email confirmation',
+      text,
+    });
+  }
+
   async markEmailAsConfirmed(user: User) {
     return this.userRepo.update(
       { id: user.id },
@@ -49,14 +98,6 @@ export class EmailConfirmationService {
       },
     );
   }
-  // public async resendConfirmationLink(userId: string) {
-  //   // const user = await this.userRepo.findOne({ where: { id: Number(userId) } });
-  //   // if (user.isEmailConfirmed) {
-  //   //   throw new BadRequestException('Email already confirmed');
-  //   // }
-  //   await this.sendVerificationLink(user.email);
-  // }
-
   public async confirmEmail(email: string, type: string) {
     if (type === 'customer') {
       const customer = await this.customerRepo.findOne({
@@ -80,6 +121,19 @@ export class EmailConfirmationService {
     }
   }
 
+  public async confirmBooking(email: string, type: string) {
+    const book = await this.bookRepo.findOne({
+      where: { email: email },
+    });
+
+    await this.bookRepo.update(
+      { id: book.id },
+      {
+        status: BookStatus.APPROVED,
+      },
+    );
+  }
+
   public async decodeConfirmationToken(token: string) {
     try {
       const payload = await this.jwtService.verify(token, {
@@ -96,5 +150,23 @@ export class EmailConfirmationService {
       }
       throw new BadRequestException('Bad confirmation token');
     }
+  }
+
+  public forgetPassword(email: string, password: string) {
+    const payload: VerificationTokenPayload = { email };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+
+    const text = `Chào bạn chúng tôi là Beehome đây là mật khẩu mới của bạn : ${password}`;
+
+    return this.emailService.sendMail({
+      to: email,
+      subject: 'Email confirmation',
+      text,
+    });
   }
 }

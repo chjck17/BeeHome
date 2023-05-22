@@ -40,3 +40,7 @@ export class LoginCustomerReqDto {
   // @IsValidNumber({ min: 1 })
   // lessorId: number;
 }
+export class ForgetPasswordCustomerReqDto {
+  @IsEmail()
+  email: string;
+}

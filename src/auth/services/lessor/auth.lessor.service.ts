@@ -32,6 +32,7 @@ import { LessorRepository } from '../../repositories/lessor.repository';
 import { UserTokenRepository } from '../../repositories/user-token.repository';
 import { UserRepository } from '../../repositories/user.repository';
 import { AuthCommonService } from '../common/auth.common.service';
+import { EmailConfirmationService } from '../../../emailConfirmation/emailConfirmation.service';
 
 @Injectable()
 export class AuthLessorService {
@@ -44,6 +45,7 @@ export class AuthLessorService {
     private encryptService: EncryptService,
     private authCommonService: AuthCommonService,
     private configService: ConfigService<GlobalConfig>,
+    private emailConfirmation: EmailConfirmationService,
   ) {}
 
   @Transactional()
@@ -64,7 +66,7 @@ export class AuthLessorService {
 
     await Promise.all([
       this.lessorRepo.save(lessor),
-      // this.handleSendVerification(user.id, email),
+      await this.emailConfirmation.sendVerificationLessorLink(email),
     ]);
 
     return LessorResDto.forLessor(lessor);

@@ -12,12 +12,14 @@ import { Lessor } from '../auth/entities/lessor.entity';
 import { Customer } from '../auth/entities/customer.entity';
 import { User } from '../auth/entities/user.entity';
 import { UserRepository } from '../auth/repositories/user.repository';
+import { BookRepository } from '../book/repositories/book.repository';
+import { Book } from '../book/entities/book.entity';
 @Module({
   imports: [
     ConfigModule,
     EmailModule,
     JwtModule.register({}),
-    TypeOrmModule.forFeature([Lessor, Customer, User]),
+    TypeOrmModule.forFeature([Lessor, Customer, User, Book]),
   ],
   providers: [
     EmailConfirmationService,
@@ -25,6 +27,7 @@ import { UserRepository } from '../auth/repositories/user.repository';
     LessorRepository,
     CustomerRepository,
     UserRepository,
+    BookRepository,
   ],
   exports: [EmailConfirmationService],
   controllers: [EmailConfirmationController],

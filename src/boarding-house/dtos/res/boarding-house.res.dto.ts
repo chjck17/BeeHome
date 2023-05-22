@@ -23,7 +23,6 @@ export class BoardingHouseResDto {
   saleTag: string[];
   electricFee: string;
   waterFee: string;
-
   serviceFee: string;
   attributes: string[];
   itemDetails: string[];
@@ -32,6 +31,8 @@ export class BoardingHouseResDto {
   posterId: number;
   comment: Comment[];
   starAvg: string;
+  roomSimple: string;
+  toilet: string;
   static mapProperty(
     dto: BoardingHouseResDto,
     dataBoardingHouse: BoardingHouse,

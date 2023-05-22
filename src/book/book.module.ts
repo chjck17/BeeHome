@@ -12,6 +12,12 @@ import { BookDisableLessorController } from './controllers/lessor/book-disable.c
 import { BookDisableLessorService } from './services/lessor/book-disable.lessor.service';
 import { BookDisable } from './entities/book-disable.entity';
 import { BookDisableRepository } from './repositories/book-disable.repository';
+import { EmailConfirmationService } from '../emailConfirmation/emailConfirmation.service';
+import { JwtService } from '@nestjs/jwt';
+import EmailService from '../email/email.service';
+import { UserRepository } from '../auth/repositories/user.repository';
+import { CustomerRepository } from '../auth/repositories/customer.repository';
+import { LessorRepository } from '../auth/repositories/lessor.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Book, BookDisable])],
@@ -21,11 +27,17 @@ import { BookDisableRepository } from './repositories/book-disable.repository';
     BookDisableLessorController,
   ],
   providers: [
+    LessorRepository,
+    CustomerRepository,
+    UserRepository,
+    JwtService,
+    EmailService,
     BookRepository,
     BookLessorService,
     BookCustomerService,
     BookDisableLessorService,
     BookDisableRepository,
+    EmailConfirmationService,
   ],
 })
 export class BookModule {}

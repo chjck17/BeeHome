@@ -7,6 +7,7 @@ import {
 } from '../../../common/decorators/auth.decorator';
 import { RefreshTokenReqDto } from '../../dtos/common/req/auth.req.dto';
 import {
+  ForgetPasswordCustomerReqDto,
   LoginCustomerReqDto,
   RegisterCustomerReqDto,
 } from '../../dtos/customer/req/auth.customer.req.dto';
@@ -36,5 +37,10 @@ export class AuthCustomerController {
   @AuthenticateCustomer()
   getCurrent(@CurrentUser() user: User) {
     return this.authCustomerService.getCurrent(user);
+  }
+
+  @Post('forget-password')
+  forget(@Body() body: ForgetPasswordCustomerReqDto) {
+    return this.authCustomerService.forgetPassword(body);
   }
 }

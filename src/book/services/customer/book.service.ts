@@ -15,10 +15,15 @@ import {
   ConflictExc,
 } from '../../../common/exceptions/custom.exception';
 import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
+import { EmailConfirmationService } from '../../../emailConfirmation/emailConfirmation.service';
+import { BookStatus } from '../../enums/book.enum';
 
 @Injectable()
 export class BookCustomerService {
-  constructor(private bookRepo: BookRepository) {}
+  constructor(
+    private bookRepo: BookRepository,
+    private emailConfirmation: EmailConfirmationService,
+  ) {}
 
   async createBook(bookDto: CreateBookReqDto) {
     const existBook = await this.bookRepo.findOneBy({
@@ -37,6 +42,7 @@ export class BookCustomerService {
         dateMeet: bookDto.dateMeet,
       });
       await this.bookRepo.save(book);
+      await this.emailConfirmation.sendVerificationBookingDate(book.email);
       return book;
     }
     const book = this.bookRepo.create({
@@ -48,6 +54,10 @@ export class BookCustomerService {
       dateMeet: bookDto.dateMeet,
     });
     await this.bookRepo.save(book);
+    if (existBook.status === BookStatus.PROCESSING) {
+      await this.emailConfirmation.sendVerificationBookingDate(book.email);
+    }
+    // await this.emailConfirmation.sendVerificationBookingDate(book.email);
     return book;
   }
   // async findOne(user: User, id: number) {

@@ -15,6 +15,7 @@ import { RefreshTokenReqDto } from '../../dtos/common/req/auth.req.dto';
 import { AuthTokenResDto } from '../../dtos/common/res/auth-token.res.dto';
 import { CustomerResDto } from '../../dtos/common/res/customer.res.dto';
 import {
+  ForgetPasswordCustomerReqDto,
   LoginCustomerReqDto,
   RegisterCustomerReqDto,
 } from '../../dtos/customer/req/auth.customer.req.dto';
@@ -26,6 +27,7 @@ import { LessorRepository } from '../../repositories/lessor.repository';
 import { UserRepository } from '../../repositories/user.repository';
 import { AuthCommonService } from '../common/auth.common.service';
 import { EmailConfirmationService } from '../../../emailConfirmation/emailConfirmation.service';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthCustomerService {
@@ -98,7 +100,6 @@ export class AuthCustomerService {
       password: this.encryptService.encryptText(password),
     });
     await this.emailConfirmation.sendVerificationCustomerLink(email);
-    // await this.customerRepo.insert(customer);
     const payload: JwtAuthPayload = { userId: customer.userId };
     const accessToken = this.authCommonService.generateAccessToken(payload);
     const refreshToken = this.authCommonService.generateRefreshToken(payload);
@@ -120,5 +121,26 @@ export class AuthCustomerService {
     } catch (error) {
       throw new UnauthorizedExc('Invalid credentials');
     }
+  }
+
+  @Transactional()
+  async forgetPassword(dto: ForgetPasswordCustomerReqDto) {
+    const { email } = dto;
+
+    const customer = await this.customerRepo.findOne({
+      where: { email: email },
+    });
+    if (!customer) throw new ExpectationFailedExc('Customer is invalid');
+
+    const newPassword = randomBytes(Math.ceil(10 / 2))
+      .toString('hex')
+      .slice(0, 10);
+    await this.customerRepo.save({
+      ...customer,
+      password: this.encryptService.encryptText(newPassword),
+    });
+    await this.emailConfirmation.forgetPassword(email, newPassword);
+
+    // return newPassword;
   }
 }

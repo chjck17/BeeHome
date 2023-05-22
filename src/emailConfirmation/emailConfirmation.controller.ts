@@ -29,13 +29,22 @@ export class EmailConfirmationController {
     return email;
   }
 
+  @Get('confirm-booking-date/:token')
+  async confirmBookingCustomer(@Param('token') token: string) {
+    const email = await this.emailConfirmationService.decodeConfirmationToken(
+      token,
+    );
+    await this.emailConfirmationService.confirmBooking(email, 'customer');
+    return email;
+  }
+
   @Get('confirm-lessor/:token')
   async confirmLessor(@Param('token') token: string) {
     const email = await this.emailConfirmationService.decodeConfirmationToken(
       token,
     );
     await this.emailConfirmationService.confirmEmail(email, 'lessor');
-    return token;
+    return email;
   }
 
   @Post('resend-confirmation-link')
