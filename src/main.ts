@@ -21,7 +21,14 @@ async function bootstrap() {
   );
   app.enableCors({ origin: '*', credentials: true });
   app.register(contentParser);
-  app.useStaticAssets({ root: join(__dirname, './app') });
+
+  // const path = require('path');
+
+  // app.use(
+  //   '/upload/single',
+  //   express.static(path.join(__dirname, '..', 'upload', 'single')),
+  // );
+  app.useStaticAssets({ root: join(__dirname, '..', 'upload', 'single') });
   const config = new DocumentBuilder()
     .setTitle('BeeHome')
     .setDescription('BeeHome API')
