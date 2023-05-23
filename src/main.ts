@@ -21,7 +21,7 @@ async function bootstrap() {
   );
   app.enableCors({ origin: '*', credentials: true });
   app.register(contentParser);
-  app.useStaticAssets({ root: join(__dirname, '../') });
+  app.useStaticAssets({ root: join(__dirname, '../app') });
   const config = new DocumentBuilder()
     .setTitle('BeeHome')
     .setDescription('BeeHome API')
