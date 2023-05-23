@@ -12,12 +12,19 @@ let config: DataSourceOptions & PostgresConnectionOptions = {
   database: process.env.POSTGRES_DB,
   entities: ['dist/**/*.entity.js'],
   synchronize: false,
+  extra: {
+    options: '-c lock_timeout=60000ms',
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
   // migrationsRun: true,
   migrations: ['dist/migrations/*.js'],
   logger: 'simple-console',
-  logging: false,
+  logging: true,
   migrationsTransactionMode: 'all',
   namingStrategy: new NamingStrategy(),
+  ssl: true,
 };
 
 switch (process.env.NODE_ENV) {
