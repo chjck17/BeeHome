@@ -12,7 +12,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start": "nest start --watch",
     "start:dev": "nest start --config webpack.config.js --watch",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
