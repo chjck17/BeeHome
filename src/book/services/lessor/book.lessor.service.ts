@@ -46,6 +46,7 @@ export class BookLessorService {
   async findOne(user: User, id: number) {
     const book = await this.bookRepo.findOneOrThrowNotFoundExc({
       where: { id, userId: user.id },
+      relations: { room: true },
     });
     return book;
   }

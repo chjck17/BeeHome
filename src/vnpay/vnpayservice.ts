@@ -8,6 +8,7 @@ import * as crypto from 'crypto';
 
 import { format, addMonths, addDays } from 'date-fns';
 import moment from 'moment';
+import { PackType } from 'src/service-pack/enums/pack.enum';
 @Injectable()
 export class VNPayService {
   constructor() {}
@@ -16,6 +17,13 @@ export class VNPayService {
   async vnpay() {}
 
   async createVnPay(dto: CreateVnPay) {
+    let amount: number;
+    if (dto.status == PackType.MEDIUM) {
+      amount = 400000;
+    } else if (dto.status == PackType.PLATINUM) {
+      amount = 1000000;
+    }
+
     const createDate = moment().format('YYYYMMDDHHmmss');
     const locale = 'vn';
     const currCode = 'VND';
@@ -28,7 +36,7 @@ export class VNPayService {
       vnp_TxnRef: this.generateRandomString(6),
       vnp_OrderInfo: 'Thanh toan cho ma GD:' + 'duy-12',
       vnp_OrderType: 'other',
-      vnp_Amount: Number(dto.amount) * 100,
+      vnp_Amount: amount,
       vnp_ReturnUrl: process.env.vnp_Returnurl,
       vnp_IpAddr: '13',
       vnp_CreateDate: createDate,
