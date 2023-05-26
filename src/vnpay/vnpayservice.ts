@@ -11,6 +11,7 @@ import moment from 'moment';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { UserRepository } from 'src/auth/repositories/user.repository';
+import { number } from 'joi';
 @Injectable()
 export class VNPayService {
   constructor(private readonly userRepo: UserRepository) {}
@@ -31,7 +32,7 @@ export class VNPayService {
       vnp_TxnRef: this.generateRandomString(6),
       vnp_OrderInfo: 'Thanh toan cho ma GD:' + user.id,
       vnp_OrderType: 'other',
-      vnp_Amount: dto.amount,
+      vnp_Amount: Number(dto.amount) * 100,
       vnp_ReturnUrl: process.env.vnp_Returnurl,
       vnp_IpAddr: user.id,
       vnp_CreateDate: createDate,
