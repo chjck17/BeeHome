@@ -14,9 +14,9 @@ let config: DataSourceOptions & PostgresConnectionOptions = {
   synchronize: false,
   extra: {
     options: '-c lock_timeout=60000ms',
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    // ssl: {
+    //   rejectUnauthorized: false,
+    // },
   },
   // migrationsRun: true,
   migrations: ['dist/migrations/*.js'],
@@ -24,7 +24,7 @@ let config: DataSourceOptions & PostgresConnectionOptions = {
   logging: true,
   migrationsTransactionMode: 'all',
   namingStrategy: new NamingStrategy(),
-  ssl: true,
+  // ssl: true,
 };
 
 switch (process.env.NODE_ENV) {

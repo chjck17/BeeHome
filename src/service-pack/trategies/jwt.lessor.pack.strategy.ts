@@ -7,16 +7,15 @@ import { GlobalConfig } from 'src/common/config/global.config';
 import { StrategyName } from '../../auth/constants/index.constant';
 import { User } from '../../auth/entities/user.entity';
 import { JwtAuthPayload } from '../../auth/interfaces/jwt-payload.interface';
-import { UserWithPoliciesDto } from '../dtos/transform/userWithPolicies.dto';
-import { CaslCommonService } from '../services/common/casl.common.service';
+import { ServicePackLessorService } from '../services/service-pack.lessor.service';
 
 @Injectable()
-export class JwtCaslSMerchantStrategy extends PassportStrategy(
+export class JwtCaslLessorStrategy extends PassportStrategy(
   Strategy,
-  StrategyName.JWT_CASL_LESSOR,
+  StrategyName.JWT_LESSOR_PACK,
 ) {
   constructor(
-    private caslCommonService: CaslCommonService,
+    private servicePackLessorService: ServicePackLessorService,
     configService: ConfigService<GlobalConfig>,
   ) {
     super({
@@ -27,19 +26,15 @@ export class JwtCaslSMerchantStrategy extends PassportStrategy(
     });
   }
 
-  async validate(
-    payload: JwtAuthPayload,
-  ): Promise<UserWithPoliciesDto | false> {
-    const user: User = await this.caslCommonService.getMerchantUserWithPolicies(
-      payload.userId,
-    );
+  async validate(payload: JwtAuthPayload) {
+    const pack = await this.servicePackLessorService.getPack(payload.userId);
 
-    if (!user.lessor) return false;
+    if (!pack.user) return false;
 
-    const userWithPolicies = plainToInstance(UserWithPoliciesDto, user);
+    // const userWithPolicies = plainToInstance(UserWithPoliciesDto, pack);
 
-    if (!userWithPolicies) return false;
+    // if (!userWithPolicies) return false;
 
-    return userWithPolicies;
+    return pack;
   }
 }

@@ -48,8 +48,8 @@ export class JwtAbilityAdminGuard extends AuthGuard(
     context: ExecutionContext,
     status?: any,
   ) {
-    if (info instanceof Error || !user || err) throw new ForbiddenExc('common');
-
+    if (info instanceof Error || !user || err)
+      throw new ForbiddenExc('commonDuy');
     const rules = this.reflector.getAllAndOverride<RequiredRule[]>(
       ABILITY_METADATA_KEY,
       [context.getHandler(), context.getClass()],

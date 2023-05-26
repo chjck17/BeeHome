@@ -1,0 +1,13 @@
+export enum PackType {
+  FREE = 'FREE',
+  MEDIUM = 'MEDIUM',
+  PLATINUM = 'PLATINUM',
+}
+
+export enum ResourcePack {
+  UNLIMITED = 'UNLIMITED',
+  DIAGRAM = 'DIAGRAM',
+  MEDIUMLIMITED = 'MEDIUMLIMITED',
+  FREELIMITED = 'FREELIMITED',
+  VIEWER = 'VIEWER',
+}

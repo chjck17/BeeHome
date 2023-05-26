@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
-import { Authorize } from '../../../common/decorators/auth.decorator';
+import { AuthorizeAdmin } from '../../../common/decorators/auth.decorator';
 import { PaginationResponse } from '../../../common/decorators/pagination-response.decorator';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import { Action, Resource } from '../../../common/enums/casl.enum';
@@ -11,7 +11,7 @@ import { CustomerAdminService } from '../../services/admin/customer.admin.servic
 
 @Controller(`${PrefixType.ADMIN}/customer`)
 @ApiTags('Manage Customer')
-@Authorize({ action: Action.MANAGE, resource: Resource.CUSTOMER })
+@AuthorizeAdmin({ action: Action.MANAGE, resource: Resource.CUSTOMER })
 export class CustomerAdminController {
   constructor(private customerAdminService: CustomerAdminService) {}
 

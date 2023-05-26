@@ -21,6 +21,9 @@ import { RoomAttribute } from '../../room/entities/room-attribute.entity';
 import { Comment } from '../../comment/entities/comment.entity';
 import { Book } from '../../book/entities/book.entity';
 import { BookDisable } from '../../book/entities/book-disable.entity';
+import { ServicePack } from 'src/service-pack/entities/service-pack.entity';
+import { PackType } from 'src/service-pack/enums/pack.enum';
+import { Report } from 'src/report/entities/report.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -38,6 +41,9 @@ export class User extends BaseEntity {
 
   @OneToOne(() => Admin, (admin) => admin.user)
   admin: Admin;
+
+  @Column({ type: 'enum', enum: PackType, default: PackType.FREE })
+  packType: PackType;
 
   @OneToOne(() => Manager, (manager) => manager.user)
   manager: Manager;
@@ -84,6 +90,12 @@ export class User extends BaseEntity {
 
   @OneToMany(() => BookDisable, (item) => item.user)
   bookDisables: BookDisable[];
+
+  @OneToOne(() => ServicePack, (item) => item.user)
+  servicePack: ServicePack;
+
+  @OneToMany(() => Report, (item) => item.user)
+  reports: Report[];
   // // Join customer
   // @OneToMany(() => Customer, (customer) => customer.lessorUser)
   // customersOfLessor: Customer[];

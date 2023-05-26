@@ -11,6 +11,11 @@ import { GroupPolicy } from './entities/group-policies.entity';
 import { GroupToPolicy } from './entities/group-to-policy.entity';
 import { Policy } from './entities/policies.entity';
 import { UserToGroupPolicy } from './entities/user-to-group-policies.entity';
+import { JwtCaslLessorStrategy } from './strategies/jwt-casl.lessor.strategy';
+import { JwtCaslAdminStrategy } from './strategies/jwt-casl.admin.strategy';
+import { CaslCommonService } from './services/common/casl.common.service';
+import { CaslAdminController } from './controllers/casl.admin.controller';
+import { CaslAdminService } from './services/admin/casl.admin.service';
 @Global()
 @Module({
   imports: [
@@ -21,10 +26,15 @@ import { UserToGroupPolicy } from './entities/user-to-group-policies.entity';
       UserToGroupPolicy,
     ]),
   ],
-  controllers: [],
+  controllers: [CaslAdminController],
   providers: [
+    CaslCommonService,
+    CaslAdminService,
     CaslAbilityFactory,
+    JwtCaslAdminStrategy,
+    JwtCaslLessorStrategy,
     CaslTaskService,
+    UserRepository,
     GroupPolicyRepository,
     GroupToPolicyRepository,
     PolicyRepository,

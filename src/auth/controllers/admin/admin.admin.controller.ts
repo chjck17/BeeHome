@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
-import { Authorize } from '../../../common/decorators/auth.decorator';
+import { AuthorizeAdmin } from '../../../common/decorators/auth.decorator';
 import { PaginationResponse } from '../../../common/decorators/pagination-response.decorator';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import { Action, Resource } from '../../../common/enums/casl.enum';
@@ -24,7 +24,7 @@ import { AdminAdminService } from '../../services/admin/admin.admin.service';
 
 @Controller(`${PrefixType.ADMIN}/admin`)
 @ApiTags('Manage Admin')
-@Authorize({ action: Action.MANAGE, resource: Resource.ADMIN })
+@AuthorizeAdmin({ action: Action.MANAGE, resource: Resource.ADMIN })
 export class AdminAdminController {
   constructor(private adminAdminService: AdminAdminService) {}
 

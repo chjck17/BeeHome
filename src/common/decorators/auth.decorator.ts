@@ -13,10 +13,11 @@ import { JwtAuthenLessorGuard } from '../../auth/guards/jwt-authen.lessor.guard'
 import { JwtAuthenUserGuard } from '../../auth/guards/jwt-authen.user.guard';
 import { JwtAbilityGuard } from '../../casl/guard/ability.guard';
 import { ABILITY_METADATA_KEY } from '../constants/global.constant';
-import { RequiredRule } from '../interfaces/casl.interface';
+import { PacketRequiredRule, RequiredRule } from '../interfaces/casl.interface';
 import { JwtAuthenManagerGuard } from '../../auth/guards/jwt-authe.manager.guard';
 import { BadRequestExc } from '../exceptions/custom.exception';
 import { JwtAbilityLessorGuard } from '../../casl/guard/ability.lessor.guard';
+import { JwtAbilityAdminGuard } from 'src/casl/guard/ability.admin.guard';
 
 export const IS_PUBLIC_KEY = Symbol();
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
@@ -36,15 +37,25 @@ export const AuthenticateManager = () =>
 export const AuthenticateUser = () =>
   applyDecorators(UseGuards(JwtAuthenUserGuard), ApiBearerAuth());
 
-export const Authorize = (...requirements: RequiredRule[]) => {
+export const AuthorizeAdmin = (...requirements: RequiredRule[]) => {
   return applyDecorators(
-    UseGuards(JwtAbilityGuard),
+    UseGuards(JwtAbilityAdminGuard),
     SetMetadata(ABILITY_METADATA_KEY, requirements),
     ApiBearerAuth(),
   );
 };
 
 export const AuthorizeLessor = (...requirements: RequiredRule[]) => {
+  return applyDecorators(
+    UseGuards(JwtAbilityLessorGuard),
+    SetMetadata(ABILITY_METADATA_KEY, requirements),
+    ApiBearerAuth(),
+  );
+};
+
+export const AuthorizeLessorPacket = (
+  ...requirements: PacketRequiredRule[]
+) => {
   return applyDecorators(
     UseGuards(JwtAbilityLessorGuard),
     SetMetadata(ABILITY_METADATA_KEY, requirements),

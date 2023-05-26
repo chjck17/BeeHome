@@ -26,6 +26,9 @@ import { BookModule } from './book/book.module';
 import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.module';
 import { EmailModule } from './email/email.module';
 import { PredictBoardingHouseLessorModule } from './predict/predict.module';
+import { ServicePackModule } from './service-pack/service-pack.module';
+import { VNPayModule } from './vnpay/vnpay.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -57,6 +60,9 @@ import { PredictBoardingHouseLessorModule } from './predict/predict.module';
     EmailConfirmationModule,
     PredictBoardingHouseLessorModule,
     EmailModule,
+    ServicePackModule,
+    VNPayModule,
+    ReportModule,
   ],
 
   controllers: [],

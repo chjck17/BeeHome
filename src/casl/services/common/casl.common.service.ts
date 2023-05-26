@@ -86,7 +86,7 @@ export class CaslCommonService {
     return user;
   }
 
-  async getMerchantUserWithPolicies(userId: number) {
+  async getLessorUserWithPolicies(userId: number) {
     const user = await this.userRepo.findOne({
       where: { id: userId },
       relations: {
