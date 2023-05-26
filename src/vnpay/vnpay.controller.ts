@@ -1,7 +1,7 @@
 // src/vnpay/vnpay.controller.ts
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CreateVnPay, CreateVnPayQue } from './vnpay.req.dto';
+import { CreateVnPay, CreateVnPayQue, SelectVnPay } from './vnpay.req.dto';
 import { VNPayService } from './vnpayservice';
 import {
   AuthenticateLessor,
@@ -28,5 +28,10 @@ export class VNPayController {
   @Get('vnpay_return')
   vnpayReturn(@Query() query: CreateVnPayQue) {
     return query;
+  }
+
+  @Get('vnpay_price')
+  vnpayPrice(@Query() dto: SelectVnPay, @CurrentUser() user: User) {
+    return this.vnpayService.vnpayPrice(dto, user);
   }
 }

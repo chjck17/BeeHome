@@ -1,19 +1,18 @@
-import { IsValidEnum } from 'src/common/decorators/custom-validator.decorator';
+import {
+  IsValidEnum,
+  IsValidNumber,
+  IsValidNumberString,
+} from 'src/common/decorators/custom-validator.decorator';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 
-export class CreateVnPay {
+export class SelectVnPay {
   @IsValidEnum({ enum: PackType })
   status: PackType;
-  // //   @IsValidText({ trim: true, required: false })
-  // amount?: string;
-  // //   @IsValidText({ trim: true, required: false })
-  // bankCode?: string;
-  // //   @IsValidText({ trim: true, required: false })
-  // orderDescription?: string;
+}
 
-  // orderType?: string;
-
-  // language?: string;
+export class CreateVnPay {
+  @IsValidNumberString()
+  amount: string;
 }
 
 export class CreateVnPayQue {

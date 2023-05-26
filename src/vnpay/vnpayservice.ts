@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreateVnPay } from './vnpay.req.dto';
+import { CreateVnPay, SelectVnPay } from './vnpay.req.dto';
 // CommonJS
 import { Response } from 'express';
 import querystring from 'qs';
@@ -19,6 +19,35 @@ export class VNPayService {
   async vnpay() {}
 
   async createVnPay(dto: CreateVnPay, user: User) {
+    const createDate = moment().format('YYYYMMDDHHmmss');
+    const locale = 'vn';
+    const currCode = 'VND';
+    let vnp_Params: any = {
+      vnp_Version: '2.1.0',
+      vnp_Command: 'pay',
+      vnp_TmnCode: process.env.vnp_TmnCode,
+      vnp_Locale: locale,
+      vnp_CurrCode: currCode,
+      vnp_TxnRef: this.generateRandomString(6),
+      vnp_OrderInfo: 'Thanh toan cho ma GD:' + user.id,
+      vnp_OrderType: 'other',
+      vnp_Amount: dto.amount,
+      vnp_ReturnUrl: process.env.vnp_Returnurl,
+      vnp_IpAddr: user.id,
+      vnp_CreateDate: createDate,
+    };
+
+    vnp_Params = await this.sortObject(vnp_Params);
+    const signData = querystring.stringify(vnp_Params, { encode: false });
+    const hmac = crypto.createHmac('sha512', process.env.vnp_HashSecret);
+    const signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
+    vnp_Params['vnp_SecureHash'] = signed;
+    let vnpUrl = process.env.vnp_Url;
+    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+    return vnpUrl;
+  }
+
+  async vnpayPrice(dto: SelectVnPay, user: User) {
     let amount: number;
     if (dto.status == PackType.BASIC) {
       amount = 400000;
@@ -30,50 +59,24 @@ export class VNPayService {
       relations: { servicePack: true },
     });
     if (timeUse.servicePack != null) {
-      const numberOfDaysPack = differenceInDays(
-        timeUse.servicePack.endDate,
-        timeUse.servicePack.startDate,
-      );
-      const today = new Date();
-      const numberOfDaysNotUse = differenceInDays(
-        timeUse.servicePack.endDate,
-        today,
-      );
-      amount = Math.floor(
-        amount - (400000 * numberOfDaysNotUse) / numberOfDaysPack,
-      );
-
+      if (dto.status == PackType.PREMIUM) {
+        const numberOfDaysPack = differenceInDays(
+          timeUse.servicePack.endDate,
+          timeUse.servicePack.startDate,
+        );
+        const today = new Date();
+        const numberOfDaysNotUse = differenceInDays(
+          timeUse.servicePack.endDate,
+          today,
+        );
+        amount = Math.floor(
+          amount - (400000 * numberOfDaysNotUse) / numberOfDaysPack,
+        );
+      }
       return amount;
     }
-    // const createDate = moment().format('YYYYMMDDHHmmss');
-    // const locale = 'vn';
-    // const currCode = 'VND';
-    // let vnp_Params: any = {
-    //   vnp_Version: '2.1.0',
-    //   vnp_Command: 'pay',
-    //   vnp_TmnCode: process.env.vnp_TmnCode,
-    //   vnp_Locale: locale,
-    //   vnp_CurrCode: currCode,
-    //   vnp_TxnRef: this.generateRandomString(6),
-    //   vnp_OrderInfo: 'Thanh toan cho ma GD:' + 'duy-12',
-    //   vnp_OrderType: 'other',
-    //   vnp_Amount: amount,
-    //   vnp_ReturnUrl: process.env.vnp_Returnurl,
-    //   vnp_IpAddr: '13',
-    //   vnp_CreateDate: createDate,
-    // };
-
-    // vnp_Params = await this.sortObject(vnp_Params);
-    // const signData = querystring.stringify(vnp_Params, { encode: false });
-    // const hmac = crypto.createHmac('sha512', process.env.vnp_HashSecret);
-    // const signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
-    // vnp_Params['vnp_SecureHash'] = signed;
-    // let vnpUrl = process.env.vnp_Url;
-    // vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
-    // return vnpUrl;
-    return timeUse;
+    return amount;
   }
-
   private async sortObject(obj: any) {
     // eslint-disable-next-line prefer-const
     let sorted: any = {};
