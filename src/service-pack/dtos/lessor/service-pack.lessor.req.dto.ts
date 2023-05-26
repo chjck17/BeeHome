@@ -7,11 +7,8 @@ import {
 import { PackType } from 'src/service-pack/enums/pack.enum';
 
 export class CreateServicePackReqDto {
-  @IsValidEnum({ enum: PackType })
-  packType: PackType;
-
   @IsValidDate({ required: true })
-  startDate?: Date;
+  startDate: Date;
 }
 export class UpdateRoomReqDto {
   @IsValidEnum({ enum: PackType })

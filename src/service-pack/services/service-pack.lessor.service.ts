@@ -7,7 +7,7 @@ import { addMonths, format } from 'date-fns';
 export class ServicePackLessorService {
   constructor(private servicePackRepo: ServicePackRepository) {}
   async createServicePack(dto: CreateServicePackReqDto, user: User) {
-    const { packType, startDate } = dto;
+    const { startDate } = dto;
 
     const exitPack = this.servicePackRepo.findOneBy({
       userId: user.id,

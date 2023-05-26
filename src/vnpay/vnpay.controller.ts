@@ -22,7 +22,7 @@ export class VNPayController {
 
   @Post('create_payment_url')
   async createVnPay(@Body() dto: CreateVnPay, @CurrentUser() user: User) {
-    return this.vnpayService.createVnPay(dto);
+    return this.vnpayService.createVnPay(dto, user);
   }
 
   @Get('vnpay_return')
