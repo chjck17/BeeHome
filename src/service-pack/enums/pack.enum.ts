@@ -1,7 +1,7 @@
 export enum PackType {
   FREE = 'FREE',
-  MEDIUM = 'MEDIUM',
-  PLATINUM = 'PLATINUM',
+  BASIC = 'BASIC',
+  PREMIUM = 'PREMIUM',
 }
 
 export enum ResourcePack {

@@ -20,9 +20,9 @@ export class VNPayService {
 
   async createVnPay(dto: CreateVnPay, user: User) {
     let amount: number;
-    if (dto.status == PackType.MEDIUM) {
+    if (dto.status == PackType.BASIC) {
       amount = 400000;
-    } else if (dto.status == PackType.PLATINUM) {
+    } else if (dto.status == PackType.PREMIUM) {
       amount = 1000000;
     }
     const timeUse = await this.userRepo.findOne({

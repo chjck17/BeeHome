@@ -24,12 +24,12 @@ export class PacketAbilityFactory {
       ]);
     }
 
-    if (user.packType === PackType.MEDIUM) {
+    if (user.packType === PackType.BASIC) {
       can(user.packType, [ResourcePack.MEDIUMLIMITED, ResourcePack.DIAGRAM]);
       cannot(user.packType, [ResourcePack.UNLIMITED, ResourcePack.DIAGRAM]);
     }
 
-    if (user.packType === PackType.PLATINUM) {
+    if (user.packType === PackType.PREMIUM) {
       can(user.packType, [
         ResourcePack.UNLIMITED,
         ResourcePack.DIAGRAM,
