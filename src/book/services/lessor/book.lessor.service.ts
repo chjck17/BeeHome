@@ -43,6 +43,13 @@ export class BookLessorService {
     if (affected < 1) throw new NotFoundExc('Lessor not found');
   }
 
+  async findOne(user: User, id: number) {
+    const book = await this.bookRepo.findOneOrThrowNotFoundExc({
+      where: { id, userId: user.id },
+    });
+    return book;
+  }
+
   async deleteBook(user: User, id: number) {
     const product = await this.bookRepo.findOneOrThrowNotFoundExc({
       where: { id, userId: user.id },

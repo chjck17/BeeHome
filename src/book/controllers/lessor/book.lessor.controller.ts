@@ -40,10 +40,10 @@ export class BookLessorController {
   ) {
     return this.bookLessorService.updateStatus(user, dto);
   }
-  // @Get(':id')
-  // findOne(@CurrentUser() user: User, @Param('id') id: string) {
-  //   return this.bookLessorService.findOne(user, Number(id));
-  // }
+  @Get(':id')
+  findOne(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.bookLessorService.findOne(user, Number(id));
+  }
 
   // @Post()
   // createBook(@Body() createBookDto: CreateBookReqDto) {

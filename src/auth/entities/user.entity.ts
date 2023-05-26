@@ -24,6 +24,7 @@ import { BookDisable } from '../../book/entities/book-disable.entity';
 import { ServicePack } from 'src/service-pack/entities/service-pack.entity';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 import { Report } from 'src/report/entities/report.entity';
+import { Bill } from 'src/bill/bill.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -90,6 +91,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => BookDisable, (item) => item.user)
   bookDisables: BookDisable[];
+
+  @OneToMany(() => Bill, (item) => item.user)
+  bills: Bill[];
 
   @OneToOne(() => ServicePack, (item) => item.user)
   servicePack: ServicePack;
