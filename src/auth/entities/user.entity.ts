@@ -43,9 +43,6 @@ export class User extends BaseEntity {
   @OneToOne(() => Admin, (admin) => admin.user)
   admin: Admin;
 
-  @Column({ type: 'enum', enum: PackType, default: PackType.FREE })
-  packType: PackType;
-
   @OneToOne(() => Manager, (manager) => manager.user)
   manager: Manager;
 

@@ -29,6 +29,8 @@ import { PredictBoardingHouseLessorModule } from './predict/predict.module';
 import { ServicePackModule } from './service-pack/service-pack.module';
 import { VNPayModule } from './vnpay/vnpay.module';
 import { ReportModule } from './report/report.module';
+import { ServicePackLessorService } from './service-pack/services/service-pack.lessor.service';
+import { ServicePackRepository } from './service-pack/repositories/service-pack.repository';
 
 @Module({
   imports: [
@@ -67,6 +69,8 @@ import { ReportModule } from './report/report.module';
 
   controllers: [],
   providers: [
+    ServicePackRepository,
+    ServicePackLessorService,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({ transform: true }),
@@ -74,4 +78,11 @@ import { ReportModule } from './report/report.module';
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    private readonly servicePackLessorService: ServicePackLessorService,
+  ) {
+    // Bắt đầu kiểm tra định kỳ khi ứng dụng khởi động
+    this.servicePackLessorService.startNotificationChecking();
+  }
+}

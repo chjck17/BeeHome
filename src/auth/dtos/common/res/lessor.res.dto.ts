@@ -22,7 +22,7 @@ export class LessorResDto {
     dto.address = data.address;
     dto.phoneNumber = data.phoneNumber;
     dto.avatar = data.avatar?.path ? data.avatar?.path : null;
-    dto.package = data.user.packType;
+    dto.package = data.packType;
   }
 
   static forLessor(data?: Lessor) {

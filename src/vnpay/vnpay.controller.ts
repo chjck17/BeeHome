@@ -11,7 +11,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { User } from 'src/auth/entities/user.entity';
 
 @Controller('vn-pay')
-@AuthenticateLessor()
 @ApiTags('VN pay')
 export class VNPayController {
   constructor(
@@ -21,16 +20,18 @@ export class VNPayController {
   ) {}
 
   @Post('create_payment_url')
+  @AuthenticateLessor()
   async createVnPay(@Body() dto: CreateVnPay, @CurrentUser() user: User) {
     return this.vnpayService.createVnPay(dto, user);
   }
 
   @Get('vnpay_return')
   vnpayReturn(@Query() query: CreateVnPayQue) {
-    return query;
+    return this.vnpayService.create(query);
   }
 
   @Get('vnpay_price')
+  @AuthenticateLessor()
   vnpayPrice(@Query() dto: SelectVnPay, @CurrentUser() user: User) {
     return this.vnpayService.vnpayPrice(dto, user);
   }

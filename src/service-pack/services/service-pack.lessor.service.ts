@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { ServicePackRepository } from '../repositories/service-pack.repository';
 import { CreateServicePackReqDto } from '../dtos/lessor/service-pack.lessor.req.dto';
 import { User } from 'src/auth/entities/user.entity';
-import { addMonths, format } from 'date-fns';
+import { addMonths, format, differenceInDays } from 'date-fns';
+
+import { UserRepository } from 'src/auth/repositories/user.repository';
 @Injectable()
 export class ServicePackLessorService {
-  constructor(private servicePackRepo: ServicePackRepository) {}
+  constructor(
+    private servicePackRepo: ServicePackRepository, // private userRepo: UserRepository,
+  ) {}
   async createServicePack(dto: CreateServicePackReqDto, user: User) {
     const { startDate } = dto;
 
@@ -47,6 +51,32 @@ export class ServicePackLessorService {
     });
 
     return queryBuilder;
+  }
+
+  async checkExpiryAndSendNotification() {
+    // Lấy danh sách người dùng có gói đăng ký sắp hết hạn
+    const exitPack = await this.servicePackRepo.find({
+      relations: { user: { customer: true } },
+    });
+    // Kiểm tra từng người dùng
+
+    exitPack.forEach(async (item) => {
+      const expiryDate = item.endDate;
+      const currentDate = new Date();
+      const numberOfDaysPack = differenceInDays(currentDate, expiryDate);
+      // Nếu ngày hết hạn đã đến hoặc qua, gửi thông báo cho người dùng
+      if (numberOfDaysPack >= 7) {
+        await this.servicePackRepo.softDelete(item.id);
+      }
+    });
+  }
+
+  async startNotificationChecking() {
+    const sevenDate = 24 * 60 * 60 * 1000;
+
+    setInterval(() => {
+      this.checkExpiryAndSendNotification();
+    }, sevenDate);
   }
   // async updateRoom(dto: UpdateRoomReqDto) {
   //   const {

@@ -7,12 +7,15 @@ import { PackType } from 'src/service-pack/enums/pack.enum';
 
 export class SelectVnPay {
   @IsValidEnum({ enum: PackType })
-  status: PackType;
+  packType: PackType;
 }
 
 export class CreateVnPay {
   @IsValidNumberString()
   amount: string;
+
+  @IsValidEnum({ enum: PackType })
+  packType: PackType;
 }
 
 export class CreateVnPayQue {

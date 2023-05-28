@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreateVnPay, SelectVnPay } from './vnpay.req.dto';
+import { CreateVnPay, CreateVnPayQue, SelectVnPay } from './vnpay.req.dto';
 // CommonJS
 import { Response } from 'express';
 import querystring from 'qs';
@@ -30,7 +30,8 @@ export class VNPayService {
       vnp_Locale: locale,
       vnp_CurrCode: currCode,
       vnp_TxnRef: this.generateRandomString(6),
-      vnp_OrderInfo: 'Thanh toan cho ma GD:' + user.id,
+      vnp_OrderInfo: 'Thanh toan cho ma GD:' + user.id + dto.packType,
+
       vnp_OrderType: 'other',
       vnp_Amount: Number(dto.amount) * 100,
       vnp_ReturnUrl: process.env.vnp_Returnurl,
@@ -50,9 +51,9 @@ export class VNPayService {
 
   async vnpayPrice(dto: SelectVnPay, user: User) {
     let amount: number;
-    if (dto.status == PackType.BASIC) {
+    if (dto.packType == PackType.BASIC) {
       amount = 400000;
-    } else if (dto.status == PackType.PREMIUM) {
+    } else if (dto.packType == PackType.PREMIUM) {
       amount = 1000000;
     }
     const timeUse = await this.userRepo.findOne({
@@ -60,7 +61,7 @@ export class VNPayService {
       relations: { servicePack: true },
     });
     if (timeUse.servicePack != null) {
-      if (dto.status == PackType.PREMIUM) {
+      if (dto.packType == PackType.PREMIUM) {
         const numberOfDaysPack = differenceInDays(
           timeUse.servicePack.endDate,
           timeUse.servicePack.startDate,
@@ -108,5 +109,32 @@ export class VNPayService {
     }
 
     return randomString;
+  }
+  async create(dto: CreateVnPayQue) {
+    if (dto.vnp_TransactionStatus == '00') {
+      const text = dto.vnp_OrderInfo;
+      const numberPattern = /\d+/; // Mẫu để tìm các số trong chuỗi
+
+      const matches = text.match(numberPattern); // Tìm các số trong chuỗi
+      const number = matches ? parseInt(matches[0]) : null; // Lấy số đầu tiên tìm thấy (nếu có)
+
+      let substring = '';
+      if (number) {
+        const index = text.indexOf(String(number)); // Tìm vị trí của số trong đoạn văn bản
+        substring = text.substring(index + String(number).length); // Lấy chuỗi con từ vị trí kết thúc của số đến cuối chuỗi
+      }
+
+      let packType: PackType;
+
+      if (substring === 'BASIC') {
+        packType = PackType.BASIC;
+      }
+
+      if (substring === 'PREMIUM') {
+        packType = PackType.PREMIUM;
+      }
+      // await this.userRepo.update({ id: number }, { packType: packType });
+      return { number, substring };
+    }
   }
 }

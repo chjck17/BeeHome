@@ -11,3 +11,5 @@ export enum ResourcePack {
   FREELIMITED = 'FREELIMITED',
   VIEWER = 'VIEWER',
 }
+
+export type MyEnumOrString = ResourcePack | string;

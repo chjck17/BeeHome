@@ -11,6 +11,7 @@ import { UniqueWithSoftDelete } from '../../common/decorators/typeorm.decorator'
 import { LessorRank, LessorStatus } from '../enums/lessor.enum';
 import { User } from './user.entity';
 import { LocalFile } from '../../local-file/local-file.entity';
+import { PackType } from 'src/service-pack/enums/pack.enum';
 
 @Entity()
 export class Lessor extends BaseEntity {
@@ -52,7 +53,8 @@ export class Lessor extends BaseEntity {
   // @OneToMany(() => Event, (event) => event.Lessor)
   // events: Event[];
   // // End join event
-
+  @Column({ type: 'enum', enum: PackType, default: PackType.FREE })
+  packType: PackType;
   // Join file
   @Column({ name: 'avatar_id', nullable: true })
   avatarId: number;
