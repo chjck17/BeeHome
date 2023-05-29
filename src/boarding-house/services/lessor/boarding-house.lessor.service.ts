@@ -150,7 +150,7 @@ export class BoardingHouseLessorService {
         relations: {
           floors: {
             rooms: {
-              roomToCategories: true,
+              // roomToCategories: true,
               roomToAttributes: true,
               roomImages: true,
             },

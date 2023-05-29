@@ -39,7 +39,7 @@ export class RoomLessorService {
       price,
       acreage,
       floorId,
-      categoryIds,
+      // categoryIds,
       attributeIds,
       imgIds,
       roomSimple,
@@ -65,15 +65,15 @@ export class RoomLessorService {
         await this.roomImageRepo.save(roomImage);
       }),
     );
-    await Promise.all(
-      categoryIds.map(async (id) => {
-        const roomCategory = this.roomToCategoryRepo.create({
-          roomId: room.id,
-          categoryTypeId: Number(id),
-        });
-        await this.roomToCategoryRepo.save(roomCategory);
-      }),
-    );
+    // await Promise.all(
+    //   categoryIds.map(async (id) => {
+    //     const roomCategory = this.roomToCategoryRepo.create({
+    //       roomId: room.id,
+    //       categoryTypeId: Number(id),
+    //     });
+    //     await this.roomToCategoryRepo.save(roomCategory);
+    //   }),
+    // );
     await Promise.all(
       attributeIds.map(async (id) => {
         const roomAttribute = this.roomToAttributeRepo.create({
@@ -93,7 +93,7 @@ export class RoomLessorService {
       status,
       acreage,
       price,
-      categoryIds,
+      // categoryIds,
       attributeIds,
       imgIds,
       roomSimple,
@@ -102,7 +102,7 @@ export class RoomLessorService {
     const existRoom = await this.roomRepo.findOne({
       where: { id: roomId },
       relations: {
-        roomToCategories: { categoryType: true },
+        // roomToCategories: { categoryType: true },
         roomToAttributes: { roomAttributeTerm: true },
         roomImages: { localFile: true },
       },
@@ -120,11 +120,11 @@ export class RoomLessorService {
       toilet: toilet,
     });
     await this.roomRepo.save(room);
-    await this.saveItemCategory(
-      room.id,
-      existRoom.roomToCategories,
-      categoryIds,
-    );
+    // await this.saveItemCategory(
+    //   room.id,
+    //   existRoom.roomToCategories,
+    //   categoryIds,
+    // );
     await this.saveItemAttribute(
       room.id,
       existRoom.roomToAttributes,
@@ -143,7 +143,7 @@ export class RoomLessorService {
         roomToAttributes: {
           roomAttributeTerm: { roomAttributeTermDetails: true },
         },
-        roomToCategories: { categoryType: { categoryTypeDetails: true } },
+        // roomToCategories: { categoryType: { categoryTypeDetails: true } },
       },
     });
     return room;

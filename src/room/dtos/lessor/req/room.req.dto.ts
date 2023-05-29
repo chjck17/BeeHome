@@ -33,8 +33,8 @@ export class CreateRoomReqDto {
   @IsValidArrayNumber({ minSize: 1, required: true })
   imgIds: number[];
 
-  @IsValidArrayString({ minSize: 1, required: true })
-  categoryIds: string[];
+  // @IsValidArrayString({ minSize: 1, required: true })
+  // categoryIds: string[];
 
   @IsValidArrayString({ minSize: 1, required: true })
   attributeIds: string[];
@@ -63,8 +63,8 @@ export class UpdateRoomReqDto {
   @IsValidArrayNumber({ required: false })
   imgIds: number[];
 
-  @IsValidArrayString({ required: false })
-  categoryIds: string[];
+  // @IsValidArrayString({ required: false })
+  // categoryIds: string[];
 
   @IsValidArrayString({ required: false })
   attributeIds: string[];

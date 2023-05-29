@@ -44,8 +44,8 @@ export class Room extends BaseEntity {
   @JoinColumn()
   floor: Floor;
   //--------------------------------------------------------------
-  @OneToMany(() => RoomToCategory, (item) => item.room)
-  roomToCategories: RoomToCategory[];
+  // @OneToMany(() => RoomToCategory, (item) => item.room)
+  // roomToCategories: RoomToCategory[];
   //--------------------------------------------------------------
   @OneToMany(() => RoomToAttribute, (item) => item.room)
   roomToAttributes: RoomToAttribute[];

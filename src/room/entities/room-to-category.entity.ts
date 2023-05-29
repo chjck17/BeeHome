@@ -17,9 +17,9 @@ export class RoomToCategory extends BaseEntity {
   @Column()
   roomId: number;
 
-  @ManyToOne(() => Room, (item) => item.roomToCategories)
-  @JoinColumn()
-  room: Room;
+  // @ManyToOne(() => Room, (item) => item.roomToCategories)
+  // @JoinColumn()
+  // room: Room;
   //----------------------------------------------------------
   @Column()
   categoryTypeId: number;

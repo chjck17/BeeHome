@@ -27,7 +27,7 @@ export class BoardingHouseCustomerService {
         relations: {
           floors: {
             rooms: {
-              roomToCategories: true,
+              // roomToCategories: true,
               roomToAttributes: {
                 roomAttributeTerm: { roomAttributeTermDetails: true },
               },
