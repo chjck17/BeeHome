@@ -19,6 +19,12 @@ model = load_model("DecisionTreeRegressor")
 full_pipeline = joblib.load(r'./src/predict/models/full_pipeline.pkl')
 input_data = sys.argv
 new_data = pd.DataFrame({'province': [input_data[1]], 'district': [input_data[2]], 'ward': [input_data[3]],'acreage':input_data[4], 'toilet':input_data[5], 'room':input_data[6]})
+
+# new_data = pd.DataFrame({'province': ["TP HCM"], 'district': ["TP Thủ Đức"], 'ward': ["Phường Trường Thọ"],'acreage':50, 'toilet':1, 'room':1})
+
 processed_test_set = full_pipeline.transform(new_data)  
 predictions = model.predict(processed_test_set[0]).round(decimals=1)
 print(json.dumps(predictions.tolist())) 
+
+# print(json.dumps(new_data.values.tolist())) 
+
