@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { In } from 'typeorm';
 import { User } from '../../../auth/entities/user.entity';
@@ -17,21 +17,23 @@ import { DeleteListReqDto } from '../../../boarding-house/dtos/boarding-house.re
 import { RoomImageRepository } from '../../repositories/room-image.repository';
 import { LocalFile } from '../../../local-file/local-file.entity';
 import { RoomStatus } from '../../enums/room.enum';
-import { RoomToCategoryRepository } from '../../repositories/room-to-category.repository';
 import { RoomToAttributeRepository } from '../../repositories/room-to-attribute.repository';
-import { RoomToCategory } from '../../entities/room-to-category.entity';
 import { RoomToAttribute } from '../../entities/room-to-attribute.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 import { RoomImage } from '../../entities/room-image.entity';
+import { UserRepository } from 'src/auth/repositories/user.repository';
+import { Lessor } from 'src/auth/entities/lessor.entity';
+import { BoardingHouse } from 'src/boarding-house/entities/boarding-house.entity';
+import { PackType } from 'src/service-pack/enums/pack.enum';
 
 @Injectable()
 export class RoomLessorService {
   constructor(
     private roomRepo: RoomRepository,
     private roomImageRepo: RoomImageRepository,
-    private roomToCategoryRepo: RoomToCategoryRepository,
     private roomToAttributeRepo: RoomToAttributeRepository,
+    private userRepo: UserRepository,
   ) {}
   async createRoom(dto: CreateRoomReqDto) {
     const {
@@ -45,6 +47,29 @@ export class RoomLessorService {
       roomSimple,
       toilet,
     } = dto;
+    const user = await this.userRepo.findOne({
+      where: { boardingHouses: { floors: { id: floorId } } },
+      relations: { boardingHouses: { floors: { rooms: true } }, lessor: true },
+    });
+
+    let totalRooms = 0;
+
+    if (user && user.boardingHouses) {
+      for (const boardingHouse of user.boardingHouses) {
+        if (boardingHouse.floors) {
+          for (const floor of boardingHouse.floors) {
+            if (floor.rooms) {
+              totalRooms += floor.rooms.length;
+            }
+          }
+        }
+      }
+    }
+    if (totalRooms >= 20 && user.lessor.packType === PackType.BASIC)
+      throw new ConflictException('out of room');
+
+    if (totalRooms >= 5 && user.lessor.packType === PackType.FREE)
+      throw new ConflictException('out of room');
     const room = this.roomRepo.create({
       floorId: floorId,
       name: name,
@@ -210,43 +235,6 @@ export class RoomLessorService {
     return result;
   }
 
-  private async saveItemCategory(
-    itemId: number,
-    items: RoomToCategory[],
-    itemsDto: string[],
-  ) {
-    const itemIdsToRemove: number[] = [];
-    const itemToInsert: RoomToCategory[] = [];
-
-    for (const itemInDb of items) {
-      const dto = itemsDto.find((id) => Number(id) === itemInDb.id);
-      if (!dto) {
-        itemIdsToRemove.push(itemInDb.id);
-      }
-    }
-
-    for (const id of itemsDto) {
-      const dto = items.find((item) => Number(id) === item.id);
-
-      if (!dto) {
-        itemToInsert.push(
-          this.roomToCategoryRepo.create({
-            roomId: itemId,
-            categoryTypeId: Number(id),
-          }),
-        );
-      }
-    }
-
-    await Promise.all([
-      itemIdsToRemove.length && this.roomToCategoryRepo.delete(itemIdsToRemove),
-    ]);
-
-    if (itemToInsert.length) {
-      await this.roomToCategoryRepo.insert(itemToInsert);
-    }
-    return { itemIdsToRemove, itemToInsert };
-  }
   private async saveItemAttribute(
     itemId: number,
     items: RoomToAttribute[],

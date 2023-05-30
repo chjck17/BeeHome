@@ -1,40 +1,72 @@
 import { Injectable } from '@nestjs/common';
 import { ServicePackRepository } from '../repositories/service-pack.repository';
-import { CreateServicePackReqDto } from '../dtos/lessor/service-pack.lessor.req.dto';
+import {
+  CreateServicePackReqDto,
+  ServicePackPrice,
+} from '../dtos/lessor/service-pack.lessor.req.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { addMonths, format, differenceInDays } from 'date-fns';
 
 import { UserRepository } from 'src/auth/repositories/user.repository';
+import { LessorRepository } from 'src/auth/repositories/lessor.repository';
+import { SelectVnPay } from 'src/vnpay/vnpay.req.dto';
+import { PackType } from '../enums/pack.enum';
 @Injectable()
 export class ServicePackLessorService {
   constructor(
-    private servicePackRepo: ServicePackRepository, // private userRepo: UserRepository,
+    private servicePackRepo: ServicePackRepository,
+    private userRepo: UserRepository,
+    private lessorRepo: LessorRepository,
   ) {}
   async createServicePack(dto: CreateServicePackReqDto, user: User) {
-    const { startDate } = dto;
+    const { startDate, packType } = dto;
 
-    const exitPack = this.servicePackRepo.findOneBy({
-      userId: user.id,
+    const userExit = await this.userRepo.findOne({
+      where: { id: user.id },
+      relations: { lessor: true },
     });
-    if (!exitPack) {
-      const pack = this.servicePackRepo.create({
-        userId: user.id,
-        endDate: this.getModifiedDate(startDate),
-        startDate: startDate,
-      });
-      await this.servicePackRepo.save(pack);
-      return pack;
-    }
+    await this.lessorRepo.update(
+      { id: userExit.lessor.id },
+      { packType: packType },
+    );
     const pack = this.servicePackRepo.create({
-      ...exitPack,
       userId: user.id,
       endDate: this.getModifiedDate(startDate),
       startDate: startDate,
     });
     await this.servicePackRepo.save(pack);
     return pack;
+  }
 
-    // await this.servicePackRepo.save(pack);
+  async servicePackPrice(dto: ServicePackPrice, user: User) {
+    let amount: number;
+    if (dto.packType == PackType.BASIC) {
+      amount = 400000;
+    } else if (dto.packType == PackType.PREMIUM) {
+      amount = 1000000;
+    }
+    const timeUse = await this.userRepo.findOne({
+      where: { id: user.id },
+      relations: { servicePack: true, lessor: true },
+    });
+    if (timeUse.lessor.packType === PackType.BASIC) {
+      if (dto.packType == PackType.PREMIUM) {
+        const numberOfDaysPack = differenceInDays(
+          timeUse.servicePack.endDate,
+          timeUse.servicePack.startDate,
+        );
+        const today = new Date();
+        const numberOfDaysNotUse = differenceInDays(
+          timeUse.servicePack.endDate,
+          today,
+        );
+        amount = Math.floor(
+          amount - (400000 * numberOfDaysNotUse) / numberOfDaysPack,
+        );
+      }
+      return amount;
+    }
+    return amount;
   }
 
   private getModifiedDate(dateString: Date): Date {

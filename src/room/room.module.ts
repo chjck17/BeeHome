@@ -6,14 +6,12 @@ import { RoomAttributeRepository } from './repositories/room-attribute.repositor
 import { RoomAttributeTermDetailRepository } from './repositories/room-attribute-term-detail.repository';
 import { RoomAttributeTermRepository } from './repositories/room-attribute-term.repository';
 import { RoomToAttributeRepository } from './repositories/room-to-attribute.repository';
-import { RoomToCategoryRepository } from './repositories/room-to-category.repository';
 import { Room } from './entities/room.entity';
 import { RoomAttribute } from './entities/room-attribute.entity';
 import { RoomAttributeDetail } from './entities/room-attribute-detail.entity';
 import { RoomAttributeTerm } from './entities/room-attribute-term.entity';
 import { RoomAttributeTermDetail } from './entities/room-attribute-term-detail.entity';
 import { RoomToAttribute } from './entities/room-to-attribute.entity';
-import { RoomToCategory } from './entities/room-to-category.entity';
 import { RoomLessorService } from './services/lessor/room.lessor.service';
 import { RoomAttributeLessorService } from './services/lessor/room-attribute.lessor.service';
 import { RoomAttributeLessorController } from './controllers/lessor/room-attribute.lessor.controller';
@@ -22,6 +20,7 @@ import { RoomLessorController } from './controllers/lessor/room.lessor.controlle
 import { UploadFileService } from '../upload-file/upload-file.service';
 import LocalFilesService from '../local-file/local-file.service';
 import { LocalFileRepository } from '../local-file/local-file.repository';
+import { UserRepository } from 'src/auth/repositories/user.repository';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { LocalFileRepository } from '../local-file/local-file.repository';
       RoomAttributeTerm,
       RoomAttributeTermDetail,
       RoomToAttribute,
-      RoomToCategory,
     ]),
   ],
   controllers: [RoomAttributeLessorController, RoomLessorController],
@@ -48,7 +46,7 @@ import { LocalFileRepository } from '../local-file/local-file.repository';
     UploadFileService,
     LocalFileRepository,
     RoomToAttributeRepository,
-    RoomToCategoryRepository,
+    UserRepository,
     LocalFilesService,
   ],
 })
