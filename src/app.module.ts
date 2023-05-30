@@ -11,7 +11,6 @@ import {
 import { AuthModule } from './auth/auth.module';
 import globalConfig from './common/config/global.config';
 import { CaslModule } from './casl/casl.module';
-import { CategoryModule } from './category/category.module';
 import { AllExceptionsFilter } from './common/filters/all.filter';
 import dayjs from 'dayjs';
 import { TagModule } from './tag/tag.module';
@@ -31,6 +30,8 @@ import { VNPayModule } from './vnpay/vnpay.module';
 import { ReportModule } from './report/report.module';
 import { ServicePackLessorService } from './service-pack/services/service-pack.lessor.service';
 import { ServicePackRepository } from './service-pack/repositories/service-pack.repository';
+import { UserRepository } from './auth/repositories/user.repository';
+import { LessorRepository } from './auth/repositories/lessor.repository';
 
 @Module({
   imports: [
@@ -48,7 +49,6 @@ import { ServicePackRepository } from './service-pack/repositories/service-pack.
     }),
     AuthModule,
     CaslModule,
-    CategoryModule,
     TagModule,
     FloorModule,
     RoomModule,
@@ -70,7 +70,9 @@ import { ServicePackRepository } from './service-pack/repositories/service-pack.
   controllers: [],
   providers: [
     ServicePackRepository,
+    UserRepository,
     ServicePackLessorService,
+    LessorRepository,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({ transform: true }),

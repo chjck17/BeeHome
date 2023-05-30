@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query } from '@nestjs/common';
 import { User } from '../../../auth/entities/user.entity';
 import { PrefixType } from '../../../common/constants/global.constant';
 import {
@@ -7,8 +7,9 @@ import {
 } from '../../../common/decorators/auth.decorator';
 
 import { ServicePackLessorService } from 'src/service-pack/services/service-pack.lessor.service';
-import { CreateServicePackReqDto } from 'src/service-pack/dtos/lessor/service-pack.lessor.req.dto';
+import { CreateServicePackReqDto, ServicePackPrice } from 'src/service-pack/dtos/lessor/service-pack.lessor.req.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { PackType } from 'src/service-pack/enums/pack.enum';
 
 @Controller(`${PrefixType.LESSOR}/service-pack`)
 @AuthenticateLessor()
@@ -24,11 +25,11 @@ export class ServicePackLessorController {
   ) {
     return this.servicePackLessorService.createServicePack(dto, user);
   }
-
-  // @Get(':id')
-  // findOne(@CurrentUser() user: User, @Param('id') id: string) {
-  //   return this.servicePackLessorService.findOne(user, Number(id));
-  // }
+  @Get('service_pack_price')
+  @AuthenticateLessor()
+  ServicePackPrice(@Query() dto: ServicePackPrice, @CurrentUser() user: User) {
+    return this.servicePackLessorService.servicePackPrice(dto, user);
+  }
 
   @Get()
   findAll(@CurrentUser() user: User) {

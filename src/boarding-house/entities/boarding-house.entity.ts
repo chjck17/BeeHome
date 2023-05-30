@@ -47,7 +47,7 @@ export class BoardingHouse extends BaseEntity {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.categories)
+  @ManyToOne(() => User, (user) => user.boardingHouses)
   @JoinColumn({ name: 'user_id' })
   user: User;
   // End join user

@@ -14,7 +14,6 @@ import { Manager } from './manager.entity';
 import { Lessor } from './lessor.entity';
 import { UserToken } from './user-token.entity';
 import { GroupPolicy } from '../../casl/entities/group-policies.entity';
-import { Category } from '../../category/entities/category.entity';
 import { Tag } from '../../tag/entities/tag.entity';
 import { RoomAttributeTerm } from '../../room/entities/room-attribute-term.entity';
 import { RoomAttribute } from '../../room/entities/room-attribute.entity';
@@ -25,6 +24,7 @@ import { ServicePack } from 'src/service-pack/entities/service-pack.entity';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 import { Report } from 'src/report/entities/report.entity';
 import { Bill } from 'src/bill/bill.entity';
+import { BoardingHouse } from 'src/boarding-house/entities/boarding-house.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -71,8 +71,8 @@ export class User extends BaseEntity {
   // @OneToMany(() => ProductAttribute, (productAttr) => productAttr.user)
   // productAttributes: ProductAttribute[];
 
-  @OneToMany(() => Category, (cate) => cate.user)
-  categories: Category[];
+  // @OneToMany(() => BoardingHouse, (cate) => cate.user)
+  // boardingHouses: BoardingHouse[];
 
   @OneToMany(() => Tag, (tag) => tag.user)
   tags: Tag[];
@@ -121,8 +121,8 @@ export class User extends BaseEntity {
   // @OneToMany(() => Room, (room) => room.user)
   // rooms: Room[];
 
-  // @OneToMany(() => BoardingHouse, (boardingHouse) => boardingHouse.user)
-  // boardingHouses: BoardingHouse[];
+  @OneToMany(() => BoardingHouse, (boardingHouse) => boardingHouse.user)
+  boardingHouses: BoardingHouse[];
 
   // @OneToMany(() => Category, (categories) => categories.user)
   // categories: Category[];

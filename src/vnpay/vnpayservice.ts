@@ -79,6 +79,7 @@ export class VNPayService {
     }
     return amount;
   }
+
   private async sortObject(obj: any) {
     // eslint-disable-next-line prefer-const
     let sorted: any = {};

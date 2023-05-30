@@ -9,7 +9,6 @@ import {
 import { BaseEntity } from '../../common/entities/base.entity';
 import { RoomStatus } from '../enums/room.enum';
 import { Floor } from '../../floor/entities/floor.entity';
-import { RoomToCategory } from './room-to-category.entity';
 import { RoomToAttribute } from './room-to-attribute.entity';
 import { RoomImage } from './room-image.entity';
 import { Book } from '../../book/entities/book.entity';
