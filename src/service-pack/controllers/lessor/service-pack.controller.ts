@@ -7,7 +7,10 @@ import {
 } from '../../../common/decorators/auth.decorator';
 
 import { ServicePackLessorService } from 'src/service-pack/services/service-pack.lessor.service';
-import { CreateServicePackReqDto, ServicePackPrice } from 'src/service-pack/dtos/lessor/service-pack.lessor.req.dto';
+import {
+  CreateServicePackReqDto,
+  ServicePackPrice,
+} from 'src/service-pack/dtos/lessor/service-pack.lessor.req.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 

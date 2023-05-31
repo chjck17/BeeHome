@@ -1,7 +1,12 @@
 // src/vnpay/vnpay.controller.ts
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CreateVnPay, CreateVnPayQue, SelectVnPay } from './vnpay.req.dto';
+import {
+  CreateVnPay,
+  CreateVnPayQue,
+  GetListBillsReqDto,
+  SelectVnPay,
+} from './vnpay.req.dto';
 import { VNPayService } from './vnpayservice';
 import {
   AuthenticateLessor,
@@ -25,14 +30,32 @@ export class VNPayController {
     return this.vnpayService.createVnPay(dto, user);
   }
 
-  @Get('vnpay_return')
-  vnpayReturn(@Query() query: CreateVnPayQue) {
-    return this.vnpayService.create(query);
-  }
+  // @Get('vnpay_return')
+  // vnpayReturn(@Query() query: CreateVnPayQue) {
+  //   return this.vnpayService.create(query);
+  // }
 
   @Get('vnpay_price')
   @AuthenticateLessor()
   vnpayPrice(@Query() dto: SelectVnPay, @CurrentUser() user: User) {
     return this.vnpayService.vnpayPrice(dto, user);
+  }
+
+  @Post('create_bill')
+  @AuthenticateLessor()
+  async createBill(@Body() dto: CreateVnPayQue, @CurrentUser() user: User) {
+    return this.vnpayService.create(dto, user);
+  }
+
+  @Get()
+  @AuthenticateLessor()
+  findAll(@CurrentUser() user: User, @Query() query: GetListBillsReqDto) {
+    return this.vnpayService.getListBill(user, query);
+  }
+
+  @Get(':id')
+  @AuthenticateLessor()
+  findOne(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.vnpayService.findOne(user, Number(id));
   }
 }

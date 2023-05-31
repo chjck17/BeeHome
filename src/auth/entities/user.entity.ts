@@ -55,6 +55,8 @@ export class User extends BaseEntity {
   )
   userToGroupPolicies: UserToGroupPolicy[];
 
+  // @OneToMany(() => Bill, (groupPolicy) => groupPolicy.user)
+  // bills: Bill[];
   // join groupPolicy
   @OneToMany(() => GroupPolicy, (groupPolicy) => groupPolicy.owner)
   groupPolicies: GroupPolicy[];

@@ -20,6 +20,7 @@ import {
 } from '../../../common/decorators/auth.decorator';
 import { RoomLessorService } from '../../services/lessor/room.lessor.service';
 import {
+  CheckRoomNumberReqDto,
   CreateRoomReqDto,
   GetListRoomsReqDto,
   UpdateRoomReqDto,
@@ -86,5 +87,13 @@ export class RoomLessorController {
     @Body() body: DeleteListReqDto,
   ) {
     return this.roomLessorService.deleteListRoom(body, user);
+  }
+
+  @Get('check-number-room')
+  checkNumberRoom(
+    @CurrentUser() user: User,
+    // @Param('id') dto: CheckRoomNumberReqDto,
+  ) {
+    return this.roomLessorService.checkRoomNumber(user);
   }
 }
