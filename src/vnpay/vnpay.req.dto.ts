@@ -2,7 +2,9 @@ import {
   IsValidEnum,
   IsValidNumber,
   IsValidNumberString,
+  IsValidText,
 } from 'src/common/decorators/custom-validator.decorator';
+import { PaginationReqDto } from 'src/common/dtos/pagination.dto';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 
 export class SelectVnPay {
@@ -19,16 +21,26 @@ export class CreateVnPay {
 }
 
 export class CreateVnPayQue {
+  @IsValidEnum({ enum: PackType })
+  packType: PackType;
+
+  @IsValidText({ trim: true, required: true })
   vnp_Amount: string;
+
+  @IsValidText({ trim: true, required: true })
   vnp_BankCode: string;
-  vnp_BankTranNo: string;
+
+  @IsValidText({ trim: true, required: true })
   vnp_CardType: string;
+
+  @IsValidText({ trim: true, required: true })
   vnp_OrderInfo: string;
-  vnp_PayDate: string;
-  vnp_ResponseCode: string;
-  vnp_TmnCode: string;
+
+  @IsValidText({ trim: true, required: true })
   vnp_TransactionNo: string;
-  vnp_TransactionStatus: string;
+
+  @IsValidText({ trim: true, required: true })
   vnp_TxnRef: string;
-  vnp_SecureHash: string;
 }
+
+export class GetListBillsReqDto extends PaginationReqDto {}

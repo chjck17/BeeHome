@@ -11,6 +11,11 @@ import { PaginationReqDto } from '../../../../common/dtos/pagination.dto';
 import { Status } from '../../../../common/enums/status.enum';
 import { RoomStatus } from '../../../enums/room.enum';
 
+export class CheckRoomNumberReqDto {
+  @IsValidNumber()
+  floorId: number;
+}
+
 export class CreateRoomReqDto {
   @IsValidNumber()
   floorId: number;

@@ -8,6 +8,7 @@ import {
 } from '../../../common/exceptions/custom.exception';
 import { TypeORMQueryResult } from '../../../common/dtos/sql-query-result.dto';
 import {
+  CheckRoomNumberReqDto,
   CreateRoomReqDto,
   GetListRoomsReqDto,
   UpdateRoomReqDto,
@@ -35,6 +36,36 @@ export class RoomLessorService {
     private roomToAttributeRepo: RoomToAttributeRepository,
     private userRepo: UserRepository,
   ) {}
+
+  async checkRoomNumber(user: User) {
+    const roomExist = await this.userRepo.findOne({
+      where: { id: user.id },
+      relations: { boardingHouses: { floors: { rooms: true } }, lessor: true },
+    });
+
+    let totalRooms = 0;
+
+    if (roomExist && roomExist.boardingHouses) {
+      for (const boardingHouse of roomExist.boardingHouses) {
+        if (boardingHouse.floors) {
+          for (const floor of boardingHouse.floors) {
+            if (floor.rooms) {
+              totalRooms += floor.rooms.length;
+            }
+          }
+        }
+      }
+    }
+    //
+    if (totalRooms >= 20 && roomExist.lessor.packType === PackType.BASIC)
+      throw new ConflictException('out of room');
+
+    if (totalRooms >= 5 && roomExist.lessor.packType === PackType.FREE)
+      throw new ConflictException('out of room');
+
+    return totalRooms;
+  }
+
   async createRoom(dto: CreateRoomReqDto) {
     const {
       name,
@@ -47,29 +78,7 @@ export class RoomLessorService {
       roomSimple,
       toilet,
     } = dto;
-    const user = await this.userRepo.findOne({
-      where: { boardingHouses: { floors: { id: floorId } } },
-      relations: { boardingHouses: { floors: { rooms: true } }, lessor: true },
-    });
 
-    let totalRooms = 0;
-
-    if (user && user.boardingHouses) {
-      for (const boardingHouse of user.boardingHouses) {
-        if (boardingHouse.floors) {
-          for (const floor of boardingHouse.floors) {
-            if (floor.rooms) {
-              totalRooms += floor.rooms.length;
-            }
-          }
-        }
-      }
-    }
-    if (totalRooms >= 20 && user.lessor.packType === PackType.BASIC)
-      throw new ConflictException('out of room');
-
-    if (totalRooms >= 5 && user.lessor.packType === PackType.FREE)
-      throw new ConflictException('out of room');
     const room = this.roomRepo.create({
       floorId: floorId,
       name: name,

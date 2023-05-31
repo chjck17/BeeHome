@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreateVnPay, CreateVnPayQue, SelectVnPay } from './vnpay.req.dto';
+import {
+  CreateVnPay,
+  CreateVnPayQue,
+  GetListBillsReqDto,
+  SelectVnPay,
+} from './vnpay.req.dto';
 // CommonJS
 import { Response } from 'express';
 import querystring from 'qs';
@@ -12,9 +17,14 @@ import { PackType } from 'src/service-pack/enums/pack.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { UserRepository } from 'src/auth/repositories/user.repository';
 import { number } from 'joi';
+import { BillRepository } from './bill.repository';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 @Injectable()
 export class VNPayService {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(
+    private readonly userRepo: UserRepository,
+    private readonly billRepo: BillRepository,
+  ) {}
   // Triển khai các phương thức thanh toán VNPay ở đây
 
   async vnpay() {}
@@ -111,31 +121,41 @@ export class VNPayService {
 
     return randomString;
   }
-  async create(dto: CreateVnPayQue) {
-    if (dto.vnp_TransactionStatus == '00') {
-      const text = dto.vnp_OrderInfo;
-      const numberPattern = /\d+/; // Mẫu để tìm các số trong chuỗi
 
-      const matches = text.match(numberPattern); // Tìm các số trong chuỗi
-      const number = matches ? parseInt(matches[0]) : null; // Lấy số đầu tiên tìm thấy (nếu có)
+  async create(dto: CreateVnPayQue, user: User) {
+    const bill = this.billRepo.create({
+      userId: user.id,
+      name: dto.vnp_TxnRef,
+      packType: dto.packType,
+      transactionId: dto.vnp_TransactionNo,
+      transactionTitle: dto.vnp_OrderInfo,
+      price: dto.vnp_Amount,
+      bank: dto.vnp_BankCode,
+      cardType: dto.vnp_CardType,
+    });
+    await this.billRepo.save(bill);
+    return bill;
+  }
 
-      let substring = '';
-      if (number) {
-        const index = text.indexOf(String(number)); // Tìm vị trí của số trong đoạn văn bản
-        substring = text.substring(index + String(number).length); // Lấy chuỗi con từ vị trí kết thúc của số đến cuối chuỗi
-      }
+  async findOne(user: User, id: number) {
+    const bill = await this.billRepo.findOneOrThrowNotFoundExc({
+      where: { id, userId: user.id },
+    });
+    return bill;
+  }
 
-      let packType: PackType;
+  async getListBill(user: User, dto: GetListBillsReqDto) {
+    const { limit, page } = dto;
+    const queryBuilder = this.billRepo
+      .createQueryBuilder('bill')
+      .andWhere('bill.userId = :userId', {
+        userId: user.id,
+      });
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+    });
 
-      if (substring === 'BASIC') {
-        packType = PackType.BASIC;
-      }
-
-      if (substring === 'PREMIUM') {
-        packType = PackType.PREMIUM;
-      }
-      // await this.userRepo.update({ id: number }, { packType: packType });
-      return { number, substring };
-    }
+    return new Pagination(items, meta);
   }
 }

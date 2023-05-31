@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ServicePackRepository } from '../repositories/service-pack.repository';
 import {
   CreateServicePackReqDto,
@@ -29,13 +29,16 @@ export class ServicePackLessorService {
       { id: userExit.lessor.id },
       { packType: packType },
     );
-    const pack = this.servicePackRepo.create({
-      userId: user.id,
-      endDate: this.getModifiedDate(startDate),
-      startDate: startDate,
-    });
-    await this.servicePackRepo.save(pack);
-    return pack;
+    await this.servicePackRepo.softDelete({ userId: user.id });
+    if (packType !== PackType.FREE) {
+      const pack = this.servicePackRepo.create({
+        userId: user.id,
+        endDate: this.getModifiedDate(startDate),
+        startDate: startDate,
+      });
+      await this.servicePackRepo.save(pack);
+      return pack;
+    }
   }
 
   async servicePackPrice(dto: ServicePackPrice, user: User) {
@@ -49,6 +52,11 @@ export class ServicePackLessorService {
       where: { id: user.id },
       relations: { servicePack: true, lessor: true },
     });
+
+    const today = new Date();
+    if (differenceInDays(timeUse.servicePack.endDate, today) > 4) {
+      throw new ForbiddenException('Khong trong thoi gian dang ky');
+    }
     if (timeUse.lessor.packType === PackType.BASIC) {
       if (dto.packType == PackType.PREMIUM) {
         const numberOfDaysPack = differenceInDays(
