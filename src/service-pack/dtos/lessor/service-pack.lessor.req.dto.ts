@@ -12,6 +12,24 @@ export class CreateServicePackReqDto {
 
   @IsValidDate({ required: true })
   startDate: Date;
+
+  @IsValidText({ trim: true, required: false })
+  vnp_Amount?: string;
+
+  @IsValidText({ trim: true, required: false })
+  vnp_BankCode?: string;
+
+  @IsValidText({ trim: true, required: false })
+  vnp_CardType?: string;
+
+  @IsValidText({ trim: true, required: false })
+  vnp_OrderInfo?: string;
+
+  @IsValidText({ trim: true, required: false })
+  vnp_TransactionNo?: string;
+
+  @IsValidText({ trim: true, required: false })
+  vnp_TxnRef?: string;
 }
 
 export class ServicePackPrice {

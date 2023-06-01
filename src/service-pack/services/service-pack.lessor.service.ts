@@ -11,12 +11,14 @@ import { UserRepository } from 'src/auth/repositories/user.repository';
 import { LessorRepository } from 'src/auth/repositories/lessor.repository';
 import { SelectVnPay } from 'src/vnpay/vnpay.req.dto';
 import { PackType } from '../enums/pack.enum';
+import { BillRepository } from 'src/vnpay/bill.repository';
 @Injectable()
 export class ServicePackLessorService {
   constructor(
     private servicePackRepo: ServicePackRepository,
     private userRepo: UserRepository,
     private lessorRepo: LessorRepository,
+    private readonly billRepo: BillRepository,
   ) {}
   async createServicePack(dto: CreateServicePackReqDto, user: User) {
     const { startDate, packType } = dto;
@@ -39,6 +41,17 @@ export class ServicePackLessorService {
       await this.servicePackRepo.save(pack);
       return pack;
     }
+    const bill = this.billRepo.create({
+      userId: user.id,
+      name: dto.vnp_TxnRef,
+      packType: dto.packType,
+      transactionId: dto.vnp_TransactionNo,
+      transactionTitle: dto.vnp_OrderInfo,
+      price: dto.vnp_Amount,
+      bank: dto.vnp_BankCode,
+      cardType: dto.vnp_CardType,
+    });
+    await this.billRepo.save(bill);
   }
 
   async servicePackPrice(dto: ServicePackPrice, user: User) {

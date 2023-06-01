@@ -1,5 +1,7 @@
+import { CustomerStatus } from 'src/auth/enums/customer.enum';
 import {
   IsValidEnum,
+  IsValidNumber,
   IsValidText,
 } from '../../../../common/decorators/custom-validator.decorator';
 import { PaginationReqDto } from '../../../../common/dtos/pagination.dto';
@@ -16,4 +18,15 @@ export class GetListCustomerAdminReqDto extends PaginationReqDto {
 
   @IsValidText({ required: false, trim: true })
   searchText?: string;
+}
+
+export class UpdateCustomerAdminReqDto {
+  @IsValidNumber({ required: true, min: 1 })
+  lessorId: number;
+
+  @IsValidText({})
+  name?: string;
+
+  @IsValidEnum({ enum: CustomerStatus, required: false })
+  status?: CustomerStatus;
 }

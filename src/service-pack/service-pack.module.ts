@@ -8,6 +8,7 @@ import { ServicePackLessorService } from './services/service-pack.lessor.service
 import { UserRepository } from 'src/auth/repositories/user.repository';
 import { LessorRepository } from 'src/auth/repositories/lessor.repository';
 import { Lessor } from 'src/auth/entities/lessor.entity';
+import { BillRepository } from 'src/vnpay/bill.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ServicePack, Lessor])],
@@ -17,6 +18,7 @@ import { Lessor } from 'src/auth/entities/lessor.entity';
     ServicePackLessorService,
     UserRepository,
     LessorRepository,
+    BillRepository,
   ],
 })
 export class ServicePackModule {}

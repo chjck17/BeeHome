@@ -1,11 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
 import { AuthorizeAdmin } from '../../../common/decorators/auth.decorator';
 import { PaginationResponse } from '../../../common/decorators/pagination-response.decorator';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import { Action, Resource } from '../../../common/enums/casl.enum';
-import { GetListCustomerAdminReqDto } from '../../dtos/admin/req/customer.admin.req.dto';
+import {
+  GetListCustomerAdminReqDto,
+  UpdateCustomerAdminReqDto,
+} from '../../dtos/admin/req/customer.admin.req.dto';
 import { CustomerResDto } from '../../dtos/common/res/customer.res.dto';
 import { CustomerAdminService } from '../../services/admin/customer.admin.service';
 
@@ -24,6 +35,11 @@ export class CustomerAdminController {
   @Get(':id')
   getDetail(@Param('id') id: number) {
     return this.customerAdminService.getDetail(id);
+  }
+
+  @Patch('status')
+  updateStatus(@Body() dto: UpdateCustomerAdminReqDto) {
+    return this.customerAdminService.updateStatus(dto);
   }
 
   @Delete()

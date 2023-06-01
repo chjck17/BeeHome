@@ -9,9 +9,11 @@ import {
 import {
   GetListCustomerAdminReqDto,
   SearchBy,
+  UpdateCustomerAdminReqDto,
 } from '../../dtos/admin/req/customer.admin.req.dto';
 import { CustomerResDto } from '../../dtos/common/res/customer.res.dto';
 import { CustomerRepository } from '../../repositories/customer.repository';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class CustomerAdminService {
@@ -65,6 +67,17 @@ export class CustomerAdminService {
     });
 
     return CustomerResDto.forAdmin(customer);
+  }
+
+  async updateStatus(dto: UpdateCustomerAdminReqDto) {
+    const { lessorId, status } = dto;
+
+    const { affected } = await this.customerRepo.update(
+      { id: lessorId, deletedAt: IsNull() },
+      { status },
+    );
+
+    if (affected < 1) throw new NotFoundExc('Lessor not found');
   }
 
   async deleteMultiple(dto: DeleteMultipleByIdNumberReqDto) {
