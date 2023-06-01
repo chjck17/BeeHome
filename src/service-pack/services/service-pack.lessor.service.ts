@@ -39,19 +39,19 @@ export class ServicePackLessorService {
         startDate: startDate,
       });
       await this.servicePackRepo.save(pack);
+      const bill = this.billRepo.create({
+        userId: user.id,
+        name: dto.vnp_TxnRef,
+        packType: dto.packType,
+        transactionId: dto.vnp_TransactionNo,
+        transactionTitle: dto.vnp_OrderInfo,
+        price: dto.vnp_Amount,
+        bank: dto.vnp_BankCode,
+        cardType: dto.vnp_CardType,
+      });
+      await this.billRepo.save(bill);
       return pack;
     }
-    const bill = this.billRepo.create({
-      userId: user.id,
-      name: dto.vnp_TxnRef,
-      packType: dto.packType,
-      transactionId: dto.vnp_TransactionNo,
-      transactionTitle: dto.vnp_OrderInfo,
-      price: dto.vnp_Amount,
-      bank: dto.vnp_BankCode,
-      cardType: dto.vnp_CardType,
-    });
-    await this.billRepo.save(bill);
   }
 
   async servicePackPrice(dto: ServicePackPrice, user: User) {
