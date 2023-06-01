@@ -12,6 +12,7 @@ import { RoomAttributeRepository } from '../../../room/repositories/room-attribu
 import { RoomAttributeTermRepository } from '../../../room/repositories/room-attribute-term.repository';
 import { RoomAttributeTermDetailRepository } from '../../../room/repositories/room-attribute-term-detail.repository';
 import { CommentRepository } from '../../../comment/repositories/comment.repository';
+import { Language } from 'src/common/enums/lang.enum';
 
 @Injectable()
 export class BoardingHouseCommonService {
@@ -80,7 +81,10 @@ export class BoardingHouseCommonService {
     return result;
   }
 
-  async getBoardingHouseAttribute(boardingHouse: BoardingHouse) {
+  async getBoardingHouseAttribute(
+    boardingHouse: BoardingHouse,
+    lang: Language,
+  ) {
     // const result = new BoardingHousePriceResDto();
 
     const queryBuilder = this.roomAttributeTermDetailRepo
@@ -97,7 +101,7 @@ export class BoardingHouseCommonService {
       .innerJoin('floor.boardingHouse', 'boardingHouse')
 
       .andWhere('boardingHouse.id = :id', { id: boardingHouse.id })
-      .andWhere('roomAttributeTermDetail.lang = :lang', { lang: 'VN' })
+      .andWhere('roomAttributeTermDetail.lang = :lang', { lang })
 
       .getMany();
 

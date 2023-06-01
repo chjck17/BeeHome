@@ -33,9 +33,6 @@ export class CreateBoardingHouseReqDto {
   @IsValidText({ trim: true, required: true })
   name: string;
 
-  @IsValidArrayString({ required: false })
-  tagIds: string[];
-
   @IsValidNumber()
   floor: number;
 
@@ -153,9 +150,6 @@ export class UpdateBoardingHouseReqDto {
 
   @IsValidArrayNumber({ required: false })
   imgIds?: number[];
-
-  @IsValidArrayString({ minSize: 1, required: false })
-  tagIds?: string[];
 
   @IsValidArrayObject(
     { minSize: 1, maxSize: 2, required: false },
