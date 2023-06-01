@@ -12,7 +12,6 @@ import { User } from '../../../auth/entities/user.entity';
 import { CommentRepository } from '../../../comment/repositories/comment.repository';
 import { CommentToBoardingHouseRepository } from '../../../comment/repositories/commentToBoardingHouse.repository';
 import { Language } from 'src/common/enums/lang.enum';
-import { RoomStatus } from 'src/room/enums/room.enum';
 
 @Injectable()
 export class BoardingHouseCustomerService {
@@ -105,7 +104,6 @@ export class BoardingHouseCustomerService {
               boardingHouseRentDeposits: { lang: lang },
               boardingHouseRules: { lang: lang },
               boardingHouseDescriptions: { lang: lang },
-              floors: { rooms: { status: RoomStatus.ACTIVE } },
             },
             relations: {
               floors: { rooms: { roomImages: { localFile: true } } },
