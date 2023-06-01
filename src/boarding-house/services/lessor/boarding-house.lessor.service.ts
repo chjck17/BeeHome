@@ -54,7 +54,6 @@ export class BoardingHouseLessorService {
       electricFee,
       waterFee,
       serviceFee,
-      tagIds,
       videoUrl,
       imgIds,
     } = dto;

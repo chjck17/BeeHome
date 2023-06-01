@@ -11,6 +11,7 @@ import { addCommentCustomerReqDto } from '../../dtos/customer/customer.req.dto';
 import { User } from '../../../auth/entities/user.entity';
 import { CommentRepository } from '../../../comment/repositories/comment.repository';
 import { CommentToBoardingHouseRepository } from '../../../comment/repositories/commentToBoardingHouse.repository';
+import { Language } from 'src/common/enums/lang.enum';
 
 @Injectable()
 export class BoardingHouseCustomerService {
@@ -123,7 +124,10 @@ export class BoardingHouseCustomerService {
             item,
           );
         const attributes =
-          await this.boardingHouseCommonService.getBoardingHouseAttribute(item);
+          await this.boardingHouseCommonService.getBoardingHouseAttribute(
+            item,
+            lang,
+          );
 
         return BoardingHouseResDto.forCustomer({
           dataBoardingHouse: boardingHouse,
@@ -212,7 +216,10 @@ export class BoardingHouseCustomerService {
             item,
           );
         const attributes =
-          await this.boardingHouseCommonService.getBoardingHouseAttribute(item);
+          await this.boardingHouseCommonService.getBoardingHouseAttribute(
+            item,
+            Language.VN,
+          );
         // return { star, priceRange };
         return BoardingHouseResDto.forCustomer({
           dataBoardingHouse: boardingHouse,
