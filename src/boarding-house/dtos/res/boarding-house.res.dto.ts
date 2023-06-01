@@ -20,7 +20,7 @@ export class BoardingHouseResDto {
   description: string;
   rule: string;
   rentDeposit: string;
-  // saleTag: string[];
+  videoUrl: string;
   electricFee: string;
   waterFee: string;
   serviceFee: string;
@@ -37,6 +37,7 @@ export class BoardingHouseResDto {
     dto: BoardingHouseResDto,
     dataBoardingHouse: BoardingHouse,
   ) {
+    dto.videoUrl = dataBoardingHouse?.videoUrl;
     dto.id = dataBoardingHouse.id;
     dto.img = dataBoardingHouse?.floors[0]?.rooms[0]?.roomImages[0]?.localFile
       .path
