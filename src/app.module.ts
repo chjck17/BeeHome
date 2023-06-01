@@ -31,6 +31,7 @@ import { ServicePackLessorService } from './service-pack/services/service-pack.l
 import { ServicePackRepository } from './service-pack/repositories/service-pack.repository';
 import { UserRepository } from './auth/repositories/user.repository';
 import { LessorRepository } from './auth/repositories/lessor.repository';
+import { BillRepository } from './vnpay/bill.repository';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { LessorRepository } from './auth/repositories/lessor.repository';
 
   controllers: [],
   providers: [
+    BillRepository,
     ServicePackRepository,
     UserRepository,
     ServicePackLessorService,
