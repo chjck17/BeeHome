@@ -13,7 +13,6 @@ import globalConfig from './common/config/global.config';
 import { CaslModule } from './casl/casl.module';
 import { AllExceptionsFilter } from './common/filters/all.filter';
 import dayjs from 'dayjs';
-import { TagModule } from './tag/tag.module';
 import { FloorModule } from './floor/floor.module';
 import { RoomModule } from './room/room.module';
 import { LocalFilesModule } from './local-file/local-file.module';
@@ -49,14 +48,12 @@ import { LessorRepository } from './auth/repositories/lessor.repository';
     }),
     AuthModule,
     CaslModule,
-    TagModule,
     FloorModule,
     RoomModule,
     LocalFilesModule,
     UploadFileModule,
     ProvinceModule,
     BoardingHouseModule,
-    TagModule,
     CommentModule,
     BookModule,
     EmailConfirmationModule,

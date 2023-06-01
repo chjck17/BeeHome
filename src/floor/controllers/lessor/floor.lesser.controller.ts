@@ -18,7 +18,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { GetListFloorsReqDto } from '../../dtos/lessor/floor.req.dto';
 import { FloorLessorService } from '../../services/floor.lessor.service';
-import { GetListTagsReqDto } from '../../../tag/dtos/tag.req.dto';
 
 @Controller(`${PrefixType.LESSOR}/floor`)
 @AuthenticateLessor()
@@ -30,7 +29,7 @@ export class FloorLessorController {
   findOne(
     @CurrentUser() user: User,
     @Param('id') id: string,
-    @Query() query: GetListTagsReqDto,
+    @Query() query: GetListFloorsReqDto,
   ) {
     return this.floorLessorService.findOne(Number(id), query);
   }

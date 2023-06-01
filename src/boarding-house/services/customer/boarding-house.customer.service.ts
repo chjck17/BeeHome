@@ -36,7 +36,6 @@ export class BoardingHouseCustomerService {
           },
           commentToBoardingHouses: { comment: { user: { customer: true } } },
           boardingHouseRentDeposits: true,
-          boardingHouseToTags: { tag: true },
           boardingHouseRules: true,
           boardingHouseAddress: true,
           boardingHouseDescriptions: true,
@@ -110,7 +109,7 @@ export class BoardingHouseCustomerService {
               user: { lessor: { avatar: true } },
               boardingHouseRentDeposits: true,
               boardingHouseDescriptions: true,
-              boardingHouseToTags: { tag: true },
+              // boardingHouseToTags: { tag: true },
               boardingHouseRules: true,
               boardingHouseAddress: true,
               commentToBoardingHouses: {
@@ -198,7 +197,6 @@ export class BoardingHouseCustomerService {
               user: { lessor: { avatar: true } },
               boardingHouseRentDeposits: true,
               boardingHouseDescriptions: true,
-              boardingHouseToTags: { tag: true },
               boardingHouseRules: true,
               boardingHouseAddress: true,
               commentToBoardingHouses: {

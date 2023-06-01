@@ -29,11 +29,18 @@ export class BoardingHouse extends BaseEntity {
   @Column({ enum: Status, type: 'enum' })
   status: Status;
 
-  @Column({ enum: BoardingHouseType, type: 'enum' })
+  @Column({
+    enum: BoardingHouseType,
+    type: 'enum',
+    default: BoardingHouseType.MOTEL,
+  })
   type: BoardingHouseType;
 
   @Column()
   name: string;
+
+  @Column({ nullable: true })
+  videoUrl: string;
 
   @Column({ nullable: true })
   electricFee: string;

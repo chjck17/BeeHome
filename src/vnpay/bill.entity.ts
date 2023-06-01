@@ -2,12 +2,10 @@ import { User } from 'src/auth/entities/user.entity';
 import { BaseEntityWithoutDeleteAndVersion } from 'src/common/entities/base.entity';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 import {
-  BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
