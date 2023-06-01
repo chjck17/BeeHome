@@ -50,7 +50,7 @@ export class ServicePackLessorService {
         cardType: dto.vnp_CardType,
       });
       await this.billRepo.save(bill);
-      return pack;
+      return bill;
     }
   }
 
