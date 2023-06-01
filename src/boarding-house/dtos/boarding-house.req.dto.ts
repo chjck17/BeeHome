@@ -39,6 +39,9 @@ export class CreateBoardingHouseReqDto {
   @IsValidNumber()
   floor: number;
 
+  @IsValidText({ required: false })
+  videoUrl?: string;
+
   @IsValidNumberString()
   electricFee: string;
 
@@ -144,6 +147,9 @@ export class UpdateBoardingHouseReqDto {
 
   @IsValidNumberString({ required: false })
   serviceFee?: string;
+
+  @IsValidText({ required: false })
+  videoUrl?: string;
 
   @IsValidArrayNumber({ required: false })
   imgIds?: number[];

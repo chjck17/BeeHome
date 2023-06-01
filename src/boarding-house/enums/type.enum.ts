@@ -1,4 +1,7 @@
 export enum BoardingHouseType {
+  APARTMENT = 'APARTMENT',
+  MOTEL = 'MOTEL',
   MULTIPLE_ROOM = 'MULTIPLE_ROOM',
+
   SINGLE_ROOM = 'SINGLE_ROOM',
 }

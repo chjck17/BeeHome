@@ -18,7 +18,7 @@ let config: DataSourceOptions & PostgresConnectionOptions = {
     //   rejectUnauthorized: false,
     // },
   },
-  // migrationsRun: true,
+  migrationsRun: true,
   migrations: ['dist/migrations/*.js'],
   logger: 'simple-console',
   logging: true,

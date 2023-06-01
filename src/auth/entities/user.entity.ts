@@ -14,7 +14,6 @@ import { Manager } from './manager.entity';
 import { Lessor } from './lessor.entity';
 import { UserToken } from './user-token.entity';
 import { GroupPolicy } from '../../casl/entities/group-policies.entity';
-import { Tag } from '../../tag/entities/tag.entity';
 import { RoomAttributeTerm } from '../../room/entities/room-attribute-term.entity';
 import { RoomAttribute } from '../../room/entities/room-attribute.entity';
 import { Comment } from '../../comment/entities/comment.entity';
@@ -23,8 +22,8 @@ import { BookDisable } from '../../book/entities/book-disable.entity';
 import { ServicePack } from 'src/service-pack/entities/service-pack.entity';
 import { PackType } from 'src/service-pack/enums/pack.enum';
 import { Report } from 'src/report/entities/report.entity';
-import { Bill } from 'src/bill/bill.entity';
 import { BoardingHouse } from 'src/boarding-house/entities/boarding-house.entity';
+import { Bill } from 'src/vnpay/bill.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -75,9 +74,6 @@ export class User extends BaseEntity {
 
   // @OneToMany(() => BoardingHouse, (cate) => cate.user)
   // boardingHouses: BoardingHouse[];
-
-  @OneToMany(() => Tag, (tag) => tag.user)
-  tags: Tag[];
 
   @OneToMany(() => Book, (tag) => tag.user)
   books: Book[];

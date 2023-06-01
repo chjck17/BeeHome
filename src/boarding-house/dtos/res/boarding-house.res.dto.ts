@@ -20,7 +20,7 @@ export class BoardingHouseResDto {
   description: string;
   rule: string;
   rentDeposit: string;
-  saleTag: string[];
+  // saleTag: string[];
   electricFee: string;
   waterFee: string;
   serviceFee: string;
@@ -60,9 +60,9 @@ export class BoardingHouseResDto {
           ',' +
           dataBoardingHouse?.boardingHouseAddress?.province
         : null;
-    dto.saleTag = dataBoardingHouse?.boardingHouseToTags?.map((item) => {
-      return item.tag.name;
-    });
+    // dto.saleTag = dataBoardingHouse?.boardingHouseToTags?.map((item) => {
+    //   return item.tag.name;
+    // });
     dto.itemDetails = dataBoardingHouse.boardingHouseImages.map((item) => {
       const img = item.localFile.path;
       return img;
