@@ -31,7 +31,7 @@ export class ServicePackLessorService {
       { id: userExit.lessor.id },
       { packType: packType },
     );
-    await this.servicePackRepo.softDelete({ userId: user.id });
+    await this.servicePackRepo.delete({ userId: user.id });
     if (packType !== PackType.FREE) {
       const pack = this.servicePackRepo.create({
         userId: user.id,
