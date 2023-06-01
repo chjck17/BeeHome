@@ -37,7 +37,9 @@ export class BoardingHouseResDto {
     dto: BoardingHouseResDto,
     dataBoardingHouse: BoardingHouse,
   ) {
-    dto.videoUrl = dataBoardingHouse?.videoUrl;
+    dto.videoUrl = dataBoardingHouse?.videoUrl
+      ? dataBoardingHouse?.videoUrl
+      : null;
     dto.id = dataBoardingHouse.id;
     dto.img = dataBoardingHouse?.floors[0]?.rooms[0]?.roomImages[0]?.localFile
       .path
