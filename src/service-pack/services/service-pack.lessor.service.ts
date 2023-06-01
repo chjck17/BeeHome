@@ -55,7 +55,7 @@ export class ServicePackLessorService {
 
     const today = new Date();
     if (
-      differenceInDays(timeUse.servicePack.endDate, today) > 4 &&
+      differenceInDays(timeUse?.servicePack?.endDate, today) > 4 &&
       dto.packType != PackType.PREMIUM
     ) {
       throw new ForbiddenException('Khong trong thoi gian dang ky');

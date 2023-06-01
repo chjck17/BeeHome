@@ -98,29 +98,28 @@ export class BoardingHouseCustomerService {
 
     let boardingHouses = await Promise.all(
       items.map(async (item) => {
-        const boardingHouse =
-          await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
-            where: {
-              id: item.id,
-              boardingHouseRentDeposits: { lang: lang },
-              boardingHouseRules: { lang: lang },
-              boardingHouseDescriptions: { lang: lang },
-              floors: { rooms: { status: RoomStatus.ACTIVE } },
+        const boardingHouse = await this.boardingHouseRepo.findOne({
+          where: {
+            id: item.id,
+            boardingHouseRentDeposits: { lang: lang },
+            boardingHouseRules: { lang: lang },
+            boardingHouseDescriptions: { lang: lang },
+            floors: { rooms: { status: RoomStatus.ACTIVE } },
+          },
+          relations: {
+            floors: { rooms: { roomImages: { localFile: true } } },
+            user: { lessor: { avatar: true } },
+            boardingHouseRentDeposits: true,
+            boardingHouseDescriptions: true,
+            // boardingHouseToTags: { tag: true },
+            boardingHouseRules: true,
+            boardingHouseAddress: true,
+            commentToBoardingHouses: {
+              comment: { user: { customer: true } },
             },
-            relations: {
-              floors: { rooms: { roomImages: { localFile: true } } },
-              user: { lessor: { avatar: true } },
-              boardingHouseRentDeposits: true,
-              boardingHouseDescriptions: true,
-              // boardingHouseToTags: { tag: true },
-              boardingHouseRules: true,
-              boardingHouseAddress: true,
-              commentToBoardingHouses: {
-                comment: { user: { customer: true } },
-              },
-              boardingHouseImages: { localFile: true },
-            },
-          });
+            boardingHouseImages: { localFile: true },
+          },
+        });
         const priceRange =
           await this.boardingHouseCommonService.getBoardingHousePriceRange(
             item,
