@@ -25,6 +25,8 @@ import { RoomAttributeTermRepository } from '../room/repositories/room-attribute
 import { RoomAttributeTermDetailRepository } from '../room/repositories/room-attribute-term-detail.repository';
 import { CommentRepository } from '../comment/repositories/comment.repository';
 import { CommentToBoardingHouseRepository } from '../comment/repositories/commentToBoardingHouse.repository';
+import { BoardingHouseAdminController } from './controllers/admin/boarding-house.admin.controller';
+import { BoardingHouseAdminService } from './services/admin/boarding-house.admin.service';
 
 @Module({
   imports: [
@@ -38,11 +40,17 @@ import { CommentToBoardingHouseRepository } from '../comment/repositories/commen
       BoardingHouseImage,
     ]),
   ],
-  controllers: [BoardingHouseLessorController, BoardingHouseCustomerController],
+  controllers: [
+    BoardingHouseLessorController,
+    BoardingHouseCustomerController,
+    BoardingHouseAdminController,
+  ],
   providers: [
     BoardingHouseRepository,
     RoomRepository,
     BoardingHouseLessorService,
+    BoardingHouseAdminService,
+
     BoardingHouseRuleRepository,
     BoardingHouseDescriptionRepository,
     BoardingHouseRentDepositRepository,
