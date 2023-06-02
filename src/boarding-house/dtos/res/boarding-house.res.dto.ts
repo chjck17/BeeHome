@@ -76,8 +76,8 @@ export class BoardingHouseResDto {
     dto.posterName = dataBoardingHouse?.user?.lessor?.name
       ? dataBoardingHouse?.user?.lessor?.name
       : null;
-    dto.posterId = dataBoardingHouse?.user?.lessor?.id
-      ? dataBoardingHouse?.user?.lessor?.id
+    dto.posterId = dataBoardingHouse?.user?.id
+      ? dataBoardingHouse?.user?.id
       : null;
     dto.electricFee = dataBoardingHouse?.electricFee
       ? dataBoardingHouse?.electricFee
