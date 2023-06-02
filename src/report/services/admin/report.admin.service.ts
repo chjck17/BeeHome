@@ -19,6 +19,14 @@ import {
 @Injectable()
 export class ReportAdminService {
   constructor(private reportRepo: ReportRepository) {}
+  async findOne(reportId: number) {
+    const report = await this.reportRepo.findOne({
+      where: { id: reportId },
+      relations: { boardingHouse: true },
+    });
+    return report;
+  }
+
   async getListReport(user: User, dto: GetListReportsReqDto) {
     const { limit, page } = dto;
     const queryBuilder = this.reportRepo.createQueryBuilder('report');
@@ -27,8 +35,16 @@ export class ReportAdminService {
       limit,
       page,
     });
-
-    return new Pagination(items, meta);
+    const reports = await Promise.all(
+      items.map(async (item) => {
+        const report = await this.reportRepo.findOne({
+          where: { id: item.id },
+          relations: { boardingHouse: true },
+        });
+        return report;
+      }),
+    );
+    return new Pagination(reports, meta);
   }
   async updateStatus(user: User, dto: UpdateStatusAdminReportReqDto) {
     const { status, reportId } = dto;
