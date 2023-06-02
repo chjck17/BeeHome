@@ -10,7 +10,10 @@ import {
 import { User } from '../../auth/entities/user.entity';
 import { Floor } from '../../floor/entities/floor.entity';
 import { BoardingHouseToTag } from './boarding-house-to-tag.entity';
-import { Status } from '../../common/enums/status.enum';
+import {
+  AdminBoardingHouseStatus,
+  Status,
+} from '../../common/enums/status.enum';
 import { BoardingHouseType } from '../enums/type.enum';
 import { BoardingHouseAddress } from './boarding-house-address.entity';
 import { BoardingHouseRule } from './boarding-house-rule.entity';
@@ -28,6 +31,13 @@ export class BoardingHouse extends BaseEntity {
 
   @Column({ enum: Status, type: 'enum' })
   status: Status;
+
+  @Column({
+    enum: AdminBoardingHouseStatus,
+    type: 'enum',
+    default: AdminBoardingHouseStatus.ACTIVE,
+  })
+  adminStatus: AdminBoardingHouseStatus;
 
   @Column({
     enum: BoardingHouseType,

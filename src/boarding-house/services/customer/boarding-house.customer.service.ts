@@ -12,6 +12,7 @@ import { User } from '../../../auth/entities/user.entity';
 import { CommentRepository } from '../../../comment/repositories/comment.repository';
 import { CommentToBoardingHouseRepository } from '../../../comment/repositories/commentToBoardingHouse.repository';
 import { Language } from 'src/common/enums/lang.enum';
+import { RoomAttributeTermDetailRepository } from 'src/room/repositories/room-attribute-term-detail.repository';
 
 @Injectable()
 export class BoardingHouseCustomerService {
@@ -19,16 +20,18 @@ export class BoardingHouseCustomerService {
     private boardingHouseRepo: BoardingHouseRepository,
 
     private boardingHouseCommonService: BoardingHouseCommonService,
+    private roomAttributeTermDetailRepo: RoomAttributeTermDetailRepository,
   ) {}
 
   async findOne(id: number) {
     const boardingHouse =
       await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
-        where: { id },
+        where: {
+          id,
+        },
         relations: {
           floors: {
             rooms: {
-              // roomToCategories: true,
               roomToAttributes: {
                 roomAttributeTerm: { roomAttributeTermDetails: true },
               },
@@ -42,7 +45,25 @@ export class BoardingHouseCustomerService {
           boardingHouseDescriptions: true,
         },
       });
-    return boardingHouse;
+
+    const queryBuilder = await this.roomAttributeTermDetailRepo
+      .createQueryBuilder('roomAttributeTermDetail')
+
+      .innerJoin(
+        'roomAttributeTermDetail.roomAttributeTerm',
+        'roomAttributeTerm',
+      )
+      .innerJoin('roomAttributeTerm.roomToAttributes', 'roomToAttribute')
+      .innerJoin('roomToAttribute.room', 'room')
+      .innerJoin('room.floor', 'floor')
+      .innerJoin('floor.boardingHouse', 'boardingHouse')
+      .andWhere('boardingHouse.id = :id', { id })
+      // .andWhere('roomAttributeTermDetail.lang = :lang', { lang })
+
+      .getMany();
+
+    // return boardingHouse;
+    return { boardingHouse, queryBuilder };
   }
 
   async getListBoardingHouse(dto: GetListBoardingHousesCustomerReqDto) {
