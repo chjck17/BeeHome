@@ -32,6 +32,7 @@ import { ServicePackRepository } from './service-pack/repositories/service-pack.
 import { UserRepository } from './auth/repositories/user.repository';
 import { LessorRepository } from './auth/repositories/lessor.repository';
 import { BillRepository } from './vnpay/bill.repository';
+import { ExportModule } from './export/export.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { BillRepository } from './vnpay/bill.repository';
     EmailModule,
     ServicePackModule,
     VNPayModule,
+    ExportModule,
     ReportModule,
   ],
 

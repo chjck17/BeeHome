@@ -43,6 +43,8 @@ import { ManagerRepository } from './repositories/manager.repository';
 import { EmailConfirmationService } from '../emailConfirmation/emailConfirmation.service';
 import EmailService from '../email/email.service';
 import { BookRepository } from '../book/repositories/book.repository';
+import { BoardingHouseRepository } from 'src/boarding-house/repositories/boarding-house.repository';
+import { ReportRepository } from 'src/report/repositories/report.repository';
 @Module({
   imports: [
     PassportModule,
@@ -72,6 +74,8 @@ import { BookRepository } from '../book/repositories/book.repository';
     ProfileCustomerController,
   ],
   providers: [
+    BoardingHouseRepository,
+    ReportRepository,
     AuthAdminService,
     AuthLessorService,
     AuthCustomerService,

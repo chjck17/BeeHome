@@ -40,13 +40,90 @@ export class RoomAttributeLessorService {
     const { roomAttributeTerms, roomAttributeDetails } = dto;
 
     const data = [
-      { lang: Language.VN, name: 'Trang thiết bị' },
-      { lang: Language.EN, name: 'Equipment' },
-    ];
-
-    const dataTerm = [
-      { lang: Language.VN, name: 'Máy lạnh', slug: 'may-lanh' },
-      { lang: Language.EN, name: 'AC', slug: 'ac' },
+      {
+        roomAttributeDetails: [
+          {
+            lang: Language.VN,
+            name: 'Trang thiết bị',
+          },
+          {
+            lang: Language.EN,
+            name: 'Equipment',
+          },
+        ],
+        roomAttributeTerms: [
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Máy lạnh',
+                slug: 'may-lanh',
+              },
+              {
+                lang: Language.EN,
+                name: 'Ac',
+                slug: 'ac',
+              },
+            ],
+          },
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Nội thất nấu ăn',
+                slug: 'noi-that-nau-an',
+              },
+              {
+                lang: Language.EN,
+                name: 'Cooking furniture',
+                slug: 'cooking-furniture',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        roomAttributeDetails: [
+          {
+            lang: Language.VN,
+            name: 'Vị Trí',
+          },
+          {
+            lang: Language.EN,
+            name: 'Location',
+          },
+        ],
+        roomAttributeTerms: [
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Gần siêu thị',
+                slug: 'gan-sieu-thi',
+              },
+              {
+                lang: Language.EN,
+                name: 'Near supper market',
+                slug: 'near-supper-market',
+              },
+            ],
+          },
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Trung tâm',
+                slug: 'trung-tam',
+              },
+              {
+                lang: Language.EN,
+                name: 'Center',
+                slug: 'center',
+              },
+            ],
+          },
+        ],
+      },
     ];
     //create RoomAttributeTerm
     const roomAttribute = this.roomAttributeRepo.create({
@@ -73,31 +150,6 @@ export class RoomAttributeLessorService {
     );
 
     //-------------------------------------------------------------------
-    const { limit, page } = dto;
-
-    const queryBuilder = this.roomAttributeRepo
-      .createQueryBuilder('roomAttribute')
-      .leftJoinAndSelect(
-        'roomAttribute.roomAttributeDetails',
-        'roomAttributeDetail',
-      )
-      .leftJoinAndSelect(
-        'roomAttribute.roomAttributeTerms',
-        'roomAttributeTerm',
-      )
-      .leftJoinAndSelect(
-        'roomAttributeTerm.roomAttributeTermDetails',
-        'roomAttributeTermDetail',
-      )
-      .andWhere('roomAttribute.userId = :id', {
-        id: user.id,
-      });
-    const { items, meta } = await paginate(queryBuilder, {
-      limit,
-      page,
-      cacheQueries: true,
-    });
-    return new Pagination(items, meta);
   }
 
   @Transactional()
