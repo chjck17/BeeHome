@@ -22,13 +22,23 @@ import { AdminStatus } from '../../enums/admin.enum';
 import { UserType } from '../../enums/user.enum';
 import { AdminRepository } from '../../repositories/admin.repository';
 import { UserRepository } from '../../repositories/user.repository';
+import { BoardingHouseRepository } from 'src/boarding-house/repositories/boarding-house.repository';
+import { CustomerRepository } from 'src/auth/repositories/customer.repository';
+import { LessorRepository } from 'src/auth/repositories/lessor.repository';
+import { ReportRepository } from 'src/report/repositories/report.repository';
 
 @Injectable()
 export class AdminAdminService {
   constructor(
     private adminRepo: AdminRepository,
     private userRepo: UserRepository,
+    private boardingHouseRepo: BoardingHouseRepository,
+    private customerRepo: CustomerRepository,
+    private reportRepo: ReportRepository,
+    private lessorRepo: LessorRepository,
+
     private groupPolicyRepo: GroupPolicyRepository,
+
     private userToGroupPolicyRepo: UserToGroupPolicyRepository,
     private encryptService: EncryptService,
   ) {}
@@ -60,6 +70,30 @@ export class AdminAdminService {
 
     if (!admin) throw new NotFoundExc('Admin detail not found');
     return AdminResDto.forAdmin(admin);
+  }
+
+  async getAdminStatistical() {
+    const queryBuilder =
+      this.boardingHouseRepo.createQueryBuilder('boardingHouse');
+    const count = await queryBuilder.getCount();
+
+    const queryBuilderLessor =
+      this.lessorRepo.createQueryBuilder('boardingHouse');
+    const countLessor = await queryBuilderLessor.getCount();
+
+    const queryBuilderCustomer =
+      this.customerRepo.createQueryBuilder('boardingHouse');
+    const countCustomer = await queryBuilderCustomer.getCount();
+
+    const queryBuilderReport =
+      this.reportRepo.createQueryBuilder('boardingHouse');
+    const countReport = await queryBuilderReport.getCount();
+    return {
+      amountBoardingHouse: count,
+      amountLessor: countLessor,
+      amountCustomer: countCustomer,
+      amountReport: countReport,
+    };
   }
 
   @Transactional()

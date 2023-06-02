@@ -39,6 +39,11 @@ export class AdminAdminController {
     return this.adminAdminService.getDetail(id);
   }
 
+  @Get('statistical')
+  getAdminStatistical() {
+    return this.adminAdminService.getAdminStatistical();
+  }
+
   @Post()
   create(@Body() body: CreateAdminReqDto) {
     return this.adminAdminService.create(body);

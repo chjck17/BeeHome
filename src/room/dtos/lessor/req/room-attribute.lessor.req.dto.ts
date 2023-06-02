@@ -72,3 +72,6 @@ export class GetListRoomAttributeTermReqDto extends PaginationReqDto {
   @IsValidEnum({ enum: Language, required: false })
   lang?: Language;
 }
+export class CreateRoomAttributeDefault {
+  listUser: number[];
+}
