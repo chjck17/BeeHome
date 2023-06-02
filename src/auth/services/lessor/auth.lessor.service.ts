@@ -50,7 +50,7 @@ export class AuthLessorService {
 
   @Transactional()
   async register(dto: RegisterLessorReqDto) {
-    const { email, password } = dto;
+    const { email, password, address, phoneNumber } = dto;
 
     const existedLessor = await this.lessorRepo.findOneBy({ email });
     if (existedLessor) throw new ConflictExc('Lessor existed');
@@ -62,6 +62,8 @@ export class AuthLessorService {
       password: this.encryptService.encryptText(password),
       user,
       status: LessorStatus.UNVERIFIED,
+      address,
+      phoneNumber,
     });
 
     await Promise.all([

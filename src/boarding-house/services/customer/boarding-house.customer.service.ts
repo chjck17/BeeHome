@@ -100,17 +100,16 @@ export class BoardingHouseCustomerService {
       });
     }
 
-    if (ward) {
-      searchText = `%${searchText}%`;
-      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
-    }
-
     if (district) {
-      searchText = `%${searchText}%`;
       queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
         district,
       });
     }
+
+    if (ward) {
+      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
+    }
+
     const { items, meta } = await paginate(queryBuilder, {
       limit,
       page,
@@ -167,6 +166,7 @@ export class BoardingHouseCustomerService {
       );
     }
     return new Pagination(boardingHouses, meta);
+    // return items;
   }
 
   // async comment(dto: addCommentCustomerReqDto, user: User) {

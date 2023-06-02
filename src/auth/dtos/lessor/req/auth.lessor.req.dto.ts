@@ -26,6 +26,12 @@ export class RegisterLessorReqDto {
 
   @IsValidText()
   password: string;
+
+  @IsValidText({ required: true })
+  address: string;
+
+  @IsValidText({ required: true })
+  phoneNumber: string;
 }
 
 export class UpdateProfileLessorReqDto {

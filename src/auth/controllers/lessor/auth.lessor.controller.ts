@@ -18,6 +18,7 @@ import { RefreshTokenReqDto } from '../../dtos/common/req/auth.req.dto';
 import {
   LessorLoginReqDto,
   LessorRegisterReqDto,
+  RegisterLessorReqDto,
 } from '../../dtos/lessor/req/auth.lessor.req.dto';
 import { User } from '../../entities/user.entity';
 import { AuthLessorService } from '../../services/lessor/auth.lessor.service';
@@ -33,7 +34,7 @@ export class AuthLessorController {
   }
 
   @Post('register')
-  register(@Body() body: LessorRegisterReqDto) {
+  register(@Body() body: RegisterLessorReqDto) {
     return this.authLessorService.register(body);
   }
 

@@ -81,12 +81,20 @@ export class EmailConfirmationService {
       'EMAIL_CONFIRMATION_BOOKING_DATE_URL_CUSTOMER',
     )}/${token}`;
 
-    const text = `Chào bạn chúng tôi là Beehome vui lòng xác thực email để xác nhận ngày gặp : ${url}`;
-
+    // const text = `Chào bạn chúng tôi là Beehome vui lòng xác thực email để xác nhận ngày gặp : ${url}`;
+    const html = `
+    <html>
+      <body>
+        <h1>Chào bạn,</h1>
+        <p>Chúng tôi là Beehome. Vui lòng xác thực email để xác nhận ngày gặp bằng cách nhấp vào liên kết dưới đây:</p>
+        <a href="${url}">${url}</a>
+      </body>
+    </html>
+  `;
     return this.emailService.sendMail({
       to: email,
       subject: 'Email confirmation',
-      text,
+      html,
     });
   }
 
