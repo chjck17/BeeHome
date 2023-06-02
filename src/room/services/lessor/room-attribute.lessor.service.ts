@@ -35,6 +35,70 @@ export class RoomAttributeLessorService {
     private roomAttributeRepo: RoomAttributeRepository,
     private roomAttributeDetailRepo: RoomAttributeDetailRepository,
   ) {}
+  @Transactional()
+  async createData(user: User, dto: CreateRoomAttributeReqDto) {
+    const { roomAttributeTerms, roomAttributeDetails } = dto;
+
+    const data = [
+      { lang: Language.VN, name: 'Trang thiết bị' },
+      { lang: Language.EN, name: 'Equipment' },
+    ];
+
+    const dataTerm = [
+      { lang: Language.VN, name: 'Máy lạnh', slug: 'may-lanh' },
+      { lang: Language.EN, name: 'AC', slug: 'ac' },
+    ];
+    //create RoomAttributeTerm
+    const roomAttribute = this.roomAttributeRepo.create({
+      userId: user.id,
+    });
+
+    const createdRoomAttribute = await this.roomAttributeRepo.save(
+      roomAttribute,
+    );
+
+    await Promise.all(
+      roomAttributeDetails.map(async (item) => {
+        const roomAttributeDetail = this.roomAttributeDetailRepo.create({
+          roomAttributeId: createdRoomAttribute.id,
+          lang: item.lang,
+          name: item.name,
+        });
+        await this.roomAttributeDetailRepo.save(roomAttributeDetail);
+      }),
+    );
+    await this.saveRoomAttributeTerms(
+      createdRoomAttribute.id,
+      roomAttributeTerms,
+    );
+
+    //-------------------------------------------------------------------
+    const { limit, page } = dto;
+
+    const queryBuilder = this.roomAttributeRepo
+      .createQueryBuilder('roomAttribute')
+      .leftJoinAndSelect(
+        'roomAttribute.roomAttributeDetails',
+        'roomAttributeDetail',
+      )
+      .leftJoinAndSelect(
+        'roomAttribute.roomAttributeTerms',
+        'roomAttributeTerm',
+      )
+      .leftJoinAndSelect(
+        'roomAttributeTerm.roomAttributeTermDetails',
+        'roomAttributeTermDetail',
+      )
+      .andWhere('roomAttribute.userId = :id', {
+        id: user.id,
+      });
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+      cacheQueries: true,
+    });
+    return new Pagination(items, meta);
+  }
 
   @Transactional()
   async create(user: User, dto: CreateRoomAttributeReqDto) {

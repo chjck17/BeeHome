@@ -22,7 +22,7 @@ import {
 } from 'src/report/dtos/reportreq.dto';
 import { UpdateStatusAdminReportReqDto } from 'src/report/dtos/admin/report-status.admin.req.dto';
 
-@Controller(`${PrefixType.LESSOR}/report`)
+@Controller(`${PrefixType.ADMIN}/report`)
 @AuthenticateAdmin()
 @ApiTags('Report Admin')
 export class ReportAdminController {
@@ -39,10 +39,10 @@ export class ReportAdminController {
   ) {
     return this.reportAdminService.updateStatus(user, dto);
   }
-  // @Get(':id')
-  // findOne(@CurrentUser() user: User, @Param('id') id: string) {
-  //   return this.reportAdminService.findOne(user, Number(id));
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.reportAdminService.findOne(Number(id));
+  }
 
   // @Post()
   // createReport(@Body() createReportDto: CreateReportReqDto) {
