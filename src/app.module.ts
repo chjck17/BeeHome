@@ -33,9 +33,14 @@ import { UserRepository } from './auth/repositories/user.repository';
 import { LessorRepository } from './auth/repositories/lessor.repository';
 import { BillRepository } from './vnpay/bill.repository';
 import { ExportModule } from './export/export.module';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Set your desired root path
+      serveRoot: '/static',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [globalConfig],
