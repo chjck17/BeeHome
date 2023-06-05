@@ -13,7 +13,7 @@ import { CommentRepository } from '../../../comment/repositories/comment.reposit
 import { CommentToBoardingHouseRepository } from '../../../comment/repositories/commentToBoardingHouse.repository';
 import { Language } from 'src/common/enums/lang.enum';
 import { RoomAttributeTermDetailRepository } from 'src/room/repositories/room-attribute-term-detail.repository';
-import { Status } from 'src/common/enums/status.enum';
+import { AdminBoardingHouseStatus, Status } from 'src/common/enums/status.enum';
 
 @Injectable()
 export class BoardingHouseCustomerService {
@@ -81,13 +81,14 @@ export class BoardingHouseCustomerService {
     let { searchText } = dto;
     const queryBuilder = this.boardingHouseRepo
       .createQueryBuilder('boardingHouse')
+      .andWhere('boardingHouse.adminStatus = :adminStatus', {
+        adminStatus: AdminBoardingHouseStatus.ACTIVE,
+      })
       .leftJoinAndSelect(
         'boardingHouse.boardingHouseAddress',
         'boardingHouseAddress',
-      )
-      .andWhere('boardingHouse.status ILIKE :status', {
-        status: Status.ACTIVE,
-      });
+      );
+
     // .leftJoinAndSelect('boardingHouse.floors', 'floor')
     // .leftJoinAndSelect('floor.rooms', 'room');
 
@@ -196,6 +197,9 @@ export class BoardingHouseCustomerService {
     const { limit, page } = dto;
     const queryBuilder = this.boardingHouseRepo
       .createQueryBuilder('boardingHouse')
+      .andWhere('boardingHouse.adminStatus = :adminStatus', {
+        adminStatus: AdminBoardingHouseStatus.ACTIVE,
+      })
       .innerJoin(
         'boardingHouse.commentToBoardingHouses',
         'commentToBoardingHouse',
