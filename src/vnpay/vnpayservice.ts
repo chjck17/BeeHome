@@ -144,6 +144,53 @@ export class VNPayService {
     return bill;
   }
 
+  async getGraph(dto: GetListBillsReqDto) {
+    const { limit, page } = dto;
+    const queryBuilder = this.billRepo.createQueryBuilder('bill');
+
+    const { items, meta } = await paginate(queryBuilder, {
+      limit,
+      page,
+    });
+
+    // const statistics = items.reduce((result, item) => {
+    //   const createdAt = new Date(item.createdAt);
+    //   const month = createdAt.getMonth();
+
+    //   // Kiểm tra xem đã tồn tại thống kê cho tháng này chưa
+    //   const monthStatistic = result.find((stat) => stat.month === month);
+
+    //   if (monthStatistic) {
+    //     monthStatistic.total += parseInt(item.price, 10);
+    //   } else {
+    //     result.push({ month, total: parseInt(item.price, 10) });
+    //   }
+
+    //   return result;
+    // }, []);
+
+    // return statistics;
+
+    const statistics = [];
+
+    // Khởi tạo thống kê cho tất cả các tháng từ 0 (tháng 1) đến 11 (tháng 12)
+    for (let i = 0; i < 12; i++) {
+      statistics.push({ month: i, total: 0 });
+    }
+
+    // Tính toán thống kê theo tháng
+    items.forEach((item) => {
+      const createdAt = new Date(item.createdAt);
+      const month = createdAt.getMonth();
+
+      statistics[month].total += parseInt(item.price, 10);
+    });
+
+    return statistics;
+
+    // return new Pagination(items, meta);
+  }
+
   async getListBill(user: User, dto: GetListBillsReqDto) {
     const { limit, page } = dto;
     const queryBuilder = this.billRepo

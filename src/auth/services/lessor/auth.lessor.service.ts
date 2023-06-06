@@ -33,6 +33,7 @@ import { UserTokenRepository } from '../../repositories/user-token.repository';
 import { UserRepository } from '../../repositories/user.repository';
 import { AuthCommonService } from '../common/auth.common.service';
 import { EmailConfirmationService } from '../../../emailConfirmation/emailConfirmation.service';
+import { Language } from 'src/common/enums/lang.enum';
 
 @Injectable()
 export class AuthLessorService {
@@ -65,6 +66,92 @@ export class AuthLessorService {
       address,
       phoneNumber,
     });
+    const data = [
+      {
+        roomAttributeDetails: [
+          {
+            lang: Language.VN,
+            name: 'Trang thiết bị',
+          },
+          {
+            lang: Language.EN,
+            name: 'Equipment',
+          },
+        ],
+        roomAttributeTerms: [
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Máy lạnh',
+                slug: 'may-lanh',
+              },
+              {
+                lang: Language.EN,
+                name: 'Ac',
+                slug: 'ac',
+              },
+            ],
+          },
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Nội thất nấu ăn',
+                slug: 'noi-that-nau-an',
+              },
+              {
+                lang: Language.EN,
+                name: 'Cooking furniture',
+                slug: 'cooking-furniture',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        roomAttributeDetails: [
+          {
+            lang: Language.VN,
+            name: 'Vị Trí',
+          },
+          {
+            lang: Language.EN,
+            name: 'Location',
+          },
+        ],
+        roomAttributeTerms: [
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Gần siêu thị',
+                slug: 'gan-sieu-thi',
+              },
+              {
+                lang: Language.EN,
+                name: 'Near supper market',
+                slug: 'near-supper-market',
+              },
+            ],
+          },
+          {
+            roomAttributeTermDetails: [
+              {
+                lang: Language.VN,
+                name: 'Trung tâm',
+                slug: 'trung-tam',
+              },
+              {
+                lang: Language.EN,
+                name: 'Center',
+                slug: 'center',
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
     await Promise.all([
       this.lessorRepo.save(lessor),

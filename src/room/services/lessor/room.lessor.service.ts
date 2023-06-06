@@ -60,7 +60,7 @@ export class RoomLessorService {
     if (totalRooms >= 20 && roomExist.lessor.packType === PackType.BASIC)
       throw new ConflictException('out of room');
 
-    if (totalRooms >= 5 && roomExist.lessor.packType === PackType.FREE)
+    if (totalRooms >= 1 && roomExist.lessor.packType === PackType.FREE)
       throw new ConflictException('out of room');
 
     return totalRooms;
