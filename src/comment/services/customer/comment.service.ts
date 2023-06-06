@@ -69,7 +69,9 @@ export class CommentCustomerService {
     const comment = await this.boardingHouseRepo.findOneOrThrowNotFoundExc({
       where: { id },
       relations: {
-        commentToBoardingHouses: { comment: { user: { customer: true } } },
+        commentToBoardingHouses: {
+          comment: { user: { customer: { avatar: true } } },
+        },
       },
       order: { commentToBoardingHouses: { comment: { createdAt: 'DESC' } } },
     });
