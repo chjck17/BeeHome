@@ -183,7 +183,7 @@ export class VNPayService {
       const createdAt = new Date(item.createdAt);
       const month = createdAt.getMonth();
 
-      statistics[month].total += parseInt(item.price, 10);
+      statistics[month].total += parseInt(item.price, 10) / 100;
     });
 
     return statistics;
