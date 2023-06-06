@@ -97,25 +97,25 @@ export class BoardingHouseCustomerService {
 
     if (searchText) {
       searchText = `%${searchText}%`;
-      queryBuilder.where('boardingHouse.name ILIKE :searchText', {
+      queryBuilder.andWhere('boardingHouse.name ILIKE :searchText', {
         searchText,
       });
     }
 
     if (province) {
-      queryBuilder.where('boardingHouseAddress.province ILIKE :province', {
+      queryBuilder.andWhere('boardingHouseAddress.province ILIKE :province', {
         province,
       });
     }
 
     if (district) {
-      queryBuilder.where('boardingHouseAddress.district ILIKE :district', {
+      queryBuilder.andWhere('boardingHouseAddress.district ILIKE :district', {
         district,
       });
     }
 
     if (ward) {
-      queryBuilder.where('boardingHouseAddress.ward ILIKE :ward', { ward });
+      queryBuilder.andWhere('boardingHouseAddress.ward ILIKE :ward', { ward });
     }
 
     const { items, meta } = await paginate(queryBuilder, {
