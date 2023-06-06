@@ -9,6 +9,7 @@ import {
 } from './vnpay.req.dto';
 import { VNPayService } from './vnpayservice';
 import {
+  AuthenticateAdmin,
   AuthenticateLessor,
   CurrentUser,
 } from 'src/common/decorators/auth.decorator';
@@ -57,5 +58,11 @@ export class VNPayController {
   @AuthenticateLessor()
   findOne(@CurrentUser() user: User, @Param('id') id: string) {
     return this.vnpayService.findOne(user, Number(id));
+  }
+
+  @Get('graph')
+  @AuthenticateAdmin()
+  getGraph(@Query() query: GetListBillsReqDto) {
+    return this.vnpayService.getGraph(query);
   }
 }

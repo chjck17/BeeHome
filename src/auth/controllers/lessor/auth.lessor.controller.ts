@@ -54,11 +54,5 @@ export class AuthLessorController {
     @Param('userId', ParseIntPipe) userId: number,
     @Param('token') token: string,
     @Res({ passthrough: true }) res: FastifyReply,
-  ) {
-    // const redirectUrl = await this.authLessorService.handleVerification(
-    //   userId,
-    //   token,
-    // );
-    // return res.redirect(redirectUrl);
-  }
+  ) {}
 }
