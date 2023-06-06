@@ -84,6 +84,9 @@ export class BoardingHouseCustomerService {
       .andWhere('boardingHouse.adminStatus = :adminStatus', {
         adminStatus: AdminBoardingHouseStatus.ACTIVE,
       })
+      .andWhere('boardingHouse.status = :status', {
+        status: Status.ACTIVE,
+      })
       .leftJoinAndSelect(
         'boardingHouse.boardingHouseAddress',
         'boardingHouseAddress',
@@ -199,6 +202,9 @@ export class BoardingHouseCustomerService {
       .createQueryBuilder('boardingHouse')
       .andWhere('boardingHouse.adminStatus = :adminStatus', {
         adminStatus: AdminBoardingHouseStatus.ACTIVE,
+      })
+      .andWhere('boardingHouse.status = :status', {
+        status: Status.ACTIVE,
       })
       .innerJoin(
         'boardingHouse.commentToBoardingHouses',
