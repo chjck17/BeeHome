@@ -40,6 +40,7 @@ export class BoardingHouseCustomerService {
             },
           },
           commentToBoardingHouses: { comment: { user: { customer: true } } },
+          user: { bookDisables: true },
           boardingHouseRentDeposits: true,
           boardingHouseRules: true,
           boardingHouseAddress: true,

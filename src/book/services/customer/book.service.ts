@@ -27,7 +27,6 @@ export class BookCustomerService {
 
   async createBook(bookDto: CreateBookReqDto) {
     const existBook = await this.bookRepo.findOneBy({
-      roomId: bookDto.roomId,
       userId: bookDto.userId,
       email: bookDto.email,
     });
@@ -51,13 +50,15 @@ export class BookCustomerService {
       lastName: bookDto.lastName,
       email: bookDto.email,
       phoneNumber: bookDto.phoneNumber,
+      status: BookStatus.PROCESSING,
+      roomId: bookDto.roomId,
       dateMeet: bookDto.dateMeet,
     });
     await this.bookRepo.save(book);
-    if (existBook.status === BookStatus.PROCESSING) {
-      await this.emailConfirmation.sendVerificationBookingDate(book.email);
-    }
-    // await this.emailConfirmation.sendVerificationBookingDate(book.email);
+    // if (existBook.status === BookStatus.PROCESSING) {
+    //   await this.emailConfirmation.sendVerificationBookingDate(book.email);
+    // }
+    await this.emailConfirmation.sendVerificationBookingDate(book.email);
     return book;
   }
   // async findOne(user: User, id: number) {
