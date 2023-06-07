@@ -86,7 +86,14 @@ export class EmailConfirmationService {
         'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
       )}s`,
     });
+    const date = new Date(bookDto?.dateMeet);
 
+    const localDateTimeString = date.toLocaleString('vi-VN', {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      timeZone: 'Asia/Ho_Chi_Minh',
+    });
     const url = `${this.configService.get(
       'EMAIL_CONFIRMATION_BOOKING_DATE_URL_CUSTOMER',
     )}/${token}`;
@@ -269,8 +276,10 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
  ${bookDto.lastName}</p>
 <p style="line-height: 140%;">+ Tên trọ : ${room.floor.boardingHouse.name}</p>
 <p style="line-height: 140%;">+ Tên phòng : ${room.name}</p>
-<p style="line-height: 140%;">+ Vào ngày : ${bookDto.dateMeet.getDay()}/${bookDto.dateMeet.getMonth()}</p>
-<p style="line-height: 140%;">+ Vào lúc : ${bookDto.dateMeet.getHours()}h</p>
+<p style="line-height: 140%;">+ Vào ngày : ${new Date(
+      bookDto.dateMeet,
+    ).toLocaleDateString()}</p>
+<p style="line-height: 140%;">+ Vào lúc : ${localDateTimeString}h</p>
 <p style="line-height: 140%;">+ Số điện thoại là : ${bookDto.phoneNumber}</p>
   </div>
 
