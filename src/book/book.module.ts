@@ -18,6 +18,7 @@ import EmailService from '../email/email.service';
 import { UserRepository } from '../auth/repositories/user.repository';
 import { CustomerRepository } from '../auth/repositories/customer.repository';
 import { LessorRepository } from '../auth/repositories/lessor.repository';
+import { RoomRepository } from 'src/room/repositories/room.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Book, BookDisable])],
@@ -38,6 +39,7 @@ import { LessorRepository } from '../auth/repositories/lessor.repository';
     BookDisableLessorService,
     BookDisableRepository,
     EmailConfirmationService,
+    RoomRepository,
   ],
 })
 export class BookModule {}

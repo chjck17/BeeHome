@@ -14,6 +14,7 @@ import { User } from '../auth/entities/user.entity';
 import { UserRepository } from '../auth/repositories/user.repository';
 import { BookRepository } from '../book/repositories/book.repository';
 import { Book } from '../book/entities/book.entity';
+import { RoomRepository } from 'src/room/repositories/room.repository';
 @Module({
   imports: [
     ConfigModule,
@@ -28,6 +29,7 @@ import { Book } from '../book/entities/book.entity';
     CustomerRepository,
     UserRepository,
     BookRepository,
+    RoomRepository,
   ],
   exports: [EmailConfirmationService],
   controllers: [EmailConfirmationController],

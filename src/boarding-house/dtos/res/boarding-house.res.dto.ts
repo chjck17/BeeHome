@@ -28,6 +28,7 @@ export class BoardingHouseResDto {
   itemDetails: string[];
   posterAvatar: string;
   posterName: string;
+  phoneNumber: string;
   posterId: number;
   comment: Comment[];
   starAvg: string;
@@ -75,6 +76,9 @@ export class BoardingHouseResDto {
       : null;
     dto.posterName = dataBoardingHouse?.user?.lessor?.name
       ? dataBoardingHouse?.user?.lessor?.name
+      : null;
+    dto.phoneNumber = dataBoardingHouse?.user?.lessor?.phoneNumber
+      ? dataBoardingHouse?.user?.lessor?.phoneNumber
       : null;
     dto.posterId = dataBoardingHouse?.user?.id
       ? dataBoardingHouse?.user?.id

@@ -41,7 +41,10 @@ export class BookCustomerService {
         dateMeet: bookDto.dateMeet,
       });
       await this.bookRepo.save(book);
-      await this.emailConfirmation.sendVerificationBookingDate(book.email);
+      await this.emailConfirmation.sendVerificationBookingDate(
+        book.email,
+        bookDto,
+      );
       return book;
     }
     const book = this.bookRepo.create({
@@ -58,7 +61,10 @@ export class BookCustomerService {
     // if (existBook.status === BookStatus.PROCESSING) {
     //   await this.emailConfirmation.sendVerificationBookingDate(book.email);
     // }
-    await this.emailConfirmation.sendVerificationBookingDate(book.email);
+    await this.emailConfirmation.sendVerificationBookingDate(
+      book.email,
+      bookDto,
+    );
     return book;
   }
   // async findOne(user: User, id: number) {

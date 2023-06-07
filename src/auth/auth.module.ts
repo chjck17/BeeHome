@@ -45,6 +45,7 @@ import EmailService from '../email/email.service';
 import { BookRepository } from '../book/repositories/book.repository';
 import { BoardingHouseRepository } from 'src/boarding-house/repositories/boarding-house.repository';
 import { ReportRepository } from 'src/report/repositories/report.repository';
+import { RoomRepository } from 'src/room/repositories/room.repository';
 @Module({
   imports: [
     PassportModule,
@@ -89,6 +90,7 @@ import { ReportRepository } from 'src/report/repositories/report.repository';
     AuthCommonService,
     ConfigService,
     JwtAuthenLessorStrategy,
+    RoomRepository,
     JwtAuthenAdminStrategy,
     JwtAuthenCustomerStrategy,
     JwtAuthenUserStrategy,
